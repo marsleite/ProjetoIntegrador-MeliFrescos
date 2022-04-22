@@ -31,8 +31,6 @@ public class InboundOrder {
 
     @OneToMany(mappedBy = "inboundOrder", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    // @JoinColumn(name = "batchNumber", nullable = false)
-    // @MapsId
     private List<Batch> batchStock;
 
 }
