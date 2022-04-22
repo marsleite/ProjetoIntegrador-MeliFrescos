@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +17,10 @@ public class Product {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer productId;
+
+  @OneToMany(mappedBy = "productId")
+  private Set<Batch> batch;
+
   private String productName;
   private StorageType productType;
   private String productDescription;

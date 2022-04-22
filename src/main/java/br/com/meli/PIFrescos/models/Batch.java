@@ -25,4 +25,8 @@ public class Batch {
   private LocalDate manufacturingDate;
   private LocalDate expiringDate;
   private LocalDate dueDate;
+
+  @ManyToOne
+  @JoinColumn(name = "product_id", nullable = false)
+  private Product productId;
 }
