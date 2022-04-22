@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ana Preis
+ * Criação da entidade
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

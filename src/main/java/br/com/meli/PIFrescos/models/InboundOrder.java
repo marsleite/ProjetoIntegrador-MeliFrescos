@@ -10,6 +10,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
+/**
+ * @author Ana Preis
+ * Criação da entidade
+ */
+
 @Entity
 @Data
 @NoArgsConstructor
