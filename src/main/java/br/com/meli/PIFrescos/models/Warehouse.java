@@ -3,6 +3,8 @@ package br.com.meli.PIFrescos.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,6 +25,7 @@ public class Warehouse {
     private Integer warehouseCode;
     // private String representante;
 
-    @OneToMany
+    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Section> sectionList;
 }
