@@ -2,6 +2,7 @@ package br.com.meli.PIFrescos.service;
 
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.repository.SectionRepository;
+import br.com.meli.PIFrescos.service.interfaces.ISectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class SectionService {
+public class SectionService implements ISectionService {
 
     @Autowired
     SectionRepository sectionRepository;
