@@ -21,9 +21,6 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer productId;
 
-  @OneToMany(mappedBy = "productId")
-  private Set<Batch> batch;
-
   private String productName;
   private StorageType productType;
   private String productDescription;
