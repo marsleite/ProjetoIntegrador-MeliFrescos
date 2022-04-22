@@ -3,10 +3,12 @@ package br.com.meli.PIFrescos.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Ana Preis
@@ -23,6 +25,12 @@ public class InboundOrder {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer orderNumber;
     private LocalDate orderDate;
-    private ArrayList<Batch> batchStock;
+
+    @ManyToOne
+    private Section section;
+
+    @OneToMany(mappedBy = "inboundOrder", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Batch> batchStock;
 
 }
