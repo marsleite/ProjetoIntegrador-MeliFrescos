@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+/**
+ * @author Marcelo Leite
+ * */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

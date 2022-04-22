@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * @author Marcelo Leite
+ * */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
