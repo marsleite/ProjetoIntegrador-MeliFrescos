@@ -9,6 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * @author Ana Preis
+ * Criação da entidade
+ */
+
 @Entity
 @Data
 @NoArgsConstructor
