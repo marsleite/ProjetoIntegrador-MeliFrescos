@@ -29,4 +29,10 @@ public class Batch {
   private LocalDate expiringDate;
   private LocalDate dueDate;
 
+  @ManyToOne
+  private InboundOrder inboundOrder;
+
+  @ManyToOne
+  private Product product;
+
 }
