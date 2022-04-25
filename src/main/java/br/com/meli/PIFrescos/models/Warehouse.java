@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,6 @@ public class Warehouse {
 
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private List<Section> sectionList;
 }

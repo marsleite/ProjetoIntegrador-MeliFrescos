@@ -28,7 +28,6 @@ public class Batch {
   private Integer initialQuantity;
   private Integer currentQuantity;
   private LocalDate manufacturingDate;
-  private LocalDate expiringDate;
   private LocalDate dueDate;
 
   @ManyToOne
