@@ -25,6 +25,6 @@ public class ProductForm {
     private String productDescription;
 
     public Product convert() {
-        return new Product(null, productName, productType, productDescription);
+        return new Product(productId, productName, productType, productDescription);
     }
 }
