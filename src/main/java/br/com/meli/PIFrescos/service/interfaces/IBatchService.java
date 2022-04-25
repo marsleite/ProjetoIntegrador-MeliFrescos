@@ -1,11 +1,12 @@
 package br.com.meli.PIFrescos.service.interfaces;
 
-import br.com.meli.PIFrescos.dtos.batch.BatchFromDTO;
 import br.com.meli.PIFrescos.models.Batch;
-import br.com.meli.PIFrescos.models.InboundOrder;
-import br.com.meli.PIFrescos.models.Section;
+
+import java.util.List;
+
 
 public interface IBatchService {
-    Batch createBatch(InboundOrder inboundOrder, BatchFromDTO batchFromDTO);
-    Batch updateBatch(Integer batchNumber, Section section);
+
+    Batch findBatchById(Integer id);
+    List<Batch> findBatchesByProduct(Integer productId);
 }
