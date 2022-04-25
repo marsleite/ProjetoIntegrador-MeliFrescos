@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.controller;
 
+import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.service.InboundOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class InBoundOrderController {
      * @author Ana Preis
      */
     @PostMapping("")
-    public ResponseEntity<List<InboundOrder>> postInboundOrders(@RequestBody InboundOrder order){
+    public ResponseEntity<List<Batch>> postInboundOrders(@RequestBody InboundOrder order){
 
         InboundOrder savedOrder = service.save(order);
 
