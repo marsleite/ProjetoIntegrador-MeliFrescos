@@ -20,6 +20,7 @@ public class Section {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer sectionCode;
+    @Enumerated(EnumType.STRING)
     private StorageType storageType;
     private Integer maxCapacity;
     private Integer currentCapacity;
