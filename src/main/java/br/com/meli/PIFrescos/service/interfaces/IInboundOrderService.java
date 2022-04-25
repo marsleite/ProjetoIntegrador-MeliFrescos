@@ -1,4 +1,4 @@
-package br.com.meli.PIFrescos.service;
+package br.com.meli.PIFrescos.service.interfaces;
 
 import br.com.meli.PIFrescos.models.InboundOrder;
 
