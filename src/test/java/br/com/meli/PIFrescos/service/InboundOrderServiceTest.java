@@ -74,6 +74,7 @@ class InboundOrderServiceTest {
         expectedInboundOrder.setSection(newSection);
 
         Mockito.when(inboundOrderRepository.getById(id)).thenReturn(inboundOrder);
+        Mockito.when(inboundOrderRepository.save(any())).thenReturn(expectedInboundOrder);
 
         InboundOrder updatedInboundOrder = inboundOrderService.update(id, newInboundOrderValues);
 
