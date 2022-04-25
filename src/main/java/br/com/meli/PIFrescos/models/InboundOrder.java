@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class InboundOrder {
 
     @OneToMany(mappedBy = "inboundOrder", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private List<Batch> batchStock;
 
 }
