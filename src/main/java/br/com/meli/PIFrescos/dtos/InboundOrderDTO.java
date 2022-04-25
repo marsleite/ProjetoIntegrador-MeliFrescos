@@ -1,4 +1,4 @@
-package br.com.meli.PIFrescos.models.dto;
+package br.com.meli.PIFrescos.dtos;
 
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
