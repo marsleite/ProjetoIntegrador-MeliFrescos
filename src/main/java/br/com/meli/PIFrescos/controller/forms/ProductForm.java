@@ -18,13 +18,13 @@ import javax.validation.constraints.Size;
 public class ProductForm {
     private Integer productId;
     @NotBlank @Size(min = 5, max = 30)
-    private String name;
+    private String productName;
 
     private StorageType productType;
     @NotBlank  @Size(min = 5, max = 30)
     private String productDescription;
 
     public Product convert() {
-        return new Product(null, name, productType, productDescription);
+        return new Product(null, productName, productType, productDescription);
     }
 }
