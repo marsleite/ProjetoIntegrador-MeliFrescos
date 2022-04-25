@@ -7,6 +7,8 @@ import br.com.meli.PIFrescos.service.interfaces.ISectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class InboundOrderService implements IInboundOrderService {
 
@@ -15,6 +17,18 @@ public class InboundOrderService implements IInboundOrderService {
 
     @Autowired
     ISectionService sectionService;
+
+
+    /**
+     * Salva uma inbound order. Antes de salvar, é verificado se a Section correspondente ainda possui capacidade
+     * para armazenar.
+     * @return List<inboundOrder>
+     * @author Julio César Gama
+     */
+    @Override
+    public List<InboundOrder> getAll() {
+        return inboundOrderRepository.findAll();
+    }
 
     /**
      * Salva uma inbound order. Antes de salvar, é verificado se a Section correspondente ainda possui capacidade
