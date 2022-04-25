@@ -1,4 +1,4 @@
-package br.com.meli.PIFrescos.models.dto;
+package br.com.meli.PIFrescos.dtos;
 
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.Product;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author Marcelo Leite
+ * @author Felipe Myose
  * */
 @Data
 @NoArgsConstructor
