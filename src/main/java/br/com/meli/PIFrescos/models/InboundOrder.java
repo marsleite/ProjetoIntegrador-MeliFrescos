@@ -32,7 +32,6 @@ public class InboundOrder {
 
     @OneToMany(mappedBy = "inboundOrder", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
     private List<Batch> batchStock;
 
 }
