@@ -26,7 +26,7 @@ public class ProductService {
 
   // Cria um novo produto, mas antes verifica se já existe um produto com o mesmo nome
   public Product createProduct(Product product) {
-    if (productRepository.findByName(product.getProductName())) {
+    if (productRepository.findByProductName(product.getProductName())) {
       throw new RuntimeException("Product already exists");
     }
     return productRepository.save(product);

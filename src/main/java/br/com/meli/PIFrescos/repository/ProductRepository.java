@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
   // metodo para buscar produto pelo nome no banco de dados
-  Boolean findByName(String name);
+  Boolean findByProductName(String name);
 }

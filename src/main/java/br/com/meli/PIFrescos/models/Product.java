@@ -22,6 +22,7 @@ public class Product {
   private Integer productId;
 
   private String productName;
+  @Enumerated(EnumType.STRING)
   private StorageType productType;
   private String productDescription;
 }
