@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class Batch {
   private LocalDate dueDate;
 
   @ManyToOne
+  @JsonIgnore
   private InboundOrder inboundOrder;
 
   @ManyToOne
