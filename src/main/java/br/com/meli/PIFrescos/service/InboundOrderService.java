@@ -2,6 +2,8 @@ package br.com.meli.PIFrescos.service;
 
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
+import br.com.meli.PIFrescos.service.interfaces.IInboundOrderService;
+import br.com.meli.PIFrescos.service.interfaces.ISectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,7 @@ public class InboundOrderService implements IInboundOrderService {
     InboundOrderRepository inboundOrderRepository;
 
     @Autowired
-    SectionService sectionService;
+    ISectionService sectionService;
 
     /**
      * Salva uma inbound order. Antes de salvar, é verificado se a Section correspondente ainda possui capacidade
