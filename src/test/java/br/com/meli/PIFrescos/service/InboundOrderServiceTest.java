@@ -2,11 +2,12 @@ package br.com.meli.PIFrescos.service;
 
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
+import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.models.Warehouse;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
-import br.com.meli.PIFrescos.service.interfaces.ISectionService;
+import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,9 @@ import static org.mockito.Mockito.verify;
 class InboundOrderServiceTest {
 
     @Mock
+    private ProductRepository productRepository;
+
+    @Mock
     private InboundOrderRepository inboundOrderRepository;
 
     @Mock
@@ -35,10 +39,12 @@ class InboundOrderServiceTest {
     @InjectMocks
     private InboundOrderService inboundOrderService;
 
-    Warehouse warehouse = new Warehouse();
-    Section section = new Section(); InboundOrder inboundOrder = new InboundOrder();
-    Batch batch1 = new Batch();
-    Batch batch2 = new Batch();
+    private Warehouse warehouse = new Warehouse();
+    private Section section = new Section(); InboundOrder inboundOrder = new InboundOrder();
+    private Batch batch1 = new Batch();
+    private Batch batch2 = new Batch();
+    private Product product1 = new Product();
+    private Product product2 = new Product();
 
     @BeforeEach
     void setup() {
@@ -46,6 +52,8 @@ class InboundOrderServiceTest {
         section = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         batch1.setCurrentQuantity(2);
         batch2.setCurrentQuantity(3);
+        batch1.setProduct(new Product());
+        batch2.setProduct(new Product());
         inboundOrder = new InboundOrder(1, LocalDate.now(), section, Arrays.asList(batch1, batch2));
     }
 
@@ -54,6 +62,7 @@ class InboundOrderServiceTest {
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
 
+        Mockito.when(productRepository.findById(null)).thenReturn(java.util.Optional.ofNullable(product1));
         Mockito.when(sectionService.updateCapacity(sectionCode, quantity)).thenReturn(5);
         Mockito.when(inboundOrderRepository.save(inboundOrder)).thenReturn(inboundOrder);
 
