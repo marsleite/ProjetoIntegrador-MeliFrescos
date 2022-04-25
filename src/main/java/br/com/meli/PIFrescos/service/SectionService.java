@@ -19,9 +19,12 @@ public class SectionService implements ISectionService {
 
     /**
      * @author Ana Preis
-     * Cria uma nova section do warehouse
+     * Verifica se a Section já existe pelo SectionCode e cria uma nova section do warehouse
      */
     public Section createSection(Section section) {
+        if(sectionAlreadyExists(section.getSectionCode())){
+            throw new RuntimeException("Section already exists!");
+        }
         return sectionRepository.save(section);
     }
 
@@ -42,5 +45,9 @@ public class SectionService implements ISectionService {
             return section.getCurrentCapacity();
         }
         throw new RuntimeException("A capacidade do setor não suporta essa order");
+    }
+
+    public Boolean sectionAlreadyExists(Integer code){
+        return sectionRepository.existsSectionBySectionCode(code);
     }
 }
