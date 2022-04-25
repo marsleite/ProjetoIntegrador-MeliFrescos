@@ -31,12 +31,25 @@ public class InBoundOrderController {
 
 
     /**
+     * Salva nova InboundOrder
      * @author Ana Preis
      */
     @PostMapping("")
     public ResponseEntity<List<Batch>> postInboundOrders(@RequestBody InboundOrder order){
 
         InboundOrder savedOrder = service.save(order);
+
+        return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);
+    }
+
+    /**
+     * Atualiza InboundOrder existente
+     * @author Ana Preis
+     */
+    @PutMapping("")
+    public ResponseEntity<List<Batch>> putInboundOrders(@RequestBody InboundOrder order){
+
+        InboundOrder savedOrder = service.update(order.getOrderNumber(), order);
 
         return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);
     }
