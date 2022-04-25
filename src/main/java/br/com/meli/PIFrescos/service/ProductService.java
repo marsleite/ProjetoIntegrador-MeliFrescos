@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
- * @author Marcelo Leite/Juliano Alcione de Souza
+ * @author Marcelo Leite
  */
 @Service
 public class ProductService {
@@ -27,7 +26,7 @@ public class ProductService {
 
   // Cria um novo produto, mas antes verifica se já existe um produto com o mesmo nome
   public Product createProduct(Product product) {
-    if (productRepository.findByProductName(product.getProductName()) != null) {
+    if (productRepository.findByProductName(product.getProductName())) {
       throw new RuntimeException("Product already exists");
     }
     return productRepository.save(product);
@@ -41,12 +40,4 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public void deleteProduct(Integer id){
-    Optional<Product> productOptional = productRepository.findById(id);
-    if(productOptional.isEmpty()){
-      throw new RuntimeException("Product not found");
-    }
-
-    productRepository.delete(productOptional.get());
-  }
 }
