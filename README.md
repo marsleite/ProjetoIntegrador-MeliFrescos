@@ -9,7 +9,8 @@ Este Projeto Integrador se destina a simular uma nova modalidade de armazenament
 ### Diagramas de Classe
 
 #### Requisito 01 Homologado:
-![Requisito 01](https://user-images.githubusercontent.com/70298438/164837704-cbe9a591-573a-4643-9190-71cc6c8090dd.png)
+
+![Diagrama de Classe RQ01](https://user-images.githubusercontent.com/70298438/165108462-4623f6f2-dbf2-412b-8762-3ed2eec8ccda.png)
 
 
 ### Documentação e Referencial utilizados:
