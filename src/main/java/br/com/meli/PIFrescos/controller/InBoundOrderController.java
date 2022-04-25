@@ -2,8 +2,8 @@ package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
+import br.com.meli.PIFrescos.dtos.InboundOrderDTO;
 import br.com.meli.PIFrescos.models.Section;
-import br.com.meli.PIFrescos.models.dto.InboundOrderDTO;
 import br.com.meli.PIFrescos.service.InboundOrderService;
 import br.com.meli.PIFrescos.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
