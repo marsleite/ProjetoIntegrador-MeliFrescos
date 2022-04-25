@@ -122,7 +122,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n   \"inboundOrder\":{\n      \"orderDate\": \"2022-04-01\", \n      \"section\": {\n        \"sectionCode\": 1,\n        \"warehouseCode\": 1\n      }, \n      \"batchStock\":[\n         {\n            \"productId\": 1,\n            \"currentTemperature\": 7.0,\n            \"minimumTemperature\": 6.0,\n            \"initialQuantity\": 5,\n            \"currentQuantity\": 5,\n            \"manufacturingDate\": \"2022-03-24\",\n            \"dueDate\": \"2022-04-24\"\n         },\n         {\n            \"productId\": 1,\n            \"currentTemperature\": 7.0,\n            \"minimumTemperature\": 6.0,\n            \"initialQuantity\": 4,\n            \"currentQuantity\": 4,\n            \"manufacturingDate\": \"2022-03-24\",\n            \"dueDate\": \"2022-04-24\"\n         },\n         {\n            \"productId\": 2,\n            \"currentTemperature\": 8.0,\n            \"minimumTemperature\": 6.0,\n            \"initialQuantity\": 6,\n            \"currentQuantity\": 6,\n            \"manufacturingDate\": \"2022-03-20\",\n            \"dueDate\": \"2022-04-20\"\n         },\n         {\n            \"productId\": 2,\n            \"currentTemperature\": 8.0,\n            \"minimumTemperature\": 6.0,\n            \"initialQuantity\": 7,\n            \"currentQuantity\": 7,\n            \"manufacturingDate\": \"2022-03-20\",\n            \"dueDate\": \"2022-04-20\"\n         }\n      ]\n   }\n}",
+					"raw": "{\n    \"orderDate\": \"2022-04-01\", \n    \"section\": {\n        \"sectionCode\": 1,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    },\n    \"batchStock\":[\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 2,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        },\n        {\n        \"productId\": 2,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 7,\n        \"currentQuantity\": 7,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        }\n    ]\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -130,7 +130,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fesh-products/inboundorder",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -139,7 +139,7 @@
 					"path": [
 						"api",
 						"v1",
-						"fesh-products",
+						"fresh-products",
 						"inboundorder"
 					]
 				}
@@ -153,7 +153,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n   \"inboundOrder\":{\n      \"orderDate\": \"2022-04-03\", \n      \"section\": {\n        \"sectionCode\": 2,\n        \"warehouseCode\": 1\n      }, \n      \"batchStock\":[\n         {\n            \"productId\": 3,\n            \"currentTemperature\": 5.0,\n            \"minimumTemperature\": 4.0,\n            \"initialQuantity\": 5,\n            \"currentQuantity\": 5,\n            \"manufacturingDate\": \"2022-03-24\",\n            \"dueDate\": \"2022-04-24\"\n         },\n         {\n            \"productId\": 3,\n            \"currentTemperature\": 5.0,\n            \"minimumTemperature\": 4.0,\n            \"initialQuantity\": 4,\n            \"currentQuantity\": 4,\n            \"manufacturingDate\": \"2022-03-24\",\n            \"dueDate\": \"2022-04-24\"\n         },\n         {\n            \"productId\": 4,\n            \"currentTemperature\": 4.0,\n            \"minimumTemperature\": 0.0,\n            \"initialQuantity\": 6,\n            \"currentQuantity\": 6,\n            \"manufacturingDate\": \"2022-03-20\",\n            \"dueDate\": \"2022-04-20\"\n         },\n         {\n            \"productId\": 4,\n            \"currentTemperature\": 4.0,\n            \"minimumTemperature\": 0.0,\n            \"initialQuantity\": 7,\n            \"currentQuantity\": 7,\n            \"manufacturingDate\": \"2022-03-20\",\n            \"dueDate\": \"2022-04-20\"\n         }\n      ]\n   }\n}",
+					"raw": "{\n    \"orderDate\": \"2022-04-03\", \n    \"section\": {\n        \"sectionCode\": 2,\n        \"warehouse\":{\n            \"warehouseCode\": 1\n        }\n    }, \n    \"batchStock\":[\n        {\n        \"productId\": 3,\n        \"currentTemperature\": 5.0,\n        \"minimumTemperature\": 4.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 3,\n        \"currentTemperature\": 5.0,\n        \"minimumTemperature\": 4.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 4,\n        \"currentTemperature\": 4.0,\n        \"minimumTemperature\": 0.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        },\n        {\n        \"productId\": 4,\n        \"currentTemperature\": 4.0,\n        \"minimumTemperature\": 0.0,\n        \"initialQuantity\": 7,\n        \"currentQuantity\": 7,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        }\n    ]\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -161,7 +161,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fesh-products/inboundorder",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -170,7 +170,7 @@
 					"path": [
 						"api",
 						"v1",
-						"fesh-products",
+						"fresh-products",
 						"inboundorder"
 					]
 				}
@@ -184,7 +184,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n   \"inboundOrder\":{\n      \"orderDate\": \"2022-04-05\", \n      \"section\": {\n        \"sectionCode\": 3,\n        \"warehouseCode\": 1\n      }, \n      \"batchStock\":[\n         {\n            \"productId\": 5,\n            \"currentTemperature\": -15.0,\n            \"minimumTemperature\": -20.0,\n            \"initialQuantity\": 8,\n            \"currentQuantity\": 8,\n            \"manufacturingDate\": \"2022-03-26\",\n            \"dueDate\": \"2022-04-26\"\n         },\n         {\n            \"productId\": 5,\n            \"currentTemperature\": -15.0,\n            \"minimumTemperature\": -20.0,\n            \"initialQuantity\": 4,\n            \"currentQuantity\": 4,\n            \"manufacturingDate\": \"2022-03-26\",\n            \"dueDate\": \"2022-04-26\"\n         },\n         {\n            \"productId\": 6,\n            \"currentTemperature\": -14.0,\n            \"minimumTemperature\": -20.0,\n            \"initialQuantity\": 5,\n            \"currentQuantity\": 5,\n            \"manufacturingDate\": \"2022-03-28\",\n            \"dueDate\": \"2022-04-28\"\n         },\n         {\n            \"productId\": 6,\n            \"currentTemperature\": -14.0,\n            \"minimumTemperature\": -20.0,\n            \"initialQuantity\": 6,\n            \"currentQuantity\": 6,\n            \"manufacturingDate\": \"2022-03-28\",\n            \"dueDate\": \"2022-04-28\"\n         }\n      ]\n   }\n}",
+					"raw": "{\n    \"orderDate\": \"2022-04-05\", \n    \"section\": {\n        \"sectionCode\": 3,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    }, \n    \"batchStock\":[\n        {\n        \"productId\": 5,\n        \"currentTemperature\": -15.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 8,\n        \"currentQuantity\": 8,\n        \"manufacturingDate\": \"2022-03-26\",\n        \"dueDate\": \"2022-04-26\"\n        },\n        {\n        \"productId\": 5,\n        \"currentTemperature\": -15.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-26\",\n        \"dueDate\": \"2022-04-26\"\n        },\n        {\n        \"productId\": 6,\n        \"currentTemperature\": -14.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-28\",\n        \"dueDate\": \"2022-04-28\"\n        },\n        {\n        \"productId\": 6,\n        \"currentTemperature\": -14.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-28\",\n        \"dueDate\": \"2022-04-28\"\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -192,7 +192,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fesh-products/inboundorder",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -201,7 +201,7 @@
 					"path": [
 						"api",
 						"v1",
-						"fesh-products",
+						"fresh-products",
 						"inboundorder"
 					]
 				}
@@ -223,7 +223,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fesh-products/inboundorder",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -232,7 +232,7 @@
 					"path": [
 						"api",
 						"v1",
-						"fesh-products",
+						"fresh-products",
 						"inboundorder"
 					]
 				}
@@ -254,7 +254,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fesh-products/inboundorder",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -263,7 +263,7 @@
 					"path": [
 						"api",
 						"v1",
-						"fesh-products",
+						"fresh-products",
 						"inboundorder"
 					]
 				}
@@ -276,7 +276,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fesh-products/inboundorder",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -285,7 +285,7 @@
 					"path": [
 						"api",
 						"v1",
-						"fesh-products",
+						"fresh-products",
 						"inboundorder"
 					]
 				}
@@ -298,7 +298,7 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fesh-products/inboundorder",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -307,7 +307,7 @@
 					"path": [
 						"api",
 						"v1",
-						"fesh-products",
+						"fresh-products",
 						"inboundorder"
 					]
 				}

@@ -1,6 +1,7 @@
 package br.com.meli.PIFrescos.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "batch")
 public class Batch {
@@ -26,7 +28,6 @@ public class Batch {
   private Integer initialQuantity;
   private Integer currentQuantity;
   private LocalDate manufacturingDate;
-  private LocalDate expiringDate;
   private LocalDate dueDate;
 
   @ManyToOne
