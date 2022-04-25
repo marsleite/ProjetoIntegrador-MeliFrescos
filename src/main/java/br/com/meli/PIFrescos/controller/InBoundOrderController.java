@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/fresh-products/inboundorder/")
+@RequestMapping("/fresh-products/inboundorder")
 public class InBoundOrderController {
 
     @Autowired
