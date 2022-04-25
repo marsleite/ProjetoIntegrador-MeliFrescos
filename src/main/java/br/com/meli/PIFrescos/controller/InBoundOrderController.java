@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/fresh-products/inboundorder/")
+@RequestMapping("/fresh-products/inboundorder")
 public class InBoundOrderController {
 
     @Autowired
@@ -32,12 +32,25 @@ public class InBoundOrderController {
 
 
     /**
+     * Salva nova InboundOrder
      * @author Ana Preis
      */
     @PostMapping("")
     public ResponseEntity<List<Batch>> postInboundOrders(@RequestBody InboundOrderDTO orderDTO){
         InboundOrder order = InboundOrderDTO.convert(orderDTO);
         InboundOrder savedOrder = service.save(order);
+
+        return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);
+    }
+
+    /**
+     * Atualiza InboundOrder existente
+     * @author Ana Preis
+     */
+    @PutMapping("")
+    public ResponseEntity<List<Batch>> putInboundOrders(@RequestBody InboundOrder order){
+
+        InboundOrder savedOrder = service.update(order.getOrderNumber(), order);
 
         return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);
     }
