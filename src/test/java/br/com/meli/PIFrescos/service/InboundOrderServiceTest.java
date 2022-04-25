@@ -43,7 +43,7 @@ class InboundOrderServiceTest {
     @BeforeEach
     void setup() {
         warehouse = new Warehouse(1, new ArrayList<>());
-        section = new Section(1, StorageType.FS, 10, 0, warehouse);
+        section = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         batch1.setCurrentQuantity(2);
         batch2.setCurrentQuantity(3);
         inboundOrder = new InboundOrder(1, LocalDate.now(), section, Arrays.asList(batch1, batch2));
@@ -67,7 +67,7 @@ class InboundOrderServiceTest {
         Integer id = inboundOrder.getOrderNumber();
 
         InboundOrder newInboundOrderValues = new InboundOrder();
-        Section newSection = new Section(1, StorageType.FS, 10, 0, warehouse);
+        Section newSection = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         newInboundOrderValues.setSection(newSection);
 
         InboundOrder expectedInboundOrder = inboundOrder;
