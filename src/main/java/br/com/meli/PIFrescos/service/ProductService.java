@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * @author Marcelo Leite
+ * @author Marcelo Leite/Juliano Alcione
  */
 @Service
 public class ProductService {
@@ -38,5 +39,14 @@ public class ProductService {
       throw new RuntimeException("Product not found");
     }
     return productRepository.save(product);
+  }
+
+  public void deleteProduct(Integer id){
+    Optional<Product> productOptional = productRepository.findById(id);
+    if(productOptional.isEmpty()){
+      throw new RuntimeException("Product not found");
+    }
+
+    productRepository.delete(productOptional.get());
   }
 }
