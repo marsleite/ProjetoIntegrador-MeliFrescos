@@ -4,7 +4,10 @@ package br.com.meli.PIFrescos.models;
  * @author Marcelo Leite
  * */
 public enum StorageType {
-    FS,
-    RF,
-    FF
+    FRESH("FS"),
+    REFRIGERATED("RF"),
+    FROZEN("FF");
+
+    StorageType(String value) {
+    }
 }
