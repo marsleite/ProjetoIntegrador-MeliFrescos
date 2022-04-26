@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.tomcat.jni.Address;
 
+/**
+ * @author Marcelo Leite
+ * */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
