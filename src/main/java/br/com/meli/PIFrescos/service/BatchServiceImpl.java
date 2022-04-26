@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/**
+ * @author Antonio Hugo
+ */
 @Service
 @AllArgsConstructor
 public class BatchServiceImpl implements IBatchService {
