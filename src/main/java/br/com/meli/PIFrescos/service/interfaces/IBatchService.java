@@ -4,7 +4,9 @@ import br.com.meli.PIFrescos.models.Batch;
 
 import java.util.List;
 
-
+/**
+ * @author Antonio Hugo
+ */
 public interface IBatchService {
 
     Batch findBatchById(Integer id);
