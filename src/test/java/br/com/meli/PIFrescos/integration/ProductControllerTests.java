@@ -146,5 +146,16 @@ public class ProductControllerTests {
 
     }
 
+    /**
+     * @author Antonio Hugo
+     * Valida se será retornado 404 quando a URI estiver errada
+     */
+    @Test
+    public void shouldStatusCode404NotFound() throws Exception {
+
+        mockMvc.perform(get("/not_exists"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
 
 }
