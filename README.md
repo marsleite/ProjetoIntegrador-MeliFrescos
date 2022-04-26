@@ -21,6 +21,9 @@ Este Projeto Integrador se destina a simular uma nova modalidade de armazenament
 
 [Requisito 2](https://drive.google.com/file/d/1M66St3F6TwWJ6WG_s1in75_bMyeKb8PM/view)
 
+[Requisito 3](https://drive.google.com/file/d/1GnTl6sHhdvyKjR0oz0nXlyvzH-oW_2Jv/view)
+
+[Requisito 4](https://drive.google.com/file/d/1kNZLztafr2tXuDU24W9xwUu09va2kMP0/view)
 
 
  
