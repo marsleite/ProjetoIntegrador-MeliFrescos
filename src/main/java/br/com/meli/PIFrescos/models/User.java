@@ -3,6 +3,7 @@ package br.com.meli.PIFrescos.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.jni.Address;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -34,4 +35,6 @@ public class User {
 
   @Enumerated(EnumType.STRING)
   private UserRole role;
+
+  private Address address;
 }

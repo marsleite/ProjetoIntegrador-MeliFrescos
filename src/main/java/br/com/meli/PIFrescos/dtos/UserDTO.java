@@ -5,6 +5,7 @@ import br.com.meli.PIFrescos.models.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.jni.Address;
 
 @Data
 @NoArgsConstructor
@@ -14,11 +15,13 @@ public class UserDTO {
   private String username;
   private String email;
   private UserRole role;
+  private Address address;
 
   public UserDTO(User user) {
     this.userId = user.getUserId();
     this.username = user.getUsername();
     this.email = user.getEmail();
     this.role = user.getRole();
+    this.address = user.getAddress();
   }
 }
