@@ -5,6 +5,6 @@ package br.com.meli.PIFrescos.models;
  */
 
 public enum OrderStatus {
-    OPEN,
+    OPENED,
     FINISHED
 }
