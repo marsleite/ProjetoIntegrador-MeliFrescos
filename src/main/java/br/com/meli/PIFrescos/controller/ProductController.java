@@ -1,7 +1,6 @@
 package br.com.meli.PIFrescos.controller;
 
-import br.com.meli.PIFrescos.controller.dtos.ProductDto;
-import br.com.meli.PIFrescos.controller.forms.ProductForm;
+import br.com.meli.PIFrescos.dtos.ProductDTO;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,22 +23,22 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductDto> create(@RequestBody @Valid ProductForm form){
-        Product product = this.productService.createProduct(form.convert());
-        return ResponseEntity.ok(new ProductDto(product));
+    public ResponseEntity<ProductDTO> create(@RequestBody @Valid ProductDTO dto){
+        Product product = this.productService.createProduct(dto.convert());
+        return ResponseEntity.ok(new ProductDTO(product));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> all(){
+    public ResponseEntity<List<ProductDTO>> all(){
         List<Product> all = this.productService.listAllProducts();
-        return ResponseEntity.ok(ProductDto.convertList(all));
+        return ResponseEntity.ok(ProductDTO.convertList(all));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> update(@PathVariable Integer id, @RequestBody @Valid ProductForm form){
-        form.setProductId(id);
-        Product product = this.productService.updateProduct(form.convert());
-        return ResponseEntity.ok(new ProductDto(product));
+    public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody @Valid ProductDTO dto){
+        dto.setProductId(id);
+        Product product = this.productService.updateProduct(dto.convert());
+        return ResponseEntity.ok(new ProductDTO(product));
     }
 
     @DeleteMapping("/{id}")

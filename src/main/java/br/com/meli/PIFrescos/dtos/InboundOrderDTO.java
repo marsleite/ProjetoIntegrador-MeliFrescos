@@ -1,6 +1,5 @@
-package br.com.meli.PIFrescos.models.dto;
+package br.com.meli.PIFrescos.dtos;
 
-import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Section;
 import lombok.AllArgsConstructor;
@@ -23,10 +22,11 @@ public class InboundOrderDTO {
 
     private LocalDate orderDate;
     private Section section;
-    private List<Batch> batchStock;
+    private List<BatchDTO> batchStock;
 
     public static InboundOrder convert(InboundOrderDTO dto) {
-        return new InboundOrder(null, dto.getOrderDate(), dto.getSection(), dto.getBatchStock());
+        return new InboundOrder(null, dto.getOrderDate(), dto.getSection(),
+                BatchDTO.convert(dto.getBatchStock()));
     }
 
 }
