@@ -19,6 +19,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,6 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class InboundOrderControllerTests {
+
+    @MockBean
+    private InboundOrderRepository inboundOrderRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -120,65 +124,70 @@ public class InboundOrderControllerTests {
     }
 
     @Test
+    public void getAllInboundOrders() throws Exception {
+
+        List <InboundOrder> inboundOrders = new  ArrayList<>();
+
+        inboundOrders.add(mockInboundOrder);
+        inboundOrders.add(mockInboundOrder2);
+
+        Mockito.when(inboundOrderRepository.findAll()).thenReturn(inboundOrders);
+
+        mockMvc.perform(get("/fresh-products/inboundorder"))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
     public void createInboundOrder() throws Exception  {
-//        "{\n"
-//          +  "\"orderDate\": \"2022-04-01\", \n"
-//          +  "\"section\": {\n"
-//          +  "\"sectionCode\": 1,\n"
-//          +  "\"warehouse\": {\n"
-//          +  "\"warehouseCode\": 1\n"
-//          +  "}\n"
-//        +"},\n"
-//        +" \"batchStock\":[ \n"
-//        +"    {\n"
-//        +"        \"currentTemperature\": 7.0, \n"
-//        +"        \"minimumTemperature\": 6.0, \n"
-//        +"        \"initialQuantity\": 5, \n"
-//        +"        \"currentQuantity\": 5,\n"
-//        +"        \"manufacturingDate\": \"2022-03-24\", \n"
-//        +"        \"dueDate\": \"2022-04-24\" \n"
-//        +"    }, \n"
-//        +"   {\n"
-//        +"        \"currentTemperature\": 7.0\n",
-//                    "minimumTemperature": 6.0,
-//                    "initialQuantity": 4,
-//                    "currentQuantity": 4,
-//                    "manufacturingDate": "2022-03-24",
-//                    "dueDate": "2022-04-24"
-//            },
-//            {
-//                "productId": 2,
-//                    "currentTemperature": 8.0,
-//                    "minimumTemperature": 6.0,
-//                    "initialQuantity": 6,
-//                    "currentQuantity": 6,
-//                    "manufacturingDate": "2022-03-20",
-//                    "dueDate": "2022-04-20"
-//            },
-//            {
-//                "currentTemperature": 8.0,
-//                    "minimumTemperature": 6.0,
-//                    "initialQuantity": 7,
-//                    "currentQuantity": 7,
-//                    "manufacturingDate": "2022-03-20",
-//                    "dueDate": "2022-04-20"
-//            }
-//    ]
-//        }
-
-        List<Batch> batches = new ArrayList<>();
-        objectMapper.registerModule(new JavaTimeModule());
-        String jsonPayload = objectMapper.writeValueAsString(InboundOrderDTO.builder()
-                .orderDate(LocalDate.now())
-                .section(sectionMock)
-                .batchStock(batches)
-                .build());
-
-        System.out.println(jsonPayload);
+     String payload = "{\n"
+          +  "\"orderDate\": \"2022-04-01\", \n"
+          +  "\"section\": {\n"
+          +  "\"sectionCode\": 1,\n"
+          +  "\"warehouse\": {\n"
+          +  "\"warehouseCode\": 1\n"
+          +  "}\n"
+        +"},\n"
+        +" \"batchStock\":[ \n"
+        +"    {\n"
+        +"        \"currentTemperature\": 7.0, \n"
+        +"        \"minimumTemperature\": 6.0, \n"
+        +"        \"initialQuantity\": 5, \n"
+        +"        \"currentQuantity\": 5,\n"
+        +"        \"manufacturingDate\": \"2022-03-24\", \n"
+        +"        \"dueDate\": \"2022-04-24\" \n"
+        +"    }, \n"
+        +"   {\n"
+        +"        \"currentTemperature\": 7.0,\n"
+        +"         \"minimumTemperature\": 6.0,\n"
+        +"         \"initialQuantity\": 4, \n"
+        +"         \"currentQuantity\": 4, \n"
+        +"        \"manufacturingDate\": \"2022-03-24\", \n"
+        +"       \"dueDate\": \"2022-04-24\" \n"
+        +"   }, \n"
+        +"    { \n"
+        +"       \"productId\": 2, \n"
+        +"       \"currentTemperature\": 8.0,\n"
+        +"       \"minimumTemperature\": 6.0, \n"
+        +"      \"initialQuantity\": 6, \n"
+        +"      \"currentQuantity\": 6, \n"
+        +"       \"manufacturingDate\": \"2022-03-20\", \n"
+        +"      \"dueDate\": \"2022-04-20\" \n"
+        +"    },\n"
+        +"   { \n"
+        +"       \"currentTemperature\": 8.0, \n"
+        +"       \"minimumTemperature\": 6.0, \n"
+        +"       \"initialQuantity\": 7,\n"
+        +"      \"currentQuantity\": 7,\n"
+        +"      \"manufacturingDate\": \"2022-03-20\", \n"
+        +"      \"dueDate\": \"2022-04-20\" \n"
+        +"   \n}"
+        +"    ] \n"
+        +"}\n";
 
         mockMvc.perform(post("/fresh-products/inboundorder")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonPayload)
+                .content(payload)
         )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.orderNumber").value(1));
