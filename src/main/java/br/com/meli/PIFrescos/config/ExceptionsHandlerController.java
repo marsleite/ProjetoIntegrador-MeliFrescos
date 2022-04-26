@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Classe ExceptionsHandlerController para tratar mensagens de erro
  * @author Juliano Alcione de Souza
+ * Refactor: Ana Preis
  */
 
 @RestControllerAdvice
@@ -41,8 +42,14 @@ public class ExceptionsHandlerController {
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({RuntimeException.class, EntityNotFoundException.class})
+    @ExceptionHandler(RuntimeException.class)
     public String handleError(RuntimeException ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String handleErrorNotFound(EntityNotFoundException ex) {
         return ex.getMessage();
     }
 

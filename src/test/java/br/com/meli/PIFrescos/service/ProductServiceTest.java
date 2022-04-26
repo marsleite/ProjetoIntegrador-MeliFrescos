@@ -10,12 +10,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Marcelo Leite
+ * Refactor: Ana Preis
+ *
  * */
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -48,9 +53,21 @@ public class ProductServiceTest {
   void testGetAllProducts() {
     // testar se o método getAllProducts retorna todos os produtos
 
-    Mockito.when(productService.listAllProducts()).thenReturn(products);
+    Mockito.when(productRepository.findAll()).thenReturn(products);
 
-    Assertions.assertEquals(productRepository.findAll(), productService.listAllProducts());
+    Assertions.assertEquals(products, productService.listAllProducts());
+  }
+
+  @Test
+  @DisplayName("Test product list is empty")
+  void testProductListIsEmpty() {
+    // testar se retorna a mensagem se a lista de produtos estiver vazia
+    String message = "Product list is empty";
+    List<Product> emptyList = Collections.emptyList();
+    Mockito.when(productRepository.findAll()).thenReturn(emptyList);
+
+    EntityNotFoundException exception = Assertions.assertThrows(EntityNotFoundException.class, () -> productService.listAllProducts());
+    assertThat(exception.getMessage()).isEqualTo(message);
   }
 
   @Test
