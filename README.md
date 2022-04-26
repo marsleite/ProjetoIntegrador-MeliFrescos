@@ -13,7 +13,7 @@ Este Projeto Integrador se destina a simular uma nova modalidade de armazenament
 ![RQ01](https://user-images.githubusercontent.com/70298438/165368861-83dcc6eb-1f7c-466c-897b-34b4543ee18d.jpg)
 
 
-#### Requisito 01 Homologado:
+#### Requisito 02 Homologado:
 
 ![RQ02](https://user-images.githubusercontent.com/70298438/165368890-e2602f0c-83f0-4b34-957f-ce85284a8ba1.jpg)
 
