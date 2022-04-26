@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author Ana Preis
@@ -28,4 +29,7 @@ public class PurchaseOrder {
     private LocalDate date;
     @NotNull(message = "OrderStatus field can't be empty")
     private OrderStatus orderStatus;
+    @NotNull(message = "ProductsCart list field can't be empty")
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ProductsCart> cartList;
 }
