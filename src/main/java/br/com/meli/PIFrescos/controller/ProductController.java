@@ -48,6 +48,11 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * endpoint para listar os produtos por categoria
+     * @author Julio César Gama
+     */
+
     @GetMapping("/list")
     public ResponseEntity<List<ProductDTO>> getByType(@RequestParam String querytype){
 
