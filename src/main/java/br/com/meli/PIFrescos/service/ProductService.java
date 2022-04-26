@@ -5,6 +5,7 @@ import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class ProductService {
   // verifica se o produto existe no banco de dados e faz a atualização
   public Product updateProduct(Product product) {
     if (!productRepository.findById(product.getProductId()).isPresent()) {
-      throw new RuntimeException("Product not found");
+      throw new EntityNotFoundException("Product not found");
     }
     return productRepository.save(product);
   }
@@ -44,7 +45,7 @@ public class ProductService {
   public void deleteProduct(Integer id){
     Optional<Product> productOptional = productRepository.findById(id);
     if(productOptional.isEmpty()){
-      throw new RuntimeException("Product not found");
+      throw new EntityNotFoundException("Product not found");
     }
 
     productRepository.delete(productOptional.get());
