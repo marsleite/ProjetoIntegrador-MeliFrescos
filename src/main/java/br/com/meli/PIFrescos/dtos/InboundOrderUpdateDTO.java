@@ -1,0 +1,33 @@
+package br.com.meli.PIFrescos.dtos;
+
+import br.com.meli.PIFrescos.models.Batch;
+import br.com.meli.PIFrescos.models.InboundOrder;
+import br.com.meli.PIFrescos.models.Section;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
+
+/**
+ * @author Felipe Myose
+ * Criação do dto
+ */
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class InboundOrderUpdateDTO {
+
+    private LocalDate orderDate;
+    private Section section;
+    private List<BatchDTO> batchStock;
+
+    public static InboundOrder convert(InboundOrderUpdateDTO dto) {
+        return new InboundOrder(null, dto.getOrderDate(), dto.getSection(),
+                BatchDTO.convert(dto.getBatchStock()));
+    }
+
+}
+

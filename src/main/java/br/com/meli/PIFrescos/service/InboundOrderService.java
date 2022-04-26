@@ -4,6 +4,7 @@ import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
+import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import br.com.meli.PIFrescos.service.interfaces.IInboundOrderService;
 import br.com.meli.PIFrescos.service.interfaces.ISectionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class InboundOrderService implements IInboundOrderService {
 
     @Autowired
     InboundOrderRepository inboundOrderRepository;
+
+    @Autowired
+    IBatchService batchService;
 
     @Autowired
     ISectionService sectionService;
@@ -46,13 +50,12 @@ public class InboundOrderService implements IInboundOrderService {
     public InboundOrder save(InboundOrder inboundOrder) {
         inboundOrder = checkProductsFromBatchListAndUpdateValues(inboundOrder);
 
+        // verificar se o setor comporta a quantidade
         Integer inboundOrderSectionCode = inboundOrder.getSection().getSectionCode();
         Integer inboundOrderQuantity = calculateVolume(inboundOrder);
-
-        // verificar a capacidade e atualizá-lo
         sectionService.updateCapacity(inboundOrderSectionCode, inboundOrderQuantity);
 
-        // salvar previamene para ter o id do inbound order - este valor deve entrar na lista de batch
+        // salvar previamente para ter o id do inbound order - este valor deve entrar na lista de batch
         InboundOrder savedInboundOrder = inboundOrderRepository.save(inboundOrder);
         savedInboundOrder.getBatchStock().stream().forEach(batch -> {
             batch.setInboundOrder(savedInboundOrder);
@@ -62,7 +65,8 @@ public class InboundOrderService implements IInboundOrderService {
     }
 
     /**
-     * Atualiza uma entrada existente
+     * Atualiza uma entrada existente. Neste update, será necessário verificar se a entrada é valida,
+     * se é possível adicionar ou não a ordem.
      * @param inboundOrderNumber
      * @param newInboundOrderValues
      * @return inboundOrder
@@ -74,12 +78,29 @@ public class InboundOrderService implements IInboundOrderService {
         if(inboundOrder == null) {
             throw new RuntimeException("Ordem solicitada não existe.");
         }
+        // verificar se os batch existem - se não existir, mandar uma mensagem avisando a criaçao de um novo batch
+        checkIfBatchesExist(newInboundOrderValues);
+        // verificar se os produtos existem
+        newInboundOrderValues = checkProductsFromBatchListAndUpdateValues(newInboundOrderValues);
+        // verificar se o setor comporta a quantidade
+        // se o batch existe, devemos atualizar o valor de acordo com a diferença que acontecer
+        Integer inboundOrderSectionCode = newInboundOrderValues.getSection().getSectionCode();
+        Integer inboundOrderQuantity = calculateVolume(inboundOrder);
+        Integer newInboundOrderQuantity = calculateVolume(newInboundOrderValues);
+        sectionService.updateCapacity(inboundOrderSectionCode, newInboundOrderQuantity - inboundOrderQuantity);
 
+        // atualizar valores para salvar
         inboundOrder.setOrderDate(newInboundOrderValues.getOrderDate());
         inboundOrder.setSection(newInboundOrderValues.getSection());
         inboundOrder.setBatchStock(newInboundOrderValues.getBatchStock());
 
-        return inboundOrderRepository.save(inboundOrder);
+        // salvar previamente para ter o id do inbound order - este valor deve entrar na lista de batch
+        InboundOrder savedInboundOrder = inboundOrderRepository.save(inboundOrder);
+        savedInboundOrder.getBatchStock().stream().forEach(batch -> {
+            batch.setInboundOrder(savedInboundOrder);
+        });
+
+        return inboundOrderRepository.save(savedInboundOrder);
     }
 
     /**
@@ -104,17 +125,25 @@ public class InboundOrderService implements IInboundOrderService {
      * @author Felipe Myose
      */
     private Integer calculateVolume(InboundOrder inboundOrder) {
+        if (inboundOrder.getBatchStock().size() == 0) {
+            return 0;
+        }
         return inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
     }
 
     /**
-     * Verifica se o produto existe. Se sim, preenche corretamente o atributo product de Batch.
+     * Verifica se o produto existe. Se sim, preenche os atributos de product de Batch.
      * Caso o productId não seja encontrado, retornar uma mensagem de erro.
      * @param inboundOrder
-     * @return
+     * @return inboundOrder
+     * @author Felipe Myose
      */
     private InboundOrder checkProductsFromBatchListAndUpdateValues(InboundOrder inboundOrder) {
-        inboundOrder.getBatchStock().stream().forEach(batch -> {
+        // se o inboundOrder estiver vazio
+        if (inboundOrder.getBatchStock().size() == 0) {
+            return inboundOrder;
+        }
+        inboundOrder.getBatchStock().forEach(batch -> {
             Product product = productRepository.findById(batch.getProduct().getProductId()).orElse(null);
             if (product == null) {
                 throw new RuntimeException("Produto não existe.");
@@ -122,5 +151,23 @@ public class InboundOrderService implements IInboundOrderService {
             batch.setProduct(product);
         });
         return inboundOrder;
+    }
+
+    /**
+     * Verifica se o batch de inboundOrder existe
+     * @param inboundOrder
+     * @return
+     */
+
+    private boolean checkIfBatchesExist(InboundOrder inboundOrder) {
+        if (inboundOrder.getBatchStock().size() == 0) {
+            throw new RuntimeException("Batch não existe. Lista de Batch vazia");
+        }
+        inboundOrder.getBatchStock().forEach(batch -> {
+            if(!batchService.checkIfBatchExists(batch)) {
+                System.out.println("Batch não existe. Criando novo batch");
+            }
+        });
+        return true;
     }
 }

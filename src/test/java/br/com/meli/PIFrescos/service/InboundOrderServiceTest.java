@@ -73,17 +73,24 @@ class InboundOrderServiceTest {
 
     @Test
     void updateExistingInboundOrder() {
+        Batch batch3 = new Batch();
+        batch3.setCurrentQuantity(3);
+        batch3.setProduct(new Product());
+        batch3.setBatchNumber(3);
         Integer id = inboundOrder.getOrderNumber();
 
         InboundOrder newInboundOrderValues = new InboundOrder();
         Section newSection = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         newInboundOrderValues.setSection(newSection);
+        newInboundOrderValues.setBatchStock(Arrays.asList(batch1,batch2,batch3));
 
         InboundOrder expectedInboundOrder = inboundOrder;
         expectedInboundOrder.setSection(newSection);
 
-        Mockito.when(inboundOrderRepository.getById(id)).thenReturn(inboundOrder);
-        Mockito.when(inboundOrderRepository.save(any())).thenReturn(expectedInboundOrder);
+        Mockito.when(productRepository.findById(product1.getProductId())).thenReturn(java.util.Optional.ofNullable(product1));
+        Mockito.when(productRepository.findById(product2.getProductId())).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(inboundOrderRepository.getByOrderNumber(id)).thenReturn(inboundOrder);
+        Mockito.when(inboundOrderRepository.save(any())).thenReturn(inboundOrder);
 
         InboundOrder updatedInboundOrder = inboundOrderService.update(id, newInboundOrderValues);
 

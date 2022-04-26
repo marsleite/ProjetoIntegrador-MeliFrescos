@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.controller;
 
+import br.com.meli.PIFrescos.dtos.InboundOrderUpdateDTO;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.controller.dtos.InboundOrderDTO;
@@ -51,12 +52,13 @@ public class InBoundOrderController {
 
     /**
      * Atualiza InboundOrder existente
-     * @author Ana Preis
+     * @author Ana Preis / Felipe Myose
      */
-    @PutMapping("")
-    public ResponseEntity<List<Batch>> putInboundOrders(@RequestBody InboundOrder order){
+    @PutMapping("/{orderNumber}")
+    public ResponseEntity<List<Batch>> putInboundOrders(@RequestBody InboundOrderUpdateDTO orderDTO, @PathVariable Integer orderNumber){
+        InboundOrder order = InboundOrderUpdateDTO.convert(orderDTO);
 
-        InboundOrder savedOrder = service.update(order.getOrderNumber(), order);
+        InboundOrder savedOrder = service.update(orderNumber, order);
 
         return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);
     }
