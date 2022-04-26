@@ -6,6 +6,8 @@ import br.com.meli.PIFrescos.service.interfaces.ISectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 /**
  * @author Ana Preis
@@ -35,18 +37,17 @@ public class SectionService implements ISectionService {
      * Se estiver tudo certo, atualiza o currentCapacity.
      */
     public Integer updateCapacity(Integer sectionCode, Integer quantity){
-        Section section = sectionRepository.findById(sectionCode).get();
-        if (section == null){
-            throw new RuntimeException("A section não existe");
+        Optional<Section> sectionOptional = sectionRepository.findById(sectionCode);
+        if (sectionOptional.isEmpty()){
+            throw new RuntimeException("Invalid section");
         }
-
+        Section section = sectionOptional.get();
         if (section.getCurrentCapacity() + quantity < section.getMaxCapacity()) {
             section.setCurrentCapacity(section.getCurrentCapacity() + quantity);
             return section.getCurrentCapacity();
         }
-        throw new RuntimeException("A capacidade do setor não suporta essa order");
+        throw new RuntimeException("Section max capacity does not support order");
     }
-
     public Boolean sectionAlreadyExists(Integer code){
         return sectionRepository.existsSectionBySectionCode(code);
     }
