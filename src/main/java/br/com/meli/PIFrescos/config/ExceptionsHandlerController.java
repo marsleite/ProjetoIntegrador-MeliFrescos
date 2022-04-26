@@ -43,6 +43,7 @@ public class ExceptionsHandlerController {
         return ex.getMessage();
     }
 
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
     public ModelAndView handleError(HttpServletRequest req, Exception ex) {
 
