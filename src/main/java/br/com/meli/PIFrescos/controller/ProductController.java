@@ -4,6 +4,7 @@ import br.com.meli.PIFrescos.dtos.ProductDTO;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/fresh-products/products/")
+@RequestMapping("/fresh-products")
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -47,4 +48,9 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<List<ProductDTO>> getByType(@RequestParam String querytype){
+
+        return new ResponseEntity(productService.listByType(querytype), HttpStatus.OK);
+    }
 }
