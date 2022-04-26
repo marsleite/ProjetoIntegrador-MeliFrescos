@@ -76,13 +76,12 @@ public class InboundOrderService implements IInboundOrderService {
      */
     @Override
     public InboundOrder update(Integer inboundOrderNumber, InboundOrder newInboundOrderValues) {
-        InboundOrder inboundOrder = inboundOrderRepository.getById(inboundOrderNumber);
+        InboundOrder inboundOrder = inboundOrderRepository.getByOrderNumber(inboundOrderNumber);
 
         if(inboundOrder == null) {
             throw new RuntimeException("Ordem solicitada não existe.");
         }
 
-        inboundOrder.setOrderDate(newInboundOrderValues.getOrderDate());
         inboundOrder.setOrderDate(newInboundOrderValues.getOrderDate());
         inboundOrder.setSection(newInboundOrderValues.getSection());
         inboundOrder.setBatchStock(newInboundOrderValues.getBatchStock());
