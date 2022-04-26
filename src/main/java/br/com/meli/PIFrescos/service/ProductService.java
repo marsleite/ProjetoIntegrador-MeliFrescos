@@ -11,6 +11,8 @@ import java.util.Optional;
 
 /**
  * @author Marcelo Leite/Juliano Alcione de Souza
+ * Refactor: Ana Preis
+ *
  */
 @Service
 public class ProductService {
@@ -18,7 +20,11 @@ public class ProductService {
   private ProductRepository productRepository;
 
   public List<Product> listAllProducts() {
-    return productRepository.findAll();
+    List<Product> productList = productRepository.findAll();
+    if(productList.isEmpty()) {
+      throw new EntityNotFoundException("Product list is empty");
+    }
+    return productList;
   }
 
   // metodo para buscar produto pelo id no banco de dados
