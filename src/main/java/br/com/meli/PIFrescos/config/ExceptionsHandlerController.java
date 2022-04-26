@@ -9,12 +9,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Classe ExceptionsHandlerController para tratar mensagens de erro
+ * @author Juliano Alcione de Souza
+ */
 
 @RestControllerAdvice
 public class ExceptionsHandlerController {

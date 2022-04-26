@@ -1,5 +1,9 @@
 package br.com.meli.PIFrescos.config;
 
+/**
+ * Classe ErroDeFormularioDto para formatar mensagem de erro
+ * @author Juliano Alcione de Souza
+ */
 public class ErroDeFormularioDto {
 	
 	private String campo;
