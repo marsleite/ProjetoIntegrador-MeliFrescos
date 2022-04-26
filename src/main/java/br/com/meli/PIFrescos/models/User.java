@@ -3,7 +3,6 @@ package br.com.meli.PIFrescos.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.tomcat.jni.Address;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -37,7 +36,9 @@ public class User {
   @Size(min = 6, message = "O password deve conter no mínimo 6 caracteres.")
   private String password;
 
-  private String address;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "address_id", referencedColumnName = "id")
+  private Address address;
 
   @Enumerated(EnumType.STRING)
   private UserRole role;
