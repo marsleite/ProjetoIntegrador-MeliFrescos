@@ -166,7 +166,7 @@ public class InboundOrderControllerTests {
 //    ]
 //        }
 
-
+        List<Batch> batches = new ArrayList<>();
         objectMapper.registerModule(new JavaTimeModule());
         String jsonPayload = objectMapper.writeValueAsString(InboundOrderDTO.builder()
                 .orderDate(LocalDate.now())
