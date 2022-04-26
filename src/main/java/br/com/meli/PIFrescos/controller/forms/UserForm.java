@@ -1,9 +1,8 @@
-package br.com.meli.PIFrescos.models;
+package br.com.meli.PIFrescos.controller.forms;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.apache.tomcat.jni.Address;
+import br.com.meli.PIFrescos.models.User;
+import br.com.meli.PIFrescos.models.UserRole;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -11,20 +10,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * @author Marcelo Leite
+ * @author Juliano Alcione de Souza
  * */
 
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "users")
-public class User {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
+@Getter
+@Setter
+public class UserForm {
   @NotNull(message = "O fullname não pode ser nulo.")
   @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 30 caracteres.")
   private String fullname;
@@ -37,6 +28,10 @@ public class User {
   @Size(min = 6, message = "O password deve conter no mínimo 6 caracteres.")
   private String password;
 
-  @Enumerated(EnumType.STRING)
+  @NotNull(message = "O role não pode ser nulo.")
   private UserRole role;
+
+  public User convertToEntity(){
+    return new User(null, fullname, email, password, role);
+  }
 }
