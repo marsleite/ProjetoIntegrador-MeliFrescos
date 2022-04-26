@@ -26,7 +26,7 @@ public class User {
   private Integer id;
 
   @NotNull(message = "O fullname não pode ser nulo.")
-  @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 10 caracteres.")
+  @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 30 caracteres.")
   private String fullname;
 
   @NotNull(message = "O email não pode ser nulo.")
