@@ -30,7 +30,7 @@ public class User {
   private String username;
 
   @NotNull(message = "O email não pode ser nulo.")
-  @Email(message = "O Email deve ser válido")
+  @Email(message = "Email deve ser válido")
   private String email;
 
   @NotNull(message = "O password não pode ser nulo.")
