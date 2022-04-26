@@ -27,13 +27,13 @@ public class ExceptionsHandlerController {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public List<ErroDeFormularioDto> formsError(MethodArgumentNotValidException exception) {
-        List<ErroDeFormularioDto> dto = new ArrayList<>();
+    public List<ErrorFormsDto> formsError(MethodArgumentNotValidException exception) {
+        List<ErrorFormsDto> dto = new ArrayList<>();
 
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         fieldErrors.forEach(e -> {
             String mensagem = messageSource.getMessage(e, LocaleContextHolder.getLocale());
-            ErroDeFormularioDto erro = new ErroDeFormularioDto(e.getField(), mensagem);
+            ErrorFormsDto erro = new ErrorFormsDto(e.getField(), mensagem);
             dto.add(erro);
         });
 
