@@ -3,9 +3,10 @@ package br.com.meli.PIFrescos.integration;
 
 import br.com.meli.PIFrescos.controller.InBoundOrderController;
 import br.com.meli.PIFrescos.models.*;
-import br.com.meli.PIFrescos.models.dto.InboundOrderDTO;
 import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
+import br.com.meli.PIFrescos.repository.ProductRepository;
+import br.com.meli.PIFrescos.repository.SectionRepository;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +48,12 @@ public class InboundOrderControllerTests {
     @MockBean
     private InboundOrderRepository inboundOrderRepository;
 
+    @MockBean
+    private ProductRepository productRepository;
+
+    @MockBean
+    private SectionRepository sectionRepository;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -55,6 +62,7 @@ public class InboundOrderControllerTests {
     Warehouse warehouseMock = new Warehouse();
     Section sectionMock = new Section();
     Product mockProduct = new Product();
+    Product mockProduct2 = new Product();
     InboundOrder mockInboundOrder = new InboundOrder();
     InboundOrder mockInboundOrder2 = new InboundOrder();
     @BeforeEach
@@ -66,6 +74,11 @@ public class InboundOrderControllerTests {
         mockProduct.setProductType(StorageType.FRESH);
         mockProduct.setProductName("Uva");
         mockProduct.setProductDescription("Mock description");
+
+        mockProduct2.setProductId(2);
+        mockProduct2.setProductType(StorageType.FRESH);
+        mockProduct2.setProductName("Maça");
+        mockProduct2.setProductDescription("Mock description");
 
         sectionMock.setSectionCode(1);
         sectionMock.setStorageType(StorageType.FRESH);
@@ -140,6 +153,12 @@ public class InboundOrderControllerTests {
 
     @Test
     public void createInboundOrder() throws Exception  {
+
+     Mockito.when(productRepository.save(mockProduct)).thenReturn(mockProduct);
+     Mockito.when(productRepository.save(mockProduct2)).thenReturn(mockProduct2);
+
+     Mockito.when(sectionRepository.save(sectionMock)).thenReturn(sectionMock);
+
      String payload = "{\n"
           +  "\"orderDate\": \"2022-04-01\", \n"
           +  "\"section\": {\n"
@@ -150,6 +169,7 @@ public class InboundOrderControllerTests {
         +"},\n"
         +" \"batchStock\":[ \n"
         +"    {\n"
+        +"        \"productId\": 1, \n"
         +"        \"currentTemperature\": 7.0, \n"
         +"        \"minimumTemperature\": 6.0, \n"
         +"        \"initialQuantity\": 5, \n"
@@ -158,6 +178,7 @@ public class InboundOrderControllerTests {
         +"        \"dueDate\": \"2022-04-24\" \n"
         +"    }, \n"
         +"   {\n"
+        +"        \"productId\": 1, \n"
         +"        \"currentTemperature\": 7.0,\n"
         +"         \"minimumTemperature\": 6.0,\n"
         +"         \"initialQuantity\": 4, \n"
@@ -175,6 +196,7 @@ public class InboundOrderControllerTests {
         +"      \"dueDate\": \"2022-04-20\" \n"
         +"    },\n"
         +"   { \n"
+        +"       \"productId\": 2, \n"
         +"       \"currentTemperature\": 8.0, \n"
         +"       \"minimumTemperature\": 6.0, \n"
         +"       \"initialQuantity\": 7,\n"
