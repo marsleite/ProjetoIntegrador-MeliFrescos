@@ -1,7 +1,7 @@
 package br.com.meli.PIFrescos;
 
-import br.com.meli.PIFrescos.dtos.BatchDTO;
-import br.com.meli.PIFrescos.dtos.InboundOrderDTO;
+import br.com.meli.PIFrescos.controller.dtos.BatchDTO;
+import br.com.meli.PIFrescos.controller.dtos.InboundOrderDTO;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Product;

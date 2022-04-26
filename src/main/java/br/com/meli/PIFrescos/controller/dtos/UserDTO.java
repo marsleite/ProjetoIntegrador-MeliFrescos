@@ -1,11 +1,13 @@
-package br.com.meli.PIFrescos.dtos;
+package br.com.meli.PIFrescos.controller.dtos;
 
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.models.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.tomcat.jni.Address;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Marcelo Leite
@@ -15,16 +17,19 @@ import org.apache.tomcat.jni.Address;
 @AllArgsConstructor
 public class UserDTO {
   private Integer userId;
-  private String username;
+  private String fullname;
   private String email;
   private String address;
   private UserRole role;
 
   public UserDTO(User user) {
-    this.userId = user.getUserId();
-    this.username = user.getUsername();
+    this.userId = user.getId();
+    this.fullname = user.getFullname();
     this.email = user.getEmail();
-    this.address = user.getAddress();
     this.role = user.getRole();
+  }
+
+  public static List<UserDTO> convertList(List<User> users){
+    return users.stream().map(UserDTO::new).collect(Collectors.toList());
   }
 }
