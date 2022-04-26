@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.controller.forms;
 
+import br.com.meli.PIFrescos.models.Address;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.models.UserRole;
 import lombok.*;
@@ -28,10 +29,13 @@ public class UserForm {
   @Size(min = 6, message = "O password deve conter no mínimo 6 caracteres.")
   private String password;
 
+  @NotNull(message = "O address não pode ser nulo.")
+  private Address address;
+
   @NotNull(message = "O role não pode ser nulo.")
   private UserRole role;
 
   public User convertToEntity(){
-    return new User(null, fullname, email, password, role);
+    return new User(null, fullname, email, password, address, role);
   }
 }
