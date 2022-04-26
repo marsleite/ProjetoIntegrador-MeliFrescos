@@ -1,6 +1,6 @@
 package br.com.meli.PIFrescos.dtos;
 
-import br.com.meli.PIFrescos.models.Batch;
+import br.com.meli.PIFrescos.controller.dtos.BatchDTO;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Section;
 import lombok.AllArgsConstructor;

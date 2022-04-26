@@ -2,12 +2,14 @@ package br.com.meli.PIFrescos;
 
 import br.com.meli.PIFrescos.controller.dtos.BatchDTO;
 import br.com.meli.PIFrescos.controller.dtos.InboundOrderDTO;
+import br.com.meli.PIFrescos.dtos.InboundOrderUpdateDTO;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.models.Warehouse;
+import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import br.com.meli.PIFrescos.repository.SectionRepository;
@@ -54,6 +56,8 @@ public class InBoundOrderIT {
     @MockBean
     private ProductRepository productRepository;
     @MockBean
+    private BatchRepository batchRepository;
+    @MockBean
     SectionRepository sectionRepository;
 
     @Autowired
@@ -72,8 +76,10 @@ public class InBoundOrderIT {
 
     @BeforeEach
     public void setup() {
+        batch1.setBatchNumber(1);
         batch1.setCurrentQuantity(1);
         batch1.setProduct(product1);
+        batch2.setBatchNumber(2);
         batch2.setCurrentQuantity(1);
         batch2.setProduct(product2);
         inboundOrder1.setOrderNumber(1);
@@ -98,7 +104,7 @@ public class InBoundOrderIT {
         TypeReference<List<InboundOrder>> typeReference = new TypeReference<List<InboundOrder>>() {};
         List<InboundOrder> inboundOrderResponse = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
-        assertEquals(inboundOrders, inboundOrderResponse);
+        assertEquals(inboundOrders.get(0).getOrderNumber(), inboundOrderResponse.get(0).getOrderNumber());
     }
 
     @Test
@@ -132,17 +138,38 @@ public class InBoundOrderIT {
 
     @Test
     public void putBatchStockInInboundOrder() throws Exception {
-        InboundOrder newValues = new InboundOrder();
-        newValues.setOrderNumber(inboundOrder1.getOrderNumber());
-        newValues.setSection(section2);
-        newValues.setBatchStock(Arrays.asList(batch1, batch2));
+        // dtos
+        InboundOrderUpdateDTO newValues = new InboundOrderUpdateDTO();
+        BatchDTO batchDTO1 = new BatchDTO();
+        BatchDTO batchDTO2 = new BatchDTO();
+        batchDTO1.setBatchNumber(1);
+        batchDTO1.setProductId(1);
+        batchDTO1.setCurrentQuantity(1);
+        batchDTO1.setInitialQuantity(1);
+        batchDTO2.setBatchNumber(2);
+        batchDTO2.setProductId(2);
+        batchDTO2.setCurrentQuantity(1);
+        batchDTO2.setInitialQuantity(1);
+        newValues.setSection(section1);
+        newValues.setBatchStock(Arrays.asList(batchDTO1, batchDTO2));
+        // after saving values
+        InboundOrder inboundOrderAfterSave = new InboundOrder();
+        inboundOrderAfterSave.setOrderNumber(1);
+        inboundOrderAfterSave.setSection(section1);
+        batch1.setInboundOrder(inboundOrderAfterSave);
+        batch2.setInboundOrder(inboundOrderAfterSave);
+        inboundOrderAfterSave.setBatchStock(Arrays.asList(batch1, batch2));
 
         String inboundOrderString = objectMapper.writeValueAsString(newValues);
 
         Mockito.when(inboundOrderRepository.getById(1)).thenReturn(inboundOrder1);
-        Mockito.when(inboundOrderRepository.save(any())).thenAnswer(invocation -> newValues);
+        Mockito.when(inboundOrderRepository.save(any())).thenAnswer(invocation -> inboundOrderAfterSave);
+        Mockito.when(inboundOrderRepository.getByOrderNumber(1)).thenReturn(inboundOrder1);
+        Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
+        Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(sectionRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(section1));
 
-        MvcResult result = mockMvc.perform(put("/fresh-products/inboundorder")
+        MvcResult result = mockMvc.perform(put("/fresh-products/inboundorder/1")
                 .contentType("application/json").content(inboundOrderString))
                 .andExpect(status().isCreated())
                 .andReturn();
@@ -151,6 +178,9 @@ public class InBoundOrderIT {
         List<Batch> inboundOrderResponse = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         List<Batch> expected = Arrays.asList(batch1, batch2);
-        assertEquals(expected, inboundOrderResponse);
+        assertEquals(expected.size(), inboundOrderResponse.size());
+        assertEquals(expected.get(0).getProduct(), inboundOrderResponse.get(0).getProduct());
+        assertEquals(expected.get(1).getProduct(), inboundOrderResponse.get(1).getProduct());
+        assertEquals(expected.get(0).getBatchNumber(), inboundOrderResponse.get(0).getBatchNumber());
     }
 }

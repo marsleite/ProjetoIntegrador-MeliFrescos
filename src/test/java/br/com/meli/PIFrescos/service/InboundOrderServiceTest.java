@@ -6,6 +6,7 @@ import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.models.Warehouse;
+import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,12 @@ class InboundOrderServiceTest {
 
     @Mock
     private InboundOrderRepository inboundOrderRepository;
+
+    @Mock
+    private BatchRepository batchRepository;
+
+    @Mock
+    private BatchServiceImpl batchService;
 
     @Mock
     private SectionService sectionService;
@@ -91,6 +98,7 @@ class InboundOrderServiceTest {
         Mockito.when(productRepository.findById(product2.getProductId())).thenReturn(java.util.Optional.ofNullable(product2));
         Mockito.when(inboundOrderRepository.getByOrderNumber(id)).thenReturn(inboundOrder);
         Mockito.when(inboundOrderRepository.save(any())).thenReturn(inboundOrder);
+        //Mockito.when(batchRepository.existsBatchByBatchNumber(batch1.getBatchNumber())).thenReturn(true);
 
         InboundOrder updatedInboundOrder = inboundOrderService.update(id, newInboundOrderValues);
 
