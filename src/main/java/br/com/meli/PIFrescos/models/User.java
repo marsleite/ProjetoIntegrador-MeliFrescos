@@ -37,5 +37,8 @@ public class User {
   @Size(min = 6, message = "O password deve conter no mínimo 6 caracteres.")
   private String password;
 
-  private Address address;
+  private String address;
+
+  @Enumerated(EnumType.STRING)
+  private UserRole role;
 }
