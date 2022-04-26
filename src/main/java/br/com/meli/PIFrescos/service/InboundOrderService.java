@@ -44,20 +44,13 @@ public class InboundOrderService implements IInboundOrderService {
      */
     @Override
     public InboundOrder save(InboundOrder inboundOrder) {
+        inboundOrder = checkProductsFromBatchListAndUpdateValues(inboundOrder);
 
-        // check if product from batch exists
-        // then update the batch details
-        inboundOrder.getBatchStock().stream().forEach(batch -> {
-            Product product = productRepository.findById(batch.getProduct().getProductId()).orElse(null);
-            if (product == null) {
-                throw new RuntimeException("Produto não existe.");
-            }
-            batch.setProduct(product);
-        });
+        Integer inboundOrderSectionCode = inboundOrder.getSection().getSectionCode();
+        Integer inboundOrderQuantity = calculateVolume(inboundOrder);
 
         // verificar a capacidade e atualizá-lo
-        sectionService.updateCapacity(inboundOrder.getSection().getSectionCode(),
-                calculateVolume(inboundOrder));
+        sectionService.updateCapacity(inboundOrderSectionCode, inboundOrderQuantity);
 
         // salvar previamene para ter o id do inbound order - este valor deve entrar na lista de batch
         InboundOrder savedInboundOrder = inboundOrderRepository.save(inboundOrder);
@@ -112,5 +105,22 @@ public class InboundOrderService implements IInboundOrderService {
      */
     private Integer calculateVolume(InboundOrder inboundOrder) {
         return inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
+    }
+
+    /**
+     * Verifica se o produto existe. Se sim, preenche corretamente o atributo product de Batch.
+     * Caso o productId não seja encontrado, retornar uma mensagem de erro.
+     * @param inboundOrder
+     * @return
+     */
+    private InboundOrder checkProductsFromBatchListAndUpdateValues(InboundOrder inboundOrder) {
+        inboundOrder.getBatchStock().stream().forEach(batch -> {
+            Product product = productRepository.findById(batch.getProduct().getProductId()).orElse(null);
+            if (product == null) {
+                throw new RuntimeException("Produto não existe.");
+            }
+            batch.setProduct(product);
+        });
+        return inboundOrder;
     }
 }
