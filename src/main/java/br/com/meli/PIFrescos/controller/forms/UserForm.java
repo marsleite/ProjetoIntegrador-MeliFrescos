@@ -28,6 +28,7 @@ public class UserForm {
   @Size(min = 6, message = "O password deve conter no mínimo 6 caracteres.")
   private String password;
 
+  @NotNull(message = "O rule não pode ser nulo.")
   private UserRole role;
 
   public User convertToEntity(){
