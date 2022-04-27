@@ -1,9 +1,11 @@
 package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.controller.dtos.ProductDTO;
+import br.com.meli.PIFrescos.controller.forms.ProductForm;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +19,14 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/fresh-products/products")
+@RequestMapping("/fresh-products")
 public class ProductController {
     @Autowired
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductDTO> create(@RequestBody @Valid ProductDTO dto){
-        Product product = this.productService.createProduct(dto.convert());
+    public ResponseEntity<ProductDTO> create(@RequestBody @Valid ProductForm form){
+        Product product = this.productService.createProduct(form.convert());
         return ResponseEntity.ok(new ProductDTO(product));
     }
 
@@ -35,9 +37,9 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody @Valid ProductDTO dto){
-        dto.setProductId(id);
-        Product product = this.productService.updateProduct(dto.convert());
+    public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody @Valid ProductForm form){
+        form.setProductId(id);
+        Product product = this.productService.updateProduct(form.convert());
         return ResponseEntity.ok(new ProductDTO(product));
     }
 
@@ -47,4 +49,14 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * endpoint para listar os produtos por categoria
+     * @author Julio César Gama
+     */
+
+    @GetMapping("/list")
+    public ResponseEntity<List<ProductDTO>> getByType(@RequestParam String querytype){
+
+        return new ResponseEntity(productService.listByType(querytype), HttpStatus.OK);
+    }
 }

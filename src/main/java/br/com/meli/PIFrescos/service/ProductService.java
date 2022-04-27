@@ -4,10 +4,13 @@ import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Marcelo Leite/Juliano Alcione de Souza
@@ -30,6 +33,18 @@ public class ProductService {
   // metodo para buscar produto pelo id no banco de dados
   public Product findProductById(Integer id) {
     return productRepository.findById(id).get();
+  }
+
+  public List<Product> listByType(String type){
+
+    List<Product> products = productRepository.findAll().stream()
+            .filter(product -> Objects.equals(product.getProductType().getStorageType(),type.toUpperCase()))
+            .collect(Collectors.toList());
+
+    if(products.isEmpty()){
+      throw new EntityNotFoundException("No products found");
+    }
+      return products;
   }
 
   // Cria um novo produto, mas antes verifica se já existe um produto com o mesmo nome
