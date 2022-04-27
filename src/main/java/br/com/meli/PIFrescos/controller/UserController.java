@@ -36,7 +36,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@RequestBody @Valid UserForm userForm,
                                           @PathVariable(name = "id") Integer id) {
-        User user = this.userService.update(id, userForm.convertToEntity());
+        User user = this.userService.update(id, userForm.convertToEntity(profileRepository));
         return ResponseEntity.ok(new UserDTO(user));
     }
 
