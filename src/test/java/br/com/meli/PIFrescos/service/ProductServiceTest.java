@@ -35,7 +35,7 @@ public class ProductServiceTest {
   List<Product> products = new ArrayList<>();
   Product product1 = new Product(1, "Coca-Cola", StorageType.REFRIGERATED, "Refrigerante");
   Product product2 = new Product(2, "Carne", StorageType.FROZEN, "Proteína Animal");
-  Product product3 = new Product(3, "Manga", StorageType.FRESH, "Fruta");
+  Product product3 = new Product(3, "Manga", StorageType.REFRIGERATED, "Fruta");
   Product product4 = new Product();
   @BeforeEach
   void setUp() {
@@ -108,12 +108,11 @@ public class ProductServiceTest {
   @DisplayName("Test create product already exists return exception")
   void testCreateProductAlreadyExists() {
     // testar se o método createProduct cria um produto e retorna uma exceção
+    Mockito.when(productRepository.findByProductName(product1.getProductName()))
+            .thenReturn(product1);
 
-    Product product = new Product(1, "Coca-Cola", StorageType.REFRIGERATED, "Refrigerante");
-
-    Mockito.when(productService.createProduct(product)).thenThrow(new RuntimeException("Product already exists"));
-
-    Assertions.assertThrows(RuntimeException.class, () -> productService.createProduct(product));
+    RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> productService.createProduct(product1));
+    assertTrue(runtimeException.getMessage().contains("Product already exists"));
   }
 
   @Test
@@ -150,5 +149,25 @@ public class ProductServiceTest {
   void testDeleteProductNotFound() {
     RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> productService.deleteProduct(product4.getProductId()));
     assertTrue(runtimeException.getMessage().contains("Product not found"));
+  }
+
+  @Test
+  @DisplayName("Test list by type")
+  void testListByType() {
+    String type = "FF";
+    Mockito.when(productRepository.findAll()).thenReturn(products);
+    List<Product> listBy = new ArrayList<>();
+    listBy.add(products.get(1));
+    assertEquals(listBy, productService.listByType(type));
+  }
+
+  @Test
+  @DisplayName("Test list by type not found")
+  void testListByTypeNotFound() {
+    String type1 = "FS";
+    Mockito.when(productRepository.findAll()).thenReturn(products);
+
+    RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> productService.listByType(type1));
+    assertTrue(runtimeException.getMessage().contains("No products found"));
   }
 }
