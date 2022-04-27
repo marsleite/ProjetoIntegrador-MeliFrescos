@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface InboundOrderRepository extends JpaRepository<InboundOrder, Integer> {
+    InboundOrder getByOrderNumber(Integer inboundOrderNumber);
 }

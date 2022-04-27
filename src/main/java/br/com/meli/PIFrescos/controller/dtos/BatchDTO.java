@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Builder
 public class BatchDTO {
 
+  private Integer batchNumber;
   private Float currentTemperature;
   private Float minimumTemperature;
   private Integer initialQuantity;
@@ -31,6 +32,7 @@ public class BatchDTO {
 
   public static Batch convert(BatchDTO dto) {
     return Batch.builder()
+            .batchNumber(dto.getBatchNumber())
             .currentTemperature(dto.getCurrentTemperature())
             .minimumTemperature(dto.getMinimumTemperature())
             .initialQuantity(dto.getInitialQuantity())

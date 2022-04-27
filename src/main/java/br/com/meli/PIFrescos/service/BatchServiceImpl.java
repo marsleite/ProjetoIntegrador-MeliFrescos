@@ -35,4 +35,13 @@ public class BatchServiceImpl implements IBatchService {
         return this.batchRepository.findBatchesByProduct_ProductId(productId);
     }
 
+    /**
+     * @param batch
+     * @return boolean
+     */
+    @Override
+    public boolean checkIfBatchExists(Batch batch) {
+        return batchRepository.existsBatchByBatchNumber(batch.getBatchNumber());
+    }
+
 }

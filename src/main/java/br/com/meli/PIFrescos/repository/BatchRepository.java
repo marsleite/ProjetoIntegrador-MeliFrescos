@@ -12,4 +12,6 @@ import java.util.List;
 @Repository
 public interface BatchRepository extends JpaRepository<Batch, Integer> {
     List<Batch> findBatchesByProduct_ProductId(Integer productId);
+
+    boolean existsBatchByBatchNumber(Integer batchNumber);
 }

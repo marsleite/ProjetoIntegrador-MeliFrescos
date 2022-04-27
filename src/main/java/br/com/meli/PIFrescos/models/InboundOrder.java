@@ -1,9 +1,9 @@
 package br.com.meli.PIFrescos.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,9 +17,10 @@ import java.util.List;
  */
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class InboundOrder {
 
     @Id
