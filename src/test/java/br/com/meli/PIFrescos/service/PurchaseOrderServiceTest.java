@@ -1,6 +1,8 @@
 package br.com.meli.PIFrescos.service;
 
+import br.com.meli.PIFrescos.config.handler.ProductCartException;
 import br.com.meli.PIFrescos.models.*;
+import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,11 +37,17 @@ public class PurchaseOrderServiceTest {
     @Mock
     PurchaseOrderRepository purchaseOrderRepository;
 
+    @Mock
+    BatchRepository batchRepository;
+
     @InjectMocks
     PurchaseOrderService purchaseOrderService;
 
     private Product product1 = new Product();
     private PurchaseOrder purchaseOrder = new PurchaseOrder();
+    private Batch mockBatch1 = new Batch();
+    private Batch mockBatch2 = new Batch();
+    private Batch mockBatch3 = new Batch();
     private List<ProductsCart> productsCartList = new ArrayList<>();
     private ProductsCart productsCart1 = new ProductsCart();
     private ProductsCart productsCart2 = new ProductsCart();
@@ -52,12 +60,30 @@ public class PurchaseOrderServiceTest {
         product1.setProductType(FRESH);
         product1.setProductDescription("descriptionBanana");
 
+        mockBatch1 = Batch.builder()
+                .batchNumber(1)
+                .product(product1)
+                .currentQuantity(10)
+                .build();
+
+        mockBatch2 = Batch.builder()
+                .batchNumber(2)
+                .product(product1)
+                .currentQuantity(10)
+                .build();
+
+        mockBatch3 = Batch.builder()
+                .batchNumber(3)
+                .product(product1)
+                .currentQuantity(0)
+                .build();
+
         productsCart1.setId(1);
-        productsCart1.setBatch(new Batch());
+        productsCart1.setBatch(mockBatch1);
         productsCart1.setQuantity(5);
 
         productsCart2.setId(2);
-        productsCart2.setBatch(new Batch());
+        productsCart2.setBatch(mockBatch2);
         productsCart2.setQuantity(10);
 
         productsCartList = Arrays.asList(productsCart1, productsCart2);
@@ -75,10 +101,23 @@ public class PurchaseOrderServiceTest {
     void shouldSavePurchaseOrder(){
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
         Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
+        Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
 
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
+    }
+
+    @Test
+    void shouldNotValidatePurchaseOrder(){
+        String message = "Insuficient quantity of product on batch";
+        productsCart1.setBatch(mockBatch3);
+        Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
+        Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+
+        ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
+
+        assertEquals(exception.getErrorFormsDtoList().size(),1);
     }
 
     @Test

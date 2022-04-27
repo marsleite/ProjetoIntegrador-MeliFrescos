@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.config;
 
+import br.com.meli.PIFrescos.config.handler.ProductCartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -59,6 +60,16 @@ public class ExceptionsHandlerController {
                 .build();
 
         return new ResponseEntity<>(exceptionDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ProductCartException.class)
+    public ResponseEntity<ExceptionDTO> handleProductError(ProductCartException ex, HttpServletRequest request) {
+        ExceptionDTO exceptionDTO = ExceptionDTO.builder()
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+        return new ResponseEntity<>(exceptionDTO, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
