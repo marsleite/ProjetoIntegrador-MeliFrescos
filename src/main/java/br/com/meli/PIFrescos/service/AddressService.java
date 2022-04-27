@@ -32,14 +32,13 @@ public class AddressService {
     return addressRepository.save(address);
   }
 
-  public Object deleteAddress(Integer id){
+  public void deleteAddress(Integer id){
     Optional<Address> addressOptional = addressRepository.findById(id);
     if(addressOptional.isEmpty()){
       throw new EntityNotFoundException("Address not found");
     }
 
     addressRepository.delete(addressOptional.get());
-    return null;
   }
 
 }

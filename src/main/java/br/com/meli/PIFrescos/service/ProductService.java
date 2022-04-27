@@ -4,7 +4,6 @@ import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
