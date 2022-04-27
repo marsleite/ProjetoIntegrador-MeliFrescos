@@ -12,10 +12,15 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 /**
@@ -122,6 +127,22 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         purchaseOrderRepository.deleteById(id);
 
         return purchaseOrderRepository.save(purchase);
+    }
+
+    /**
+     * Calcula o valor total dos produtos no carrinho de uma compra
+     * @return BigDecimal
+     * @author Julio César Gama
+     * @author Felipe Myose
+     * @author Antonio Hugo
+     */
+    public BigDecimal calculateTotalPrice(PurchaseOrder order){
+
+        double totalPrice = order.getCartList()
+                .stream().mapToDouble(productsCart ->  productsCart.getBatch().getUnitPrice().doubleValue() * productsCart.getQuantity()
+          ).sum();
+
+        return BigDecimal.valueOf(totalPrice);
     }
 
 }
