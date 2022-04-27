@@ -1,7 +1,6 @@
 package br.com.meli.PIFrescos.service;
 
-import br.com.meli.PIFrescos.models.OrderStatus;
-import br.com.meli.PIFrescos.models.PurchaseOrder;
+import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -115,4 +115,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return BigDecimal.valueOf(totalPrice);
     }
 
+    /**
+     * Busca todos os produtos do pedido.
+     * @param orderId id do pedido
+     * @return  List<Product>  lista de produtos do pedido
+     * @author Antonio Hugo
+     */
+    public List<Product> findProductsByOrderId(Integer orderId) {
+
+        return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
+    }
 }
