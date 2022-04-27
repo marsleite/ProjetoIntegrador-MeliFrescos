@@ -48,6 +48,7 @@ public class ProductControllerIT {
             + " \"productDescription\": \"queijo do tipo Mussarela\""
             + "}";
 
+
     @BeforeEach
     public void setUp() {
         mockProduct.setProductId(1);
@@ -65,7 +66,7 @@ public class ProductControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Valida se será retornado todos os produtos
+     * Este teste espera ser retornado todos os produtos.
      */
     @Test
     public void shouldReturnAllProducts() throws Exception {
@@ -83,7 +84,7 @@ public class ProductControllerIT {
     }
     /**
      * @author Antonio Hugo
-     * Valida a criação do um produto
+     * Este teste espera criar do um produto.
      */
 
     @Test
@@ -102,7 +103,7 @@ public class ProductControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Valida a criação a atualizacao um produto
+     * Este teste espera que seja atualizado um produto existente.
      */
 
     @Test
@@ -128,7 +129,7 @@ public class ProductControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Valida se o produto será removido
+     * Este teste espera que produto será removido.
      */
     @Test
     public void shouldDeleteProductById() throws Exception {
@@ -145,13 +146,80 @@ public class ProductControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Valida se será retornado 404 quando a URI estiver errada
+     * Este teste espera ser retornado 404 quando a URI estiver incorreta.
      */
     @Test
-    public void shouldStatusCode404NotFound() throws Exception {
+    public void shouldStatusCode404NotFoundWhenPathNotExits() throws Exception {
 
         mockMvc.perform(get("/not_exists"))
                 .andExpect(status().isNotFound())
                 .andReturn();
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado 404 quando a lista de produto estiver vazia.
+     */
+    @Test
+    public void shouldReturnStatusCode404NotFoundWhenProductListIsEmpty() throws Exception {
+
+        List<Product> products = new ArrayList<>();
+
+        Mockito.when(productRepository.findAll()).thenReturn(products);
+
+        mockMvc.perform(get("/fresh-products/products/"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Product list is empty"))
+                .andReturn();
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado 404 quando o id do produto não for encontrado.
+     */
+    @Test
+    public void shouldReturnStatusCode404NotFoundWhenProductDoesNotExist() throws Exception {
+
+        mockMvc.perform(delete("/fresh-products/products/100"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Product not found"));
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado 400, quando o nome do produto enviado estiver vazio.
+     */
+    @Test
+    public void shouldReturnStatusCode400BadRequestWhenProductNameIsEmpty() throws Exception {
+
+        String payloadInvalid = "{ \n"
+                + " \"productName\": \"\","
+                + " \"productType\": \"FRESH\","
+                + " \"productDescription\": \"queijo do tipo Mussarela\""
+                + "}";
+
+        mockMvc.perform(post("/fresh-products/products/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadInvalid))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado 400 quando tipo do produto for inválido.
+     */
+    @Test
+    public void shouldReturnStatusCode400BadRequestWhenProductTypeIsInvalid() throws Exception {
+
+        String payloadInvalid = "{ \n"
+                + " \"productName\": \"Queijo Brie\","
+                + " \"productType\": \"ANY\","
+                + " \"productDescription\": \"queijo francese\""
+                + "}";
+
+        mockMvc.perform(post("/fresh-products/products/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadInvalid))
+                .andExpect(status().isBadRequest());
     }
 }
