@@ -1,6 +1,7 @@
 package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.controller.dtos.ProductDTO;
+import br.com.meli.PIFrescos.controller.forms.ProductForm;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductDTO> create(@RequestBody @Valid ProductDTO dto){
-        Product product = this.productService.createProduct(dto.convert());
+    public ResponseEntity<ProductDTO> create(@RequestBody @Valid ProductForm form){
+        Product product = this.productService.createProduct(form.convert());
         return ResponseEntity.ok(new ProductDTO(product));
     }
 
@@ -35,9 +36,9 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody @Valid ProductDTO dto){
-        dto.setProductId(id);
-        Product product = this.productService.updateProduct(dto.convert());
+    public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody @Valid ProductForm form){
+        form.setProductId(id);
+        Product product = this.productService.updateProduct(form.convert());
         return ResponseEntity.ok(new ProductDTO(product));
     }
 
