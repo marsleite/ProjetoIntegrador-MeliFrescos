@@ -1,6 +1,6 @@
 package br.com.meli.PIFrescos;
 
-import br.com.meli.PIFrescos.controller.dtos.ProductDTO;
+import br.com.meli.PIFrescos.controller.forms.ProductForm;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.repository.ProductRepository;
@@ -41,6 +41,7 @@ public class ProductControllerIT {
 
     Product mockProduct = new Product();
     Product mockProduct2 = new Product();
+    Product mockProduct3 = new Product();
 
     String payload = "{ \n"
             + " \"productName\": \"Queijo prato\","
@@ -56,12 +57,15 @@ public class ProductControllerIT {
         mockProduct.setProductName("Uva");
         mockProduct.setProductDescription("Mock description");
 
+        mockProduct3.setProductId(3);
+        mockProduct3.setProductType(StorageType.REFRIGERATED);
+        mockProduct3.setProductName("Maça");
+        mockProduct3.setProductDescription("Mock description");
+
         mockProduct2.setProductId(2);
-        mockProduct2.setProductType(StorageType.FRESH);
-        mockProduct2.setProductName("Maça");
+        mockProduct2.setProductType(StorageType.FROZEN);
+        mockProduct2.setProductName("Peixe");
         mockProduct2.setProductDescription("Mock description");
-
-
     }
 
     /**
@@ -78,7 +82,7 @@ public class ProductControllerIT {
 
         Mockito.when(productRepository.findAll()).thenReturn(products);
 
-        mockMvc.perform(get("/fresh-products/products/"))
+        mockMvc.perform(get("/fresh-products/"))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -90,10 +94,10 @@ public class ProductControllerIT {
     @Test
     public void shouldCreateProduct() throws Exception {
 
-        ProductDTO result = objectMapper.readValue(payload, ProductDTO.class);
+        ProductForm result = objectMapper.readValue(payload, ProductForm.class);
         Mockito.when(productRepository.save(any())).thenReturn(result.convert());
 
-        mockMvc.perform(post("/fresh-products/products/")
+        mockMvc.perform(post("/fresh-products/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
                 .andExpect(status().isOk())
@@ -108,7 +112,7 @@ public class ProductControllerIT {
 
     @Test
     public void shouldUpdateProduct() throws Exception {
-        ProductDTO result = objectMapper.readValue(payload, ProductDTO.class);
+        ProductForm result = objectMapper.readValue(payload, ProductForm.class);
         Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(result.convert()));
 
         String payloadUpdated = "{ \n"
@@ -117,10 +121,10 @@ public class ProductControllerIT {
                 + " \"productDescription\": \"queijo do tipo Mussarela\""
                 + "}";
 
-        ProductDTO resultUpdate = objectMapper.readValue(payloadUpdated, ProductDTO.class);
+        ProductForm  resultUpdate = objectMapper.readValue(payloadUpdated, ProductForm.class);
         Mockito.when(productRepository.save(any())).thenReturn(resultUpdate.convert());
 
-        mockMvc.perform(put("/fresh-products/products/1")
+        mockMvc.perform(put("/fresh-products/1")
                 .contentType(MediaType.APPLICATION_JSON).content(payloadUpdated))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productName").value("Queijo Mussarela"))
@@ -133,11 +137,11 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldDeleteProductById() throws Exception {
-        ProductDTO result = objectMapper.readValue(payload, ProductDTO.class);
+        ProductForm result = objectMapper.readValue(payload, ProductForm.class);
         Product  product = result.convert();
         Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product));
 
-        mockMvc.perform(delete("/fresh-products/products/1")
+        mockMvc.perform(delete("/fresh-products/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -167,7 +171,7 @@ public class ProductControllerIT {
 
         Mockito.when(productRepository.findAll()).thenReturn(products);
 
-        mockMvc.perform(get("/fresh-products/products/"))
+        mockMvc.perform(get("/fresh-products"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Product list is empty"))
                 .andReturn();
@@ -180,7 +184,7 @@ public class ProductControllerIT {
     @Test
     public void shouldReturnStatusCode404NotFoundWhenProductDoesNotExist() throws Exception {
 
-        mockMvc.perform(delete("/fresh-products/products/100"))
+        mockMvc.perform(delete("/fresh-products/100"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Product not found"));
     }
@@ -198,7 +202,7 @@ public class ProductControllerIT {
                 + " \"productDescription\": \"queijo do tipo Mussarela\""
                 + "}";
 
-        mockMvc.perform(post("/fresh-products/products/")
+        mockMvc.perform(post("/fresh-products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payloadInvalid))
                 .andExpect(status().isBadRequest());
@@ -217,9 +221,87 @@ public class ProductControllerIT {
                 + " \"productDescription\": \"queijo francese\""
                 + "}";
 
-        mockMvc.perform(post("/fresh-products/products/")
+        mockMvc.perform(post("/fresh-products/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payloadInvalid))
                 .andExpect(status().isBadRequest());
     }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado apenas os produtos do tipo FS.
+     */
+    @Test
+    public void shouldReturnFilteredProductsByTypeFS() throws Exception {
+
+        List<Product> products = new ArrayList<>();
+        products.add(mockProduct);
+        products.add(mockProduct2);
+
+        Mockito.when(productRepository.findAll()).thenReturn(products);
+
+        mockMvc.perform(get("/fresh-products/list?querytype=FS"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].productId").value(1))
+                .andReturn();
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado apenas os produtos do tipo FF.
+     */
+    @Test
+    public void shouldReturnFilteredProductsByTypeFF() throws Exception {
+
+        List<Product> products = new ArrayList<>();
+        products.add(mockProduct);
+        products.add(mockProduct2);
+
+        Mockito.when(productRepository.findAll()).thenReturn(products);
+
+        mockMvc.perform(get("/fresh-products/list?querytype=FF"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].productId").value(2))
+                .andReturn();
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado apenas os produtos do tipo RF.
+     */
+    @Test
+    public void shouldReturnFilteredProductsByTypeRF() throws Exception {
+
+        List<Product> products = new ArrayList<>();
+        products.add(mockProduct);
+        products.add(mockProduct2);
+        products.add(mockProduct3);
+
+        Mockito.when(productRepository.findAll()).thenReturn(products);
+
+        mockMvc.perform(get("/fresh-products/list?querytype=RF"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].productId").value(3))
+                .andReturn();
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado o 404 quando o type do produto for inválido.
+     */
+    @Test
+    public void shouldReturn404whenProductsByTypeIsInvalid() throws Exception {
+
+        List<Product> products = new ArrayList<>();
+        products.add(mockProduct);
+        products.add(mockProduct2);
+        products.add(mockProduct3);
+
+        Mockito.when(productRepository.findAll()).thenReturn(products);
+
+        mockMvc.perform(get("/fresh-products/list?querytype=ANY"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
+
 }
