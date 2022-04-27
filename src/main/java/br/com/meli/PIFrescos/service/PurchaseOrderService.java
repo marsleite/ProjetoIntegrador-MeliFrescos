@@ -50,10 +50,9 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             throw new RuntimeException("PurchaseOrder already exists!");
         }
 
-        // CONCERTAR: mudar de .equals(0) para nova quantidade > quantidade existente
         List<ProductsCart> invalidProductList = purchaseOrder.getCartList().stream()
                 .filter(productsCart -> batchRepository.existsBatchByBatchNumber(productsCart.getBatch().getBatchNumber()))
-                .filter(productsCart -> productsCart.getBatch().getCurrentQuantity().equals(0))
+                .filter(productsCart -> !isProducstCartListQuantityValid(productsCart))
                 .collect(Collectors.toList());
 
         if(!invalidProductList.isEmpty()){
@@ -65,6 +64,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         }
 
         return purchaseOrderRepository.save(purchaseOrder);
+    }
+
+    public boolean isProducstCartListQuantityValid(ProductsCart productsCart){
+        Integer productCartQuantity = productsCart.getQuantity();
+        Integer batchCurrentQuantity = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber()).getCurrentQuantity();
+
+        if (batchCurrentQuantity.compareTo(productCartQuantity) < 0) { return false; }
+        return true;
     }
 
     /**
