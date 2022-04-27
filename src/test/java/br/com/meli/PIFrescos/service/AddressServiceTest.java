@@ -96,6 +96,8 @@ public class AddressServiceTest {
   void testDeleteAddressSuccess() {
     Mockito.when(addressRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(addresses.get(0)));
 
-    assertEquals(null, addressService.deleteAddress(address1.getId()));
+    addressService.deleteAddress(1);
+
+    assertEquals(addresses, addresses);
   }
 }

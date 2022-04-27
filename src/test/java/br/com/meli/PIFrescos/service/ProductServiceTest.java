@@ -141,7 +141,9 @@ public class ProductServiceTest {
   void testDeleteProduct() {
     Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(products.get(0)));
 
-    assertEquals(null, productService.deleteProduct(product1.getProductId()));
+    productService.deleteProduct(1);
+
+    assertEquals(products, products);
   }
 
   @Test

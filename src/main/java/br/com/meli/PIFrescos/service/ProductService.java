@@ -62,13 +62,12 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public Object deleteProduct(Integer id){
+  public void deleteProduct(Integer id){
     Optional<Product> productOptional = productRepository.findById(id);
     if(productOptional.isEmpty()){
       throw new EntityNotFoundException("Product not found");
     }
 
     productRepository.delete(productOptional.get());
-    return null;
   }
 }
