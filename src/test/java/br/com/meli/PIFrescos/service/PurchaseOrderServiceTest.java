@@ -210,4 +210,16 @@ public class PurchaseOrderServiceTest {
 
         assertThat(exception.getMessage()).isEqualTo(message);
     }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera receber uma lista de produtos.
+     */
+    @Test
+    void shouldReturnProductsByOrderId() {
+        Mockito.when(purchaseOrderRepository.findById(1)).thenReturn(Optional.ofNullable(purchaseOrder));
+
+       List<Product> list = purchaseOrderService.findProductsByOrderId(1);
+       assertThat(list.size()).isEqualTo(2);
+    }
 }
