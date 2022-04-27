@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Ana Preis
  */
 @ExtendWith(MockitoExtension.class)
-public class SectionServiceTests {
+public class SectionServiceTest {
 
     @Mock
     SectionRepository sectionRepository;

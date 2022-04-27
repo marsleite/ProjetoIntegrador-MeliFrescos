@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -43,11 +42,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      */
     @Override
     public List<PurchaseOrder> getAll(){
-        List<PurchaseOrder> purchaseListOptional = purchaseOrderRepository.findAll();
-        if(purchaseListOptional.isEmpty()){
+        List<PurchaseOrder> purchaseList = purchaseOrderRepository.findAll();
+        if(purchaseList.isEmpty()){
             throw new EntityNotFoundException("PurchaseOrder list is empty");
         }
-        return purchaseListOptional;
+        return purchaseList;
     }
 
     /**
@@ -73,7 +72,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public void delete(Integer id){
         Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(id);
         if(purchaseOptional.isEmpty()){
-            throw new EntityNotFoundException("No PurchaseOrders found");
+            throw new EntityNotFoundException("PurchaseOrder not found");
         }
         purchaseOrderRepository.deleteById(id);
     }
@@ -88,11 +87,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public PurchaseOrder updateOrderStatus(OrderStatus newOrderStatus, Integer id){
         Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(id);
         if(purchaseOptional.isEmpty()){
-            throw new EntityNotFoundException("PurchaseOrder doesn`t exists");
-        }
-
-        if(Objects.isNull(newOrderStatus)){
-            throw new EntityNotFoundException("OrderStatus doesn`t exists");
+            throw new EntityNotFoundException("PurchaseOrder not found");
         }
 
         PurchaseOrder purchase = purchaseOptional.get();
