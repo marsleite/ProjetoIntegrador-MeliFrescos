@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class InboundOrderServiceTest {
+public class InboundOrderServiceTest {
 
     @Mock
     private ProductRepository productRepository;
@@ -54,7 +54,7 @@ class InboundOrderServiceTest {
     private Product product2 = new Product();
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         warehouse = new Warehouse(1, new ArrayList<>());
         section = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         batch1.setCurrentQuantity(2);
@@ -65,7 +65,7 @@ class InboundOrderServiceTest {
     }
 
     @Test
-    void saveNewInboundOrder() {
+    public void saveNewInboundOrder() {
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
 
@@ -79,7 +79,7 @@ class InboundOrderServiceTest {
     }
 
     @Test
-    void updateExistingInboundOrder() {
+    public void updateExistingInboundOrder() {
         Batch batch3 = new Batch();
         batch3.setCurrentQuantity(3);
         batch3.setProduct(new Product());
@@ -103,10 +103,11 @@ class InboundOrderServiceTest {
         InboundOrder updatedInboundOrder = inboundOrderService.update(id, newInboundOrderValues);
 
         assertEquals(expectedInboundOrder, updatedInboundOrder);
+        assertEquals(expectedInboundOrder.getBatchStock().size(), updatedInboundOrder.getBatchStock().size());
     }
 
     @Test
-    void deleteExistingInboundOrder() {
+    public void deleteExistingInboundOrder() {
         Integer id = inboundOrder.getOrderNumber();
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
@@ -118,6 +119,16 @@ class InboundOrderServiceTest {
         verify(inboundOrderRepository).deleteById(any());
     }
 
-    //TODO test handling errors
+    @Test
+    public void updateFailsWhenNotFoundId() {
+        Integer notSavedId = 111;
+        String errorMessage = "Ordem solicitada não existe.";
+
+        Mockito.when(inboundOrderRepository.getByOrderNumber(notSavedId)).thenReturn(null);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.update(notSavedId, inboundOrder));
+
+        assertEquals(errorMessage, exception.getMessage());
+    }
 
 }
