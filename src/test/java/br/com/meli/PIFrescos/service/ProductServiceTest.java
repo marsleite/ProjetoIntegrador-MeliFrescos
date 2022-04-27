@@ -16,8 +16,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Marcelo Leite
@@ -136,5 +135,20 @@ public class ProductServiceTest {
     Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(products.get(0)));
 
     Assertions.assertEquals(productRepository.save(product), productService.updateProduct(product));
+  }
+
+  @Test
+  @DisplayName("Test delete product")
+  void testDeleteProduct() {
+    Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(products.get(0)));
+
+    assertEquals(null, productService.deleteProduct(product1.getProductId()));
+  }
+
+  @Test
+  @DisplayName("Test delete product but product not found")
+  void testDeleteProductNotFound() {
+    RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> productService.deleteProduct(product4.getProductId()));
+    assertTrue(runtimeException.getMessage().contains("Product not found"));
   }
 }

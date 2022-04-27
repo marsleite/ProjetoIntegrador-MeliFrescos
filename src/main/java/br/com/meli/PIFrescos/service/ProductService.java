@@ -4,7 +4,6 @@ import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -63,12 +62,13 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public void deleteProduct(Integer id){
+  public Object deleteProduct(Integer id){
     Optional<Product> productOptional = productRepository.findById(id);
     if(productOptional.isEmpty()){
       throw new EntityNotFoundException("Product not found");
     }
 
     productRepository.delete(productOptional.get());
+    return null;
   }
 }
