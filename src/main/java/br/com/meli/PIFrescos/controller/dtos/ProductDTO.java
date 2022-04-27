@@ -31,10 +31,6 @@ public class ProductDTO {
         this.productDescription = product.getProductDescription();
     }
 
-    public Product convert() {
-        return new Product(productId, productName, productType, productDescription);
-    }
-
     public static List<ProductDTO> convertList(List<Product> products){
         return products.stream().map(ProductDTO::new).collect(Collectors.toList());
     }
