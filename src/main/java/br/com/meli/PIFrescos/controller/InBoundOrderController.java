@@ -15,13 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * Busca todos os InboundOrders existentes
- * para armazenar.
- * @return List<inboundOrder>
- * @author Julio César Gama
- */
-
 @RestController
 @RequestMapping("/fresh-products/inboundorder")
 public class InBoundOrderController {
@@ -32,6 +25,11 @@ public class InBoundOrderController {
     @Autowired
     SectionService sectionService;
 
+    /**
+     * Busca todos os InboundOrders existentes a serem armazenados.
+     * @return List<inboundOrder>
+     * @author Julio César Gama
+     */
     @GetMapping("")
     public ResponseEntity<List<InboundOrder>> getInboundOrders(){
         return ResponseEntity.ok(service.getAll());
