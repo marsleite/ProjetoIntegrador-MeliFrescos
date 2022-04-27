@@ -16,6 +16,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Marcelo Leite
@@ -32,11 +34,12 @@ public class ProductServiceTest {
   private ProductService productService;
 
   List<Product> products = new ArrayList<>();
+  Product product1 = new Product(1, "Coca-Cola", StorageType.REFRIGERATED, "Refrigerante");
+  Product product2 = new Product(2, "Carne", StorageType.FROZEN, "Proteína Animal");
+  Product product3 = new Product(3, "Manga", StorageType.FRESH, "Fruta");
+  Product product4 = new Product();
   @BeforeEach
   void setUp() {
-    Product product1 = new Product(1, "Coca-Cola", StorageType.REFRIGERATED, "Refrigerante");
-    Product product2 = new Product(2, "Carne", StorageType.FROZEN, "Proteína Animal");
-    Product product3 = new Product(3, "Manga", StorageType.FRESH, "Fruta");
     products.add(product1);
     products.add(product2);
     products.add(product3);
@@ -119,11 +122,8 @@ public class ProductServiceTest {
   void testUpdateProductNotFound() {
     // testar se o método updateProduct atualiza um produto e retorna uma exceção
 
-    Product product = new Product(1, "Coca-Cola", StorageType.REFRIGERATED, "Refrigerante");
-
-    Mockito.when(productRepository.findById(1)).thenThrow(new RuntimeException("Product not found"));
-
-    Assertions.assertThrows(RuntimeException.class, () -> productService.updateProduct(product));
+    RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> productService.updateProduct(product4));
+    assertTrue(runtimeException.getMessage().contains("Product not found"));
   }
 
   @Test
