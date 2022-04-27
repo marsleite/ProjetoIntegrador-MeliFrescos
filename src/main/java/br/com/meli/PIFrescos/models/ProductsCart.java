@@ -1,8 +1,6 @@
 package br.com.meli.PIFrescos.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -13,7 +11,8 @@ import javax.validation.constraints.NotNull;
  */
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductsCart {

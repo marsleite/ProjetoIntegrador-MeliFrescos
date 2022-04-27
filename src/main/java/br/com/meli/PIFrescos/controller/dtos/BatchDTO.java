@@ -1,4 +1,4 @@
-package br.com.meli.PIFrescos.dtos;
+package br.com.meli.PIFrescos.controller.dtos;
 
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.Product;

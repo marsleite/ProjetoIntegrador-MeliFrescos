@@ -1,6 +1,6 @@
 package br.com.meli.PIFrescos.controller;
 
-import br.com.meli.PIFrescos.dtos.ProductDTO;
+import br.com.meli.PIFrescos.controller.dtos.ProductDTO;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
