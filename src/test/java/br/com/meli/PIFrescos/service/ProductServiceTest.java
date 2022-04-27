@@ -17,6 +17,8 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Marcelo Leite
@@ -139,11 +141,11 @@ public class ProductServiceTest {
   @Test
   @DisplayName("Test delete product")
   void testDeleteProduct() {
-    Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(products.get(0)));
+    Mockito.when(productRepository.findById(product1.getProductId())).thenReturn(Optional.ofNullable(product1));
 
     productService.deleteProduct(1);
 
-    assertEquals(products, products);
+    verify(productRepository).delete(any());
   }
 
   @Test
