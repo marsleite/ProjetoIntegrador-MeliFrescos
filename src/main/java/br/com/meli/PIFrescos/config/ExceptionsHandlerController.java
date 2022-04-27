@@ -22,7 +22,10 @@ import java.util.List;
 /**
  * Classe ExceptionsHandlerController para tratar mensagens de erro
  * @author Juliano Alcione de Souza
- * Refactor: Ana Preis
+ * Refactor:
+ * @author Ana Preis
+ * Refactor:
+ * @author Julio César Gama
  */
 
 @RestControllerAdvice
@@ -50,10 +53,8 @@ public class ExceptionsHandlerController {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ExceptionDTO> handleErrorNotFound(EntityNotFoundException ex, HttpServletRequest request) {
         ExceptionDTO exceptionDTO = ExceptionDTO.builder()
-                .timestamp(LocalDateTime.now())
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .message(ex.getMessage())
-                .trace(Arrays.toString(ex.getStackTrace()))
                 .path(request.getRequestURI())
                 .build();
 
@@ -64,9 +65,7 @@ public class ExceptionsHandlerController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDTO> handleError(Exception ex, HttpServletRequest request) {
         ExceptionDTO exceptionDTO = ExceptionDTO.builder()
-                .timestamp(LocalDateTime.now())
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .trace(Arrays.toString(ex.getStackTrace()))
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
