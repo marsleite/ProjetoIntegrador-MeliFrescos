@@ -19,12 +19,14 @@ public class UserDTO {
   private Integer userId;
   private String fullname;
   private String email;
+  private String password;
   private String address;
   private UserRole role;
 
   public UserDTO(User user) {
     this.userId = user.getId();
     this.fullname = user.getFullname();
+    this.password = user.getPassword();
     this.email = user.getEmail();
     this.role = user.getRole();
   }

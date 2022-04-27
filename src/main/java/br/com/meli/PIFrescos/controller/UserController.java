@@ -3,6 +3,7 @@ package br.com.meli.PIFrescos.controller;
 import br.com.meli.PIFrescos.controller.dtos.UserDTO;
 import br.com.meli.PIFrescos.controller.forms.UserForm;
 import br.com.meli.PIFrescos.models.User;
+import br.com.meli.PIFrescos.repository.ProfileRepository;
 import br.com.meli.PIFrescos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm){
-        User user = this.userService.create(userForm.convertToEntity());
+        User user = this.userService.create(userForm.convertToEntity(profileRepository));
         return ResponseEntity.ok(new UserDTO(user));
     }
 
