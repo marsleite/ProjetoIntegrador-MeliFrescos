@@ -52,6 +52,6 @@ public class UserForm {
       throw new RuntimeException("Profile not found");
     }
 
-    return new User(null, fullname, email, password, role, null);
+    return new User(null, fullname, email, password, role, List.of(profile.get()));
   }
 }
