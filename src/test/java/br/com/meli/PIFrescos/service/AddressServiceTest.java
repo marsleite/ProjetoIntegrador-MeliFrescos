@@ -16,8 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Marcelo Leite
@@ -94,10 +97,10 @@ public class AddressServiceTest {
   @Test
   @DisplayName("Test delete address successful")
   void testDeleteAddressSuccess() {
-    Mockito.when(addressRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(addresses.get(0)));
+    Mockito.when(addressRepository.findById(address1.getId())).thenReturn(Optional.ofNullable(address1));
 
     addressService.deleteAddress(1);
 
-    assertEquals(addresses, addresses);
+    verify(addressRepository).delete(any());
   }
 }
