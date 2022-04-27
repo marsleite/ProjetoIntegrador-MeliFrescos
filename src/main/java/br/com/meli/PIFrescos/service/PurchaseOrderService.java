@@ -1,14 +1,14 @@
 package br.com.meli.PIFrescos.service;
 
-import br.com.meli.PIFrescos.config.handler.ProductCartException;
 import br.com.meli.PIFrescos.models.*;
+import br.com.meli.PIFrescos.config.handler.ProductCartException;
 import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
+
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
-import org.springframework.beans.factory.ListableBeanFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 /**
  * @author Ana Preis
@@ -50,10 +50,9 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             throw new RuntimeException("PurchaseOrder already exists!");
         }
 
-        // CONCERTAR: mudar de .equals(0) para nova quantidade > quantidade existente
         List<ProductsCart> invalidProductList = purchaseOrder.getCartList().stream()
                 .filter(productsCart -> batchRepository.existsBatchByBatchNumber(productsCart.getBatch().getBatchNumber()))
-                .filter(productsCart -> productsCart.getBatch().getCurrentQuantity().equals(0))
+                .filter(productsCart -> !isProducstCartListQuantityValid(productsCart))
                 .collect(Collectors.toList());
 
         if(!invalidProductList.isEmpty()){
@@ -65,6 +64,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         }
 
         return purchaseOrderRepository.save(purchaseOrder);
+    }
+
+    public boolean isProducstCartListQuantityValid(ProductsCart productsCart){
+        Integer productCartQuantity = productsCart.getQuantity();
+        Integer batchCurrentQuantity = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber()).getCurrentQuantity();
+
+        if (batchCurrentQuantity.compareTo(productCartQuantity) < 0) { return false; }
+        return true;
     }
 
     /**
@@ -145,4 +152,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return BigDecimal.valueOf(totalPrice);
     }
 
+    /**
+     * Busca todos os produtos do pedido.
+     * @param orderId id do pedido
+     * @return  List<Product>  lista de produtos do pedido
+     * @author Antonio Hugo
+     */
+    public List<Product> findProductsByOrderId(Integer orderId) {
+
+        return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
+    }
 }

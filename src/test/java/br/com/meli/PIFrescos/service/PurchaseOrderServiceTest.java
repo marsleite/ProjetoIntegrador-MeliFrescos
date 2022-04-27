@@ -84,7 +84,7 @@ public class PurchaseOrderServiceTest {
 
         productsCart2.setId(2);
         productsCart2.setBatch(mockBatch2);
-        productsCart2.setQuantity(10);
+        productsCart2.setQuantity(9);
 
         productsCartList = Arrays.asList(productsCart1, productsCart2);
 
@@ -102,6 +102,8 @@ public class PurchaseOrderServiceTest {
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
         Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
         Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
 
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
@@ -110,10 +112,11 @@ public class PurchaseOrderServiceTest {
 
     @Test
     void shouldNotValidatePurchaseOrder(){
-        String message = "Insuficient quantity of product on batch";
         productsCart1.setBatch(mockBatch3);
         Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
         Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+        Mockito.when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
+        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
 
         ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
 
@@ -209,5 +212,17 @@ public class PurchaseOrderServiceTest {
         RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> purchaseOrderService.updateOrderStatus(FINISHED, 3));
 
         assertThat(exception.getMessage()).isEqualTo(message);
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera receber uma lista de produtos.
+     */
+    @Test
+    void shouldReturnProductsByOrderId() {
+        Mockito.when(purchaseOrderRepository.findById(1)).thenReturn(Optional.ofNullable(purchaseOrder));
+
+       List<Product> list = purchaseOrderService.findProductsByOrderId(1);
+       assertThat(list.size()).isEqualTo(2);
     }
 }
