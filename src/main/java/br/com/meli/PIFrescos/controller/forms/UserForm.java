@@ -1,6 +1,7 @@
 package br.com.meli.PIFrescos.controller.forms;
 
 import br.com.meli.PIFrescos.models.Profile;
+import br.com.meli.PIFrescos.models.Address;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.models.UserRole;
 import br.com.meli.PIFrescos.repository.ProfileRepository;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @Setter
 public class UserForm {
   @NotNull(message = "O fullname não pode ser nulo.")
-  @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 10 caracteres.")
+  @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 30 caracteres.")
   private String fullname;
 
   @NotNull(message = "O email não pode ser nulo.")
@@ -33,7 +34,10 @@ public class UserForm {
   @Size(min = 6, message = "O password deve conter no mínimo 6 caracteres.")
   private String password;
 
-  @NotNull(message = "O rule não pode ser nulo.")
+  @NotNull(message = "O address não pode ser nulo.")
+  private Address address;
+
+  @NotNull(message = "O role não pode ser nulo.")
   private UserRole role;
 
   private List<Profile> perfis = new ArrayList<>();
@@ -52,6 +56,6 @@ public class UserForm {
       throw new RuntimeException("Profile not found");
     }
 
-    return new User(null, fullname, email, password, role, List.of(profile.get()));
+    return new User(null, fullname, email, password, role, address, List.of(profile.get()));
   }
 }

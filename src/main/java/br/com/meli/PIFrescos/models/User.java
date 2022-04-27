@@ -30,7 +30,7 @@ public class User implements UserDetails {
   private Integer id;
 
   @NotNull(message = "O fullname não pode ser nulo.")
-  @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 10 caracteres.")
+  @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 30 caracteres.")
   private String fullname;
 
   @NotNull(message = "O email não pode ser nulo.")
@@ -40,6 +40,10 @@ public class User implements UserDetails {
   @NotNull(message = "O password não pode ser nulo.")
   @Size(min = 6, message = "O password deve conter no mínimo 6 caracteres.")
   private String password;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "address_id", referencedColumnName = "id")
+  private Address address;
 
   @Enumerated(EnumType.STRING)
   private UserRole role;

@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author Ana Preis
@@ -15,16 +17,15 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductsCart {
+public class PurchaseOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @NotNull(message = "Batch field can't be empty")
     @ManyToOne
-    private Batch batch;
-    @NotNull(message = "Quantity field can't be empty")
-    @DecimalMax(value = "200", message = "Quantity of ProductsCart can't be greater than 200.")
-    private Integer quantity;
+    private User user;
+    private LocalDate date;
+    private OrderStatus orderStatus;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ProductsCart> cartList;
 }

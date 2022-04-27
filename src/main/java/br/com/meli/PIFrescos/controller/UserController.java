@@ -33,6 +33,13 @@ public class UserController {
         return ResponseEntity.ok(new UserDTO(user));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> update(@RequestBody @Valid UserForm userForm,
+                                          @PathVariable(name = "id") Integer id) {
+        User user = this.userService.update(id, userForm.convertToEntity());
+        return ResponseEntity.ok(new UserDTO(user));
+    }
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> all(){
         List<User> all = this.userService.listAll();

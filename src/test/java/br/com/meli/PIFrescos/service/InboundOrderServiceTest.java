@@ -6,6 +6,7 @@ import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.models.Warehouse;
+import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +26,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class InboundOrderServiceTest {
+public class InboundOrderServiceTest {
 
     @Mock
     private ProductRepository productRepository;
 
     @Mock
     private InboundOrderRepository inboundOrderRepository;
+
+    @Mock
+    private BatchRepository batchRepository;
+
+    @Mock
+    private BatchServiceImpl batchService;
 
     @Mock
     private SectionService sectionService;
@@ -47,7 +54,7 @@ class InboundOrderServiceTest {
     private Product product2 = new Product();
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         warehouse = new Warehouse(1, new ArrayList<>());
         section = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         batch1.setCurrentQuantity(2);
@@ -58,7 +65,7 @@ class InboundOrderServiceTest {
     }
 
     @Test
-    void saveNewInboundOrder() {
+    public void saveNewInboundOrder() {
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
 
@@ -72,26 +79,35 @@ class InboundOrderServiceTest {
     }
 
     @Test
-    void updateExistingInboundOrder() {
+    public void updateExistingInboundOrder() {
+        Batch batch3 = new Batch();
+        batch3.setCurrentQuantity(3);
+        batch3.setProduct(new Product());
+        batch3.setBatchNumber(3);
         Integer id = inboundOrder.getOrderNumber();
 
         InboundOrder newInboundOrderValues = new InboundOrder();
         Section newSection = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         newInboundOrderValues.setSection(newSection);
+        newInboundOrderValues.setBatchStock(Arrays.asList(batch1,batch2,batch3));
 
         InboundOrder expectedInboundOrder = inboundOrder;
         expectedInboundOrder.setSection(newSection);
 
-        Mockito.when(inboundOrderRepository.getById(id)).thenReturn(inboundOrder);
-        Mockito.when(inboundOrderRepository.save(any())).thenReturn(expectedInboundOrder);
+        Mockito.when(productRepository.findById(product1.getProductId())).thenReturn(java.util.Optional.ofNullable(product1));
+        Mockito.when(productRepository.findById(product2.getProductId())).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(inboundOrderRepository.getByOrderNumber(id)).thenReturn(inboundOrder);
+        Mockito.when(inboundOrderRepository.save(any())).thenReturn(inboundOrder);
+        //Mockito.when(batchRepository.existsBatchByBatchNumber(batch1.getBatchNumber())).thenReturn(true);
 
         InboundOrder updatedInboundOrder = inboundOrderService.update(id, newInboundOrderValues);
 
         assertEquals(expectedInboundOrder, updatedInboundOrder);
+        assertEquals(expectedInboundOrder.getBatchStock().size(), updatedInboundOrder.getBatchStock().size());
     }
 
     @Test
-    void deleteExistingInboundOrder() {
+    public void deleteExistingInboundOrder() {
         Integer id = inboundOrder.getOrderNumber();
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
@@ -103,6 +119,16 @@ class InboundOrderServiceTest {
         verify(inboundOrderRepository).deleteById(any());
     }
 
-    //TODO test handling errors
+    @Test
+    public void updateFailsWhenNotFoundId() {
+        Integer notSavedId = 111;
+        String errorMessage = "Ordem solicitada não existe.";
+
+        Mockito.when(inboundOrderRepository.getByOrderNumber(notSavedId)).thenReturn(null);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.update(notSavedId, inboundOrder));
+
+        assertEquals(errorMessage, exception.getMessage());
+    }
 
 }

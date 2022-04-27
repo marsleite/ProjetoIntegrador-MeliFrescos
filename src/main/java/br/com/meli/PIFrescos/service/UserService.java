@@ -43,6 +43,11 @@ public class UserService {
     return userRepository.save(user);
   }
 
+  public User update(Integer id, User user) {
+    user.setId(id);
+    return update(user);
+  }
+
   public void delete(Integer id){
     Optional<User> userOptional = userRepository.findById(id);
     if(userOptional.isEmpty()){
