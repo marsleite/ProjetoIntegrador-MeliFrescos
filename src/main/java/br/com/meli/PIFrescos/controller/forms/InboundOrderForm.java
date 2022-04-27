@@ -12,8 +12,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * @author Felipe Myose
- * Criação do dto
+ * @author Felipe Myose, Antonio Hugo
+ * Criação do dto, refatoração do DTO
  */
 
 @Data
