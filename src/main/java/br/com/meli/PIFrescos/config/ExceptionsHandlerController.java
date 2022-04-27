@@ -64,12 +64,8 @@ public class ExceptionsHandlerController {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ProductCartException.class)
-    public ResponseEntity<ExceptionDTO> handleProductError(ProductCartException ex, HttpServletRequest request) {
-        ExceptionDTO exceptionDTO = ExceptionDTO.builder()
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(exceptionDTO, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<List<ErrorFormsDto>> handleProductError(ProductCartException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(ex.getErrorFormsDtoList(), HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
