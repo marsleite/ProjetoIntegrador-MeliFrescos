@@ -28,7 +28,4 @@ public class Address {
   @NotNull(message = "O CEP não pode ser nulo.")
   private String zipcode;
 
-  @OneToOne(mappedBy = "address")
-  private User user;
-
 }
