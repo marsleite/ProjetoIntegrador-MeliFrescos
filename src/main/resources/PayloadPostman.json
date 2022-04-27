@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6919be16-48cd-45d2-80cb-132a8c6e55a9",
+		"_postman_id": "5880b793-89ec-4d0e-b721-ef89bf5db5a6",
 		"name": "PraticaIntetgradora",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -377,6 +377,14 @@
 						}
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "postPurchaseOrder",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
 			"response": []
 		}

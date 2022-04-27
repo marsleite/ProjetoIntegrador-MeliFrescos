@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class BatchDTO {
   private Float minimumTemperature;
   private Integer initialQuantity;
   private Integer currentQuantity;
+  private BigDecimal unitPrice;
   private LocalDate manufacturingDate;
   private LocalDate dueDate;
 
@@ -37,6 +39,7 @@ public class BatchDTO {
             .minimumTemperature(dto.getMinimumTemperature())
             .initialQuantity(dto.getInitialQuantity())
             .currentQuantity(dto.getCurrentQuantity())
+            .unitPrice(dto.getUnitPrice())
             .manufacturingDate(dto.getManufacturingDate())
             .dueDate(dto.getDueDate())
             .product(new Product(dto.getProductId(),null,null,null))

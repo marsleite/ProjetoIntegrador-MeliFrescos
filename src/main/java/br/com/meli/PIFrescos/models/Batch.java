@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -28,6 +29,7 @@ public class Batch {
   private Float minimumTemperature;
   private Integer initialQuantity;
   private Integer currentQuantity;
+  private BigDecimal unitPrice;
   private LocalDate manufacturingDate;
   private LocalDate dueDate;
 
