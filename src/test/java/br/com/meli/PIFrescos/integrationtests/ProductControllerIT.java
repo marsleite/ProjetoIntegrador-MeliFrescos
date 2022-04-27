@@ -1,4 +1,4 @@
-package br.com.meli.PIFrescos;
+package br.com.meli.PIFrescos.integrationtests;
 
 import br.com.meli.PIFrescos.controller.forms.ProductForm;
 import br.com.meli.PIFrescos.models.Product;
