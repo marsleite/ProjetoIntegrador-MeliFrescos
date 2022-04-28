@@ -185,6 +185,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
     }
 
+
+    public PurchaseOrder findPurchaseByUser(User user){
+        return purchaseOrderRepository.findByUser(user);
+   }
+  
     public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
         PurchaseOrder purchaseSaved = getByUserId(newPurchaseOrder.getUser().getId());
         validProductList(newPurchaseOrder);
