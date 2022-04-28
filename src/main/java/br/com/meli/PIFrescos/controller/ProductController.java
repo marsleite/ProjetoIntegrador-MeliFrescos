@@ -65,7 +65,7 @@ public class ProductController {
         return new ResponseEntity(productService.listByType(querytype), HttpStatus.OK);
     }
 
-    @GetMapping("/listById")
+    @GetMapping("/batch/list")
     public ResponseEntity<List<ProductDTO>> getById(@RequestParam Integer id){
 
         return new ResponseEntity(batchService.findBatchesByProduct(id), HttpStatus.OK);
