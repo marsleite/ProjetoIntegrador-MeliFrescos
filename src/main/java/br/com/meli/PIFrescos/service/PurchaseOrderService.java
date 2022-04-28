@@ -187,6 +187,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
     public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
         PurchaseOrder purchaseSaved = getByUserId(newPurchaseOrder.getUser().getId());
+        validProductList(newPurchaseOrder);
         clearCartByPurchase(purchaseSaved);
         return save(newPurchaseOrder);
     }

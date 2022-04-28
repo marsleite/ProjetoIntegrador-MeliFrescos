@@ -501,7 +501,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 5\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 3\n        }\n    ]\n}",
+							"raw": "{\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 2\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
