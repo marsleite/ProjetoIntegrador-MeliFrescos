@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,7 @@ public class PurchaseOrderServiceTest {
     PurchaseOrderService purchaseOrderService;
 
     private Product product1 = new Product();
+    private Product product2 = new Product();
     private PurchaseOrder purchaseOrder = new PurchaseOrder();
     private Batch mockBatch1 = new Batch();
     private Batch mockBatch2 = new Batch();
@@ -71,22 +73,30 @@ public class PurchaseOrderServiceTest {
         product1.setProductType(FRESH);
         product1.setProductDescription("descriptionBanana");
 
+        product1.setProductId(2);
+        product1.setProductName("Maça");
+        product1.setProductType(FRESH);
+        product1.setProductDescription("description Maça");
+
         mockBatch1 = Batch.builder()
                 .batchNumber(1)
                 .product(product1)
                 .currentQuantity(10)
+                .unitPrice(BigDecimal.valueOf(10.0))
                 .build();
 
         mockBatch2 = Batch.builder()
                 .batchNumber(2)
-                .product(product1)
+                .product(product2)
                 .currentQuantity(10)
+                .unitPrice(BigDecimal.valueOf(25.0))
                 .build();
 
         mockBatch3 = Batch.builder()
                 .batchNumber(3)
                 .product(product1)
                 .currentQuantity(0)
+                .unitPrice(BigDecimal.valueOf(20.0))
                 .build();
 
         productsCart1.setId(1);
@@ -95,7 +105,7 @@ public class PurchaseOrderServiceTest {
 
         productsCart2.setId(2);
         productsCart2.setBatch(mockBatch2);
-        productsCart2.setQuantity(9);
+        productsCart2.setQuantity(10);
 
         productsCartList = Arrays.asList(productsCart1, productsCart2);
 
@@ -224,5 +234,16 @@ public class PurchaseOrderServiceTest {
 
        List<Product> list = purchaseOrderService.findProductsByOrderId(1);
        assertThat(list.size()).isEqualTo(2);
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera receber o preço total de um pedido;
+     */
+    @Test
+    void shouldReturnTotalPriceOfAnOrder() {
+        BigDecimal totalPrice = purchaseOrderService.calculateTotalPrice(purchaseOrder);
+
+        assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(300.0));
     }
 }
