@@ -6,10 +6,12 @@ import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
+import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -37,6 +39,9 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
     @Autowired
     BatchRepository batchRepository;
+
+    @Autowired
+    IBatchService batchService;
 
     /**
      * Salva uma PurchaseOrder. Antes de salvar, é verificado se a PurchaseOrder já existe.
@@ -118,22 +123,26 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
     /**
      * Verifica se a PurchaseOrder existe e se a OrderStatus existe. Se sim, atualiza a OrderStatus da
-     * PurchaseOrder passada, deletando a antiga e salvando a nova.
+     * PurchaseOrder passada, atualizando a quantidade no Batch e salvando a nova.
      * @return void
      * @author Ana Preis
      */
+    @Transactional
     @Override
-    public PurchaseOrder updateOrderStatus(OrderStatus newOrderStatus, Integer id){
+    public PurchaseOrder updateOrderStatus(Integer id){
         Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(id);
         if(purchaseOptional.isEmpty()){
             throw new EntityNotFoundException("PurchaseOrder not found");
         }
-
         PurchaseOrder purchase = purchaseOptional.get();
-        purchase.setOrderStatus(newOrderStatus);
-        purchaseOrderRepository.deleteById(id);
 
-        return purchaseOrderRepository.save(purchase);
+        if(purchase.getOrderStatus().equals(OrderStatus.OPENED)){
+            purchase.setOrderStatus(OrderStatus.FINISHED);
+            purchase.getCartList().forEach(productsCart -> {
+                batchService.updateCurrentQuantity(productsCart.getQuantity(), productsCart.getBatch());
+            });
+        }
+        return purchase;
     }
 
     /**

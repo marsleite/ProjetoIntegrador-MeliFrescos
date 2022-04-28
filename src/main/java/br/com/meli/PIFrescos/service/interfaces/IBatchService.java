@@ -10,4 +10,5 @@ public interface IBatchService {
     Batch findBatchById(Integer id);
     List<Batch> findBatchesByProduct(Integer productId);
     boolean checkIfBatchExists(Batch batch);
+    Batch updateCurrentQuantity(Integer quantity, Batch batch);
 }

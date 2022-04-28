@@ -4,6 +4,7 @@ import br.com.meli.PIFrescos.config.handler.ProductCartException;
 import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
+import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,9 @@ public class PurchaseOrderServiceTest {
 
     @Mock
     BatchRepository batchRepository;
+
+    @Mock
+    IBatchService batchService;
 
     @InjectMocks
     PurchaseOrderService purchaseOrderService;
@@ -192,15 +196,14 @@ public class PurchaseOrderServiceTest {
 
     @Test
     void shouldUpdateOrder(){
+        mockBatch3.setCurrentQuantity(5);
         PurchaseOrder expectedPurchaseOrder = purchaseOrder;
-        expectedPurchaseOrder.setOrderStatus(FINISHED);
-        OrderStatus newOrderStatus = FINISHED;
+        expectedPurchaseOrder.setOrderStatus(OPENED);
         Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.ofNullable(purchaseOrder));
-        Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
+        Mockito.when(batchService.updateCurrentQuantity(productsCart1.getQuantity(), productsCart1.getBatch())).thenReturn(mockBatch3);
 
-        PurchaseOrder updatedPurchaseOrder = purchaseOrderService.updateOrderStatus(newOrderStatus, 1);
+        PurchaseOrder updatedPurchaseOrder = purchaseOrderService.updateOrderStatus(1);
 
-        verify(purchaseOrderRepository).deleteById(any());
         assertEquals(expectedPurchaseOrder, updatedPurchaseOrder);
     }
 
@@ -209,7 +212,7 @@ public class PurchaseOrderServiceTest {
         String message = "PurchaseOrder not found";
         Mockito.when(purchaseOrderRepository.findById(3)).thenReturn(Optional.empty());
 
-        RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> purchaseOrderService.updateOrderStatus(FINISHED, 3));
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> purchaseOrderService.updateOrderStatus(3));
 
         assertThat(exception.getMessage()).isEqualTo(message);
     }

@@ -15,9 +15,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class BatchServiceTests {
@@ -95,4 +99,57 @@ public class BatchServiceTests {
         Assertions.assertEquals(listMockBatch, result);
 
     }
+
+    /**
+     * @author Ana Preis
+     * Espera atualizar a CurrentQuantity do Batch, recebendo a quantity e o batch a ser atuailzado
+     * e retornando o Batch
+     */
+    @Test
+    void shouldUpdateCurrentQuantity(){
+        Batch mockBatch = Batch.builder()
+                .batchNumber(1)
+                .currentTemperature(7.0f)
+                .minimumTemperature(6.0f)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .dueDate(LocalDate.now())
+                .inboundOrder(mockInboundOrder)
+                .product(mockProduct)
+                .build();
+
+        Mockito.when(batchRepository.findById(1)).thenReturn(Optional.of(mockBatch));
+
+        Batch updatedBatch =  batchService.updateCurrentQuantity(4, mockBatch);
+
+        Assertions.assertEquals(mockBatch, updatedBatch);
+    }
+    /**
+     * @author Ana Preis
+     * Espera mandar uma exception quando o Batch recebido não existir.
+     */
+    @Test
+    void shouldNotFindBatchAndUpdateCurrentQuantity(){
+        Batch mockBatch = Batch.builder()
+                .batchNumber(1)
+                .currentTemperature(7.0f)
+                .minimumTemperature(6.0f)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .dueDate(LocalDate.now())
+                .inboundOrder(mockInboundOrder)
+                .product(mockProduct)
+                .build();
+
+        String message = "Can`t update quantity, Batch not found";
+        Mockito.when(batchRepository.findById(1)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = Assertions.assertThrows(EntityNotFoundException.class, () -> batchService.updateCurrentQuantity(4, mockBatch));
+
+        assertThat(exception.getMessage()).isEqualTo(message);
+    }
+
+
 }

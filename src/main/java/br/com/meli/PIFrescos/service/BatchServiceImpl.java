@@ -6,8 +6,11 @@ import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -42,6 +45,24 @@ public class BatchServiceImpl implements IBatchService {
     @Override
     public boolean checkIfBatchExists(Batch batch) {
         return batchRepository.existsBatchByBatchNumber(batch.getBatchNumber());
+    }
+
+    /**
+     * Atualiza o a CurrentQuantity do Batch de acordo com a quantidade do ProductCart enviada por parametro.
+     * @param quantity, batch
+     * @return  Batch
+     * @author Ana Preis
+     */
+    @Transactional
+    @Override
+    public Batch updateCurrentQuantity(Integer quantity, Batch batch){
+        Optional<Batch> batchOptional = batchRepository.findById(batch.getBatchNumber());
+        if (batchOptional.isEmpty()){
+            throw new EntityNotFoundException("Can`t update quantity, Batch not found");
+        }
+        Batch newBatch = batchOptional.get();
+        newBatch.setCurrentQuantity(newBatch.getCurrentQuantity() - quantity);
+        return newBatch;
     }
 
 }
