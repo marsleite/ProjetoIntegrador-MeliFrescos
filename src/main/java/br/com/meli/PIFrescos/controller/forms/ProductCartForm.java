@@ -20,8 +20,9 @@ public class ProductCartForm {
     /**
      * Converter a compra do usuario para o ProductsCart, o qual contem toda informaçao necessaria.
      * Muitas informaçoes são desconhecidas - buscar estes dados na camada de serviço.
-      * @param productCartForm
+     * @param productCartForm
      * @return productCart com valores vazios
+     * @author Felipe Myose
      */
     public static ProductsCart convert(ProductCartForm productCartForm) {
 

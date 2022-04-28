@@ -26,6 +26,13 @@ public class PurchaseOrderForm {
     @NotNull(message = "ProductsCart list field can't be empty")
     private List<ProductCartForm> cartList;
 
+    /**
+     * ConvertePurchaseOrderForm para PurchaseOrder.
+     * Diversos valores estarão nulos - serão tratados no serviço
+     * @param purchaseOrderForm
+     * @return purchseOrder
+     * @author Felipe Myose
+     */
     public static PurchaseOrder convertToEntity(PurchaseOrderForm purchaseOrderForm){
         User user = new User();
         user.setId(purchaseOrderForm.getUserId());

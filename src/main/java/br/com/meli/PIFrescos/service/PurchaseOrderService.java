@@ -43,16 +43,16 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     UserRepository userRepository;
 
     /**
-     * Salva uma PurchaseOrder. Antes de salvar, é verificado se a PurchaseOrder já existe.
+     * Salva uma PurchaseOrder. Antes de salvar, é necessário buscar informaçoes das entidades que o compõe.
      * @return PurchaseOrder
      * @author Ana Preis / Felipe Myose
      */
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) {
         // purchaseOrder possui varios valores nulos devido ao payload que o user envia. popular estes valores
-        // encontrar o usuario:
+        // encontrar o usuario
         purchaseOrder.setUser(userRepository.findById(purchaseOrder.getUser().getId()).get());
-
+        //encontrar o batch
         List<ProductsCart> cartList = purchaseOrder.getCartList();
         cartList.forEach(productsCart -> {
             Integer batchNumber = productsCart.getBatch().getBatchNumber();
