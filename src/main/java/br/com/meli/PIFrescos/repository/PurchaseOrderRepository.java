@@ -15,9 +15,7 @@ import java.util.Optional;
  */
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Integer> {
-
     PurchaseOrder findByUser(User user);
-
     Optional<PurchaseOrder> findByUserId(Integer id);
 
     @Query(value = "select p from PurchaseOrder p where p.orderStatus = 'OPENED' and p.user.id = :userId")

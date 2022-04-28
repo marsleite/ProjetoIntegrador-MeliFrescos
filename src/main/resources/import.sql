@@ -50,6 +50,5 @@ INSERT INTO profile(name) VALUES('ADMIN');
 INSERT INTO users_profiles(user_id, profiles_id) VALUES(1, 1);
 INSERT INTO users_profiles(user_id, profiles_id) VALUES(3, 3);
 INSERT INTO users_profiles(user_id, profiles_id) VALUES(2, 2);
-INSERT INTO users_profiles(user_id, profiles_id) VALUES(3, 3);
 INSERT INTO users_profiles(user_id, profiles_id) VALUES(4, 4);
 

@@ -76,6 +76,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             throw new ProductCartException(invalidProductList);
     }
 
+    /**
+     * Verifica se a quantidade atual de produtos no Lote é maior do que a quantidade do pedido.
+     * @return boolean
+     * @author Ana Preis
+     */
     public boolean isProducstCartListQuantityValid(ProductsCart productsCart){
         Integer productCartQuantity = productsCart.getQuantity();
         Batch batch = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber());
