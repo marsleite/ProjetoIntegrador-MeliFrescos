@@ -81,7 +81,7 @@ public class UserServiceTest {
   @DisplayName("Test create user failed")
   void testCreateUserFails() {
     Mockito.when(userRepository.findByEmail(user1.getEmail()))
-            .thenReturn(user1);
+            .thenReturn(Optional.ofNullable(user1));
 
     RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> userService.create(user1));
     assertTrue(runtimeException.getMessage().contains("User already exists"));
