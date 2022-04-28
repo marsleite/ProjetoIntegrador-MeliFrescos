@@ -37,7 +37,7 @@ public class Batch {
   @JsonIgnore
   private InboundOrder inboundOrder;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   private Product product;
 
 }

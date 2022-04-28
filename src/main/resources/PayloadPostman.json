@@ -1,10 +1,575 @@
 {
 	"info": {
-		"_postman_id": "64381506-91dc-4d46-9b45-b5edff0aee0f",
+		"_postman_id": "6414536b-8471-466f-94be-afbc3d8fa6a1",
 		"name": "PraticaIntetgradora",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "create product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productName\": \"Queijo Mussarela\",\n    \"productType\": \"FRESH\",\n    \"productDescription\": \"queijo do tipo Mussarela\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "put product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"productId\": 2,\n        \"productName\": \"Queijo parmessao xx\",\n        \"productType\": \"FROZEN\",\n        \"productDescription\": \"queijo do tipo parmessao\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all product",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get products by StorageType",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/list?querytype=fs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"list"
+							],
+							"query": [
+								{
+									"key": "querytype",
+									"value": "fs"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "inboundOrder",
+			"item": [
+				{
+					"name": "postInboundOrder2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderDate\": \"2022-04-03\", \n    \"section\": {\n        \"sectionCode\": 2,\n        \"warehouse\":{\n            \"warehouseCode\": 1\n        }\n    }, \n    \"batchStock\":[\n        {\n        \"productId\": 3,\n        \"currentTemperature\": 5.0,\n        \"minimumTemperature\": 4.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 3,\n        \"currentTemperature\": 5.0,\n        \"minimumTemperature\": 4.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 4,\n        \"currentTemperature\": 4.0,\n        \"minimumTemperature\": 0.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        },\n        {\n        \"productId\": 4,\n        \"currentTemperature\": 4.0,\n        \"minimumTemperature\": 0.0,\n        \"initialQuantity\": 7,\n        \"currentQuantity\": 7,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"inboundorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postInboundOrder1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderDate\": \"2022-04-01\", \n    \"section\": {\n        \"sectionCode\": 1,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    },\n    \"batchStock\":[\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 2,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        },\n        {\n        \"productId\": 2,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 7,\n        \"currentQuantity\": 7,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"inboundorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postInboundOrder3",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderDate\": \"2022-04-05\", \n    \"section\": {\n        \"sectionCode\": 3,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    }, \n    \"batchStock\":[\n        {\n        \"productId\": 5,\n        \"currentTemperature\": -15.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 8,\n        \"currentQuantity\": 8,\n        \"manufacturingDate\": \"2022-03-26\",\n        \"dueDate\": \"2022-04-26\"\n        },\n        {\n        \"productId\": 5,\n        \"currentTemperature\": -15.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-26\",\n        \"dueDate\": \"2022-04-26\"\n        },\n        {\n        \"productId\": 6,\n        \"currentTemperature\": -14.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-28\",\n        \"dueDate\": \"2022-04-28\"\n        },\n        {\n        \"productId\": 6,\n        \"currentTemperature\": -14.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-28\",\n        \"dueDate\": \"2022-04-28\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"inboundorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putInboundOrder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderDate\": \"2022-04-01\", \n    \"section\": {\n        \"sectionCode\": 1,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    },\n    \"batchStock\":[\n        {\n        \"batchNumber\": 1,\n        \"productId\": 1,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 10,\n        \"currentQuantity\": 10,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"inboundorder",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getInboundOrder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"inboundorder"
+							],
+							"query": [
+								{
+									"key": "Auth",
+									"value": "123456",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "purchase",
+			"item": [
+				{
+					"name": "getPurchaseOrder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders?querytype=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "querytype",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postPurchaseOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 5\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 3\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putPurchaseOrder udpate status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders/finish?idOrder=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"orders",
+								"finish"
+							],
+							"query": [
+								{
+									"key": "idOrder",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "put purchaseOrder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "section",
+			"item": [
+				{
+					"name": "postSection",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"storageType\": \"FRESH\",\n    \"maxCapacity\": 150,\n    \"currentCapacity\": \"30\",\n    \"warehouse\": {\n        \"warehouseCode\": 1\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder/section",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"inboundorder",
+								"section"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "http://localhost:8080/api/v1/auth",
 			"request": {
@@ -30,514 +595,6 @@
 						"api",
 						"v1",
 						"auth"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create product",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"productName\": \"Queijo Mussarela\",\n    \"productType\": \"FRESH\",\n    \"productDescription\": \"queijo do tipo Mussarela\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "put product",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "    {\n        \"productId\": 2,\n        \"productName\": \"Queijo parmessao xx\",\n        \"productType\": \"FROZEN\",\n        \"productDescription\": \"queijo do tipo parmessao\"\n    }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"2"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "get all product",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						""
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "delete product",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/10",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"10"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "postInboundOrder1",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"orderDate\": \"2022-04-01\", \n    \"section\": {\n        \"sectionCode\": 1,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    },\n    \"batchStock\":[\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 2,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        },\n        {\n        \"productId\": 2,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 7,\n        \"currentQuantity\": 7,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        }\n    ]\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "postInboundOrder2",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"orderDate\": \"2022-04-03\", \n    \"section\": {\n        \"sectionCode\": 2,\n        \"warehouse\":{\n            \"warehouseCode\": 1\n        }\n    }, \n    \"batchStock\":[\n        {\n        \"productId\": 3,\n        \"currentTemperature\": 5.0,\n        \"minimumTemperature\": 4.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 3,\n        \"currentTemperature\": 5.0,\n        \"minimumTemperature\": 4.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 4,\n        \"currentTemperature\": 4.0,\n        \"minimumTemperature\": 0.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        },\n        {\n        \"productId\": 4,\n        \"currentTemperature\": 4.0,\n        \"minimumTemperature\": 0.0,\n        \"initialQuantity\": 7,\n        \"currentQuantity\": 7,\n        \"manufacturingDate\": \"2022-03-20\",\n        \"dueDate\": \"2022-04-20\"\n        }\n    ]\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "postInboundOrder3",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"orderDate\": \"2022-04-05\", \n    \"section\": {\n        \"sectionCode\": 3,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    }, \n    \"batchStock\":[\n        {\n        \"productId\": 5,\n        \"currentTemperature\": -15.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 8,\n        \"currentQuantity\": 8,\n        \"manufacturingDate\": \"2022-03-26\",\n        \"dueDate\": \"2022-04-26\"\n        },\n        {\n        \"productId\": 5,\n        \"currentTemperature\": -15.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 4,\n        \"currentQuantity\": 4,\n        \"manufacturingDate\": \"2022-03-26\",\n        \"dueDate\": \"2022-04-26\"\n        },\n        {\n        \"productId\": 6,\n        \"currentTemperature\": -14.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-28\",\n        \"dueDate\": \"2022-04-28\"\n        },\n        {\n        \"productId\": 6,\n        \"currentTemperature\": -14.0,\n        \"minimumTemperature\": -20.0,\n        \"initialQuantity\": 6,\n        \"currentQuantity\": 6,\n        \"manufacturingDate\": \"2022-03-28\",\n        \"dueDate\": \"2022-04-28\"\n        }\n    ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "putInboundOrder",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"orderDate\": \"2022-04-01\", \n    \"section\": {\n        \"sectionCode\": 1,\n        \"warehouse\": {\n            \"warehouseCode\": 1\n        }\n    },\n    \"batchStock\":[\n        {\n        \"batchNumber\": 1,\n        \"productId\": 1,\n        \"currentTemperature\": 8.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 5,\n        \"currentQuantity\": 5,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        },\n        {\n        \"productId\": 1,\n        \"currentTemperature\": 7.0,\n        \"minimumTemperature\": 6.0,\n        \"initialQuantity\": 10,\n        \"currentQuantity\": 10,\n        \"manufacturingDate\": \"2022-03-24\",\n        \"dueDate\": \"2022-04-24\"\n        }\n    ]\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "getInboundOrder",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder"
-					],
-					"query": [
-						{
-							"key": "Auth",
-							"value": "123456",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "postSection",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"storageType\": \"FRESH\",\n    \"maxCapacity\": 150,\n    \"currentCapacity\": \"30\",\n    \"warehouse\": {\n        \"warehouseCode\": 1\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder/section",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder",
-						"section"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "get products by StorageType",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/list?querytype=fs",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"list"
-					],
-					"query": [
-						{
-							"key": "querytype",
-							"value": "fs"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "postPurchaseOrder",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 5\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 3\n        }\n    ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/orders",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"orders"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "getPurchaseOrder",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/orders?querytype=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"orders"
-					],
-					"query": [
-						{
-							"key": "querytype",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "putPurchaseOrder udpate status",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/orders/finish?idOrder=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"orders",
-						"finish"
-					],
-					"query": [
-						{
-							"key": "idOrder",
-							"value": "1"
-						}
 					]
 				}
 			},

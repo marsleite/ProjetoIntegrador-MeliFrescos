@@ -74,8 +74,8 @@ public class PurchaseOrderServiceTest {
         product1.setProductDescription("descriptionBanana");
 
         product1.setProductId(2);
-        product1.setProductName("Maça");
-        product1.setProductType(FRESH);
+        product2.setProductName("Maça");
+        product2.setProductType(FRESH);
         product1.setProductDescription("description Maça");
 
         mockBatch1 = Batch.builder()
@@ -87,7 +87,7 @@ public class PurchaseOrderServiceTest {
 
         mockBatch2 = Batch.builder()
                 .batchNumber(2)
-                .product(product2)
+                .product(product1)
                 .currentQuantity(10)
                 .unitPrice(BigDecimal.valueOf(25.0))
                 .build();
@@ -105,7 +105,7 @@ public class PurchaseOrderServiceTest {
 
         productsCart2.setId(2);
         productsCart2.setBatch(mockBatch2);
-        productsCart2.setQuantity(10);
+        productsCart2.setQuantity(9);
 
         productsCartList = Arrays.asList(productsCart1, productsCart2);
 
@@ -122,10 +122,10 @@ public class PurchaseOrderServiceTest {
     void shouldSavePurchaseOrder(){
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
         //Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
-        Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
-        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
-        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
+        Mockito.lenient().when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.lenient().when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
@@ -134,10 +134,10 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldNotValidatePurchaseOrder(){
         productsCart1.setBatch(mockBatch3);
-        Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
-        Mockito.when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
-        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
+        Mockito.lenient().when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.lenient().when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
 
         ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
 
@@ -236,6 +236,16 @@ public class PurchaseOrderServiceTest {
        assertThat(list.size()).isEqualTo(2);
     }
 
+    @Test
+    void shouldGetPurchaseByUser(){
+        Mockito.when(purchaseOrderRepository.findByUser(user1)).thenReturn(purchaseOrder);
+
+        PurchaseOrder response = purchaseOrderService.findPurchaseByUser(user1);
+
+        assertEquals(purchaseOrder, response);
+
+    }
+
     /**
      * @author Antonio Hugo
      * Este teste espera receber o preço total de um pedido;
@@ -244,6 +254,6 @@ public class PurchaseOrderServiceTest {
     void shouldReturnTotalPriceOfAnOrder() {
         BigDecimal totalPrice = purchaseOrderService.calculateTotalPrice(purchaseOrder);
 
-        assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(300.0));
+        assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(275.0));
     }
 }
