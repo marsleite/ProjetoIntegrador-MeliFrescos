@@ -131,11 +131,11 @@ public class ProductServiceTest {
   void testUpdateProduct() {
     // testar se o método updateProduct atualiza um produto e retorna o mesmo
 
-    Product product = new Product(1, "Coca-Cola", StorageType.REFRIGERATED, "Refrigerante");
-
     Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(products.get(0)));
 
-    Assertions.assertEquals(productRepository.save(product), productService.updateProduct(product));
+    productService.updateProduct(product1);
+
+    verify(productRepository).save(product1);
   }
 
   @Test

@@ -15,8 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Marcelo Leite
@@ -57,5 +59,75 @@ public class UserServiceTest {
     Mockito.when(userRepository.findAll()).thenReturn(users);
 
     assertEquals(users, userService.listAll());
+  }
+
+  @Test
+  @DisplayName("Test find user by id")
+  void testFindUserById() {
+    Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(users.get(0)));
+
+    assertEquals(users.get(0), userService.findUserById(1));
+  }
+
+  @Test
+  @DisplayName("Test create user successful")
+  void testCreteUser() {
+    Mockito.when(userRepository.save(user1)).thenReturn(user1);
+
+    assertEquals(user1, userService.create(user1));
+  }
+
+  @Test
+  @DisplayName("Test create user failed")
+  void testCreteUserFails() {
+    Mockito.when(userRepository.findByEmail(user1.getEmail()))
+            .thenReturn(user1);
+
+    RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> userService.create(user1));
+    assertTrue(runtimeException.getMessage().contains("User already exists"));
+  }
+
+  @Test
+  @DisplayName("Test update user but not found and return exception")
+  void testUpdateUserFails() {
+    RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> userService.update(user1));
+    assertTrue(runtimeException.getMessage().contains("User not found"));
+  }
+
+  @Test
+  @DisplayName("Test update successfull")
+  void testUpdateSuccess() {
+    Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(users.get(0)));
+
+    userService.update(user1);
+
+    verify(userRepository).save(user1);
+  }
+
+  @Test
+  @DisplayName("Test update user id")
+  void testUpdate() {
+    Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(users.get(0)));
+
+    userService.update(1, user1);
+
+    verify(userRepository).save(user1);
+  }
+
+  @Test
+  @DisplayName("Test exceptions delete failed")
+  void testDeleteUserFails() {
+    RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> userService.delete(user1.getId()));
+    assertTrue(runtimeException.getMessage().contains("User not found"));
+  }
+
+  @Test
+  @DisplayName("Test delete successful")
+  void testDeleteUser() {
+    Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(users.get(0)));
+
+    userService.delete(1);
+
+    verify(userRepository).delete(user1);
   }
 }
