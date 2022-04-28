@@ -14,5 +14,5 @@ public interface IPurchaseOrderService {
     List<PurchaseOrder> getAll();
     PurchaseOrder getById(Integer id);
     void delete(Integer id);
-    PurchaseOrder updateOrderStatus(OrderStatus newOrderStatus, Integer id);
+    PurchaseOrder updateOrderStatus(Integer id);
 }

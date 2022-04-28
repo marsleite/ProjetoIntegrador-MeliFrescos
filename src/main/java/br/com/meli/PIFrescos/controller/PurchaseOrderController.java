@@ -54,4 +54,17 @@ public class PurchaseOrderController {
            List<Product> products = service.findProductsByOrderId(querytype);
         return ResponseEntity.ok().body(new OrderProductDTO(querytype, products));
     }
+
+    /**
+     * Este endpoint atualiza o OrderStatus do pedido de compra para FINISHED.
+     * @param idOrder
+     * @return  TotalPriceDTO
+     * @author Ana Preis
+     */
+    @PutMapping("")
+    public ResponseEntity<TotalPriceDTO> updateOrderStatus(@RequestParam Integer idOrder) {
+        PurchaseOrder purchaseOrder = service.updateOrderStatus(idOrder);
+        BigDecimal totalPrice = service.calculateTotalPrice(purchaseOrder);
+        return ResponseEntity.ok().body(new TotalPriceDTO(totalPrice));
+    }
 }
