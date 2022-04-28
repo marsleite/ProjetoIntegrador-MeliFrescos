@@ -8,6 +8,7 @@ import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
 import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.PurchaseOrder;
+import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.service.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,9 +31,8 @@ public class PurchaseOrderController {
 
     /**
      * Insere nova compra e retorna o valor total do pedido.
-     *
      * @return TotalPriceDTO
-     * @author Julio César Gama
+     * @author Julio César Gama / Felipe Myose
      */
 
     @PostMapping("")
