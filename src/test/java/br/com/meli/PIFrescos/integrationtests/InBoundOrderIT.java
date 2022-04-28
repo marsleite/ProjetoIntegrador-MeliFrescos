@@ -1,7 +1,7 @@
 package br.com.meli.PIFrescos.integrationtests;
 
 import br.com.meli.PIFrescos.controller.dtos.BatchDTO;
-import br.com.meli.PIFrescos.controller.dtos.InboundOrderDTO;
+import br.com.meli.PIFrescos.controller.forms.InboundOrderForm;
 import br.com.meli.PIFrescos.controller.dtos.InboundOrderUpdateDTO;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
@@ -105,13 +105,13 @@ public class InBoundOrderIT {
         section1.setMaxCapacity(100);
         section1.setCurrentCapacity(0);
 
-        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO();
+        InboundOrderForm inboundOrderForm = new InboundOrderForm();
         BatchDTO batchDTO1 = new BatchDTO();
         batchDTO1.setCurrentQuantity(1);
         batchDTO1.setProductId(1);
-        inboundOrderDTO.setBatchStock(Arrays.asList(batchDTO1));
-        inboundOrderDTO.setSection(section1);
-        String inboundOrderString = objectMapper.writeValueAsString(inboundOrderDTO);
+        inboundOrderForm.setBatchStock(Arrays.asList(batchDTO1));
+        inboundOrderForm.setSection(section1);
+        String inboundOrderString = objectMapper.writeValueAsString(inboundOrderForm);
 
         Mockito.when(sectionRepository.findById(any())).thenReturn(java.util.Optional.of(section1));
         Mockito.when(productRepository.findById(any())).thenReturn(java.util.Optional.of(new Product()));

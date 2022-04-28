@@ -7,6 +7,7 @@ import br.com.meli.PIFrescos.repository.ProductRepository;
 
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
+import br.com.meli.PIFrescos.repository.UserRepository;
 import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +44,32 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Autowired
     IBatchService batchService;
 
+    @Autowired
+    UserRepository userRepository;
+
     /**
-     * Salva uma PurchaseOrder. Antes de salvar, é verificado se a PurchaseOrder já existe.
+     * Salva uma PurchaseOrder. Antes de salvar, é necessário buscar informaçoes das entidades que o compõe.
      * @return PurchaseOrder
-     * @author Ana Preis
+     * @author Ana Preis / Felipe Myose
      */
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-        Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(purchaseOrder.getId());
-        if (purchaseOptional.isPresent()) {
-            throw new RuntimeException("PurchaseOrder already exists!");
-        }
+        // purchaseOrder possui varios valores nulos devido ao payload que o user envia. popular estes valores
+        // encontrar o usuario
+        purchaseOrder.setUser(userRepository.findById(purchaseOrder.getUser().getId()).get());
+        //encontrar o batch
+        List<ProductsCart> cartList = purchaseOrder.getCartList();
+        cartList.forEach(productsCart -> {
+            Integer batchNumber = productsCart.getBatch().getBatchNumber();
+            Batch batch = batchRepository.findByBatchNumber(batchNumber);
+            productsCart.setBatch(batch);
+        });
+
+        // comentando esta validaçao, pois como se trata de uma primeira compra, não há id do purchaseOrder - validar no put
+        //Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(purchaseOrder.getId());
+        //if (purchaseOptional.isPresent()) {
+        //    throw new RuntimeException("PurchaseOrder already exists!");
+        //}
 
         List<ProductsCart> invalidProductList = purchaseOrder.getCartList().stream()
                 .filter(productsCart -> batchRepository.existsBatchByBatchNumber(productsCart.getBatch().getBatchNumber()))

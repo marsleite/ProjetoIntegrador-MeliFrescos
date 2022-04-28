@@ -29,7 +29,7 @@ public class UserService {
 
   // Cria um novo usuario, mas antes verifica se já existe um com o mesmo nome
   public User create(User user) {
-    if (userRepository.findByEmail(user.getEmail()) != null) {
+    if (userRepository.findByEmail(user.getEmail()).isPresent()) {
       throw new RuntimeException("User already exists");
     }
     return userRepository.save(user);

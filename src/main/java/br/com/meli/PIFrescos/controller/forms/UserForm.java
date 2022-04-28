@@ -1,14 +1,19 @@
 package br.com.meli.PIFrescos.controller.forms;
 
+import br.com.meli.PIFrescos.models.Profile;
 import br.com.meli.PIFrescos.models.Address;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.models.UserRole;
+import br.com.meli.PIFrescos.repository.ProfileRepository;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Juliano Alcione de Souza
@@ -35,7 +40,22 @@ public class UserForm {
   @NotNull(message = "O role não pode ser nulo.")
   private UserRole role;
 
-  public User convertToEntity(){
-    return new User(null, fullname, email, password, address, role);
+  private List<Profile> perfis = new ArrayList<>();
+
+
+  public UserForm(String fullname, String email, String password, UserRole role) {
+    this.fullname = fullname;
+    this.email = email;
+    this.password = new BCryptPasswordEncoder().encode(password);
+    this.role = role;
+  }
+
+  public User convertToEntity(ProfileRepository profileRepository){
+    Optional<Profile> profile = profileRepository.findByName(role.toString());
+    if(profile.isEmpty()){
+      throw new RuntimeException("Profile not found");
+    }
+
+    return new User(null, fullname, email, password, address, role, List.of(profile.get()));
   }
 }

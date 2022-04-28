@@ -2,9 +2,11 @@ package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.controller.dtos.OrderProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.TotalPriceDTO;
+import br.com.meli.PIFrescos.controller.forms.ProductCartForm;
 import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.Product;
+import br.com.meli.PIFrescos.models.ProductsCart;
 import br.com.meli.PIFrescos.models.PurchaseOrder;
 import br.com.meli.PIFrescos.service.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +33,9 @@ public class PurchaseOrderController {
      */
 
     @PostMapping("")
-    public ResponseEntity<TotalPriceDTO> postOrder(@RequestBody PurchaseOrderForm form) {
+    public ResponseEntity<TotalPriceDTO> postOrder(@RequestBody PurchaseOrderForm purchaseOrderForm){
 
-        PurchaseOrder order = form.convertToEntity();
+        PurchaseOrder order = PurchaseOrderForm.convertToEntity(purchaseOrderForm);
         PurchaseOrder savedOrder = service.save(order);
 
         BigDecimal totalPrice = service.calculateTotalPrice(savedOrder);

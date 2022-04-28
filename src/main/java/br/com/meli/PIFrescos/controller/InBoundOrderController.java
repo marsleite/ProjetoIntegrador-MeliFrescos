@@ -1,9 +1,9 @@
 package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.controller.dtos.InboundOrderUpdateDTO;
+import br.com.meli.PIFrescos.controller.forms.InboundOrderForm;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
-import br.com.meli.PIFrescos.controller.dtos.InboundOrderDTO;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.service.InboundOrderService;
 import br.com.meli.PIFrescos.service.SectionService;
@@ -41,8 +41,8 @@ public class InBoundOrderController {
      * @author Ana Preis
      */
     @PostMapping("")
-    public ResponseEntity<List<Batch>> postInboundOrders(@RequestBody InboundOrderDTO orderDTO){
-        InboundOrder order = InboundOrderDTO.convert(orderDTO);
+    public ResponseEntity<List<Batch>> postInboundOrders(@RequestBody InboundOrderForm orderDTO){
+        InboundOrder order = InboundOrderForm.convert(orderDTO);
         InboundOrder savedOrder = service.save(order);
 
         return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);

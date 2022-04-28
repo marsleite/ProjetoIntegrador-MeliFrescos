@@ -5,6 +5,7 @@ import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
+import br.com.meli.PIFrescos.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ import static org.mockito.Mockito.verify;
 public class PurchaseOrderServiceTest {
 
     @Mock
+    UserRepository userRepository;
+
+    @Mock
     PurchaseOrderRepository purchaseOrderRepository;
 
     @Mock
@@ -56,9 +60,12 @@ public class PurchaseOrderServiceTest {
     private ProductsCart productsCart1 = new ProductsCart();
     private ProductsCart productsCart2 = new ProductsCart();
     private List<PurchaseOrder> purchaseOrderList = new ArrayList<>();
+    private User user1 = new User();
 
     @BeforeEach
     void setup() {
+        user1.setId(1);
+
         product1.setProductId(1);
         product1.setProductName("Banana");
         product1.setProductType(FRESH);
@@ -93,7 +100,7 @@ public class PurchaseOrderServiceTest {
         productsCartList = Arrays.asList(productsCart1, productsCart2);
 
         purchaseOrder.setId(1);
-        purchaseOrder.setUser(new User());
+        purchaseOrder.setUser(user1);
         purchaseOrder.setDate(LocalDate.of(2022, 1, 8));
         purchaseOrder.setOrderStatus(OPENED);
         purchaseOrder.setCartList(productsCartList);
@@ -104,11 +111,11 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldSavePurchaseOrder(){
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
-        Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
+        //Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
         Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
         Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
         Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-
+        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
@@ -117,24 +124,14 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldNotValidatePurchaseOrder(){
         productsCart1.setBatch(mockBatch3);
-        Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
         Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
         Mockito.when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
         Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
 
         ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
 
         assertEquals(exception.getErrorFormsDtoList().size(),1);
-    }
-
-    @Test
-    void shouldNotSavePurchaseOrder(){
-        String message = "PurchaseOrder already exists!";
-        Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.ofNullable(purchaseOrder));
-
-        RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> purchaseOrderService.save(purchaseOrder));
-
-        assertThat(exception.getMessage()).isEqualTo(message);
     }
 
     @Test
