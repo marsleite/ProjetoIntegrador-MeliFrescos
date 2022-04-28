@@ -18,7 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Antonio Hugo
+ *
+ */
 @ExtendWith(MockitoExtension.class)
 public class BatchServiceTests {
 
@@ -39,8 +42,12 @@ public class BatchServiceTests {
         mockProduct.setProductType(StorageType.FRESH);
     }
 
+    /**
+     * @author Antonio Hugo
+     * Este teste espera busar um Batch por Id.
+     */
     @Test
-    public void shouldBeAbleReturnBatch(){
+    public void shouldBeAbleReturnBatchById(){
 
         Batch mockBatch = Batch.builder()
                 .batchNumber(1)
@@ -62,15 +69,22 @@ public class BatchServiceTests {
 
     }
 
+    /**
+     * @author Antonio Hugo
+     * Este teste espera uma RuntimeException quando o id do Batch for inválido.
+     */
     @Test
     public void shouldNotBeAbleToFindBatchIfDoesntExist() {
 
         Assertions.assertThrows(RuntimeException.class, () -> batchService.findBatchById(100));
 
     }
-
+    /**
+     * @author Antonio Hugo
+     * Este teste espera buscar pelo id do produto uma lista de Batch desse produto.
+     */
     @Test
-    public void shouldBeAbleReturnBatchList(){
+    public void shouldBeAbleReturnBatchListByProductId(){
         List listMockBatch = new ArrayList();
 
         Batch mockBatch = Batch.builder()
