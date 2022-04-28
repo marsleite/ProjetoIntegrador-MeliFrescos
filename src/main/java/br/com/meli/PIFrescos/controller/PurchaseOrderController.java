@@ -61,7 +61,7 @@ public class PurchaseOrderController {
      * @return  TotalPriceDTO
      * @author Ana Preis
      */
-    @PutMapping("")
+    @PutMapping("/finish")
     public ResponseEntity<TotalPriceDTO> updateOrderStatus(@RequestParam Integer idOrder) {
         PurchaseOrder purchaseOrder = service.updateOrderStatus(idOrder);
         BigDecimal totalPrice = service.calculateTotalPrice(purchaseOrder);
