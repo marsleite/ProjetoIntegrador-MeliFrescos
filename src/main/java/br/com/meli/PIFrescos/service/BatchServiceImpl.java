@@ -17,8 +17,8 @@ public class BatchServiceImpl implements IBatchService {
     private BatchRepository batchRepository;
 
     /**
-     *
-     * @return retorna uma Batch
+     * @param id batch id
+     * @return Batch
      * @author Antonio Hugo
      */
     @Override
@@ -27,8 +27,8 @@ public class BatchServiceImpl implements IBatchService {
     }
 
     /**
-     *
-     * @return retorna uma Lista Batch
+     * @param productId  id do produto
+     * @return List<Batch>
      * @author Antonio Hugo
      */
     @Override
@@ -37,7 +37,7 @@ public class BatchServiceImpl implements IBatchService {
     }
 
     /**
-     * @param batch
+     * @param batch recebe um Batch
      * @return boolean
      */
     @Override
