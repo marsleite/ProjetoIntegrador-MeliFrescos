@@ -16,15 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
-import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Ana Preis
@@ -54,8 +49,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      */
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-        // purchaseOrder possui varios valores nulos devido ao payload que o user envia. popular estes valores
-        // encontrar o usuario
         purchaseOrder.setUser(userRepository.findById(purchaseOrder.getUser().getId()).get());
         //encontrar o batch
         List<ProductsCart> cartList = purchaseOrder.getCartList();
@@ -65,34 +58,31 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             productsCart.setBatch(batch);
         });
 
-        // comentando esta validaçao, pois como se trata de uma primeira compra, não há id do purchaseOrder - validar no put
-        //Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(purchaseOrder.getId());
-        //if (purchaseOptional.isPresent()) {
-        //    throw new RuntimeException("PurchaseOrder already exists!");
-        //}
-
-        List<ProductsCart> invalidProductList = purchaseOrder.getCartList().stream()
-                .filter(productsCart -> batchRepository.existsBatchByBatchNumber(productsCart.getBatch().getBatchNumber()))
-                .filter(productsCart -> !isProducstCartListQuantityValid(productsCart))
-                .collect(Collectors.toList());
-
-        if(!invalidProductList.isEmpty()){
-            ProductCartException exception = new ProductCartException();
-            invalidProductList.forEach(item -> {
-                exception.addError(item.getBatch().getProduct().getProductName(), "Insuficient quantity of product on batch");
-            });
-            throw exception;
-        }
+        validProductList(purchaseOrder);
 
         return purchaseOrderRepository.save(purchaseOrder);
     }
 
+    private void validProductList(PurchaseOrder purchaseOrder) {
+        List<ProductsCart> invalidProductList = purchaseOrder.getCartList().stream()
+                .filter(productsCart -> !isProducstCartListQuantityValid(productsCart))
+                .collect(Collectors.toList());
+
+        if (!invalidProductList.isEmpty())
+            throw new ProductCartException(invalidProductList);
+    }
+
     public boolean isProducstCartListQuantityValid(ProductsCart productsCart){
         Integer productCartQuantity = productsCart.getQuantity();
-        Integer batchCurrentQuantity = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber()).getCurrentQuantity();
+        Batch batch = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber());
+        Integer batchCurrentQuantity = batch.getCurrentQuantity();
 
-        if (batchCurrentQuantity.compareTo(productCartQuantity) < 0) { return false; }
-        return true;
+        boolean isValid = batchCurrentQuantity.compareTo(productCartQuantity) > 0;
+
+        if(!isValid)
+            productsCart.setBatch(batch);
+
+        return isValid;
     }
 
     /**
@@ -117,6 +107,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Override
     public PurchaseOrder getById(Integer id){
         Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(id);
+        if(purchaseOptional.isEmpty()){
+            throw new EntityNotFoundException("PurchaseOrder not found");
+        }
+        return purchaseOptional.get();
+    }
+
+    private PurchaseOrder getByUserId(Integer id) {
+        Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findByUserId(id);
         if(purchaseOptional.isEmpty()){
             throw new EntityNotFoundException("PurchaseOrder not found");
         }
@@ -169,7 +167,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @author Antonio Hugo
      */
     public BigDecimal calculateTotalPrice(PurchaseOrder order){
-
         double totalPrice = order.getCartList()
                 .stream().mapToDouble(productsCart ->  productsCart.getBatch().getUnitPrice().doubleValue() * productsCart.getQuantity()
           ).sum();
@@ -188,7 +185,18 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
     }
 
+
     public PurchaseOrder findPurchaseByUser(User user){
         return purchaseOrderRepository.findByUser(user);
+   }
+  
+    public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
+        PurchaseOrder purchaseSaved = getByUserId(newPurchaseOrder.getUser().getId());
+        clearCartByPurchase(purchaseSaved);
+        return save(newPurchaseOrder);
+    }
+
+    public void clearCartByPurchase(PurchaseOrder purchaseOrder){
+        purchaseOrderRepository.delete(purchaseOrder);
     }
 }

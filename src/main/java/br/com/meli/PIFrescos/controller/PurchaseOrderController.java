@@ -3,9 +3,11 @@ package br.com.meli.PIFrescos.controller;
 import br.com.meli.PIFrescos.config.security.TokenService;
 import br.com.meli.PIFrescos.controller.dtos.OrderProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.TotalPriceDTO;
-import br.com.meli.PIFrescos.controller.forms.ProductCartForm;
 import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
+
 import br.com.meli.PIFrescos.models.*;
+import br.com.meli.PIFrescos.models.Product;
+import br.com.meli.PIFrescos.models.PurchaseOrder;
 import br.com.meli.PIFrescos.service.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,10 @@ import java.util.List;
 public class PurchaseOrderController {
 
     @Autowired
-    PurchaseOrderService service;
+    private PurchaseOrderService service;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Autowired
     TokenService tokenService;
@@ -36,7 +41,7 @@ public class PurchaseOrderController {
     @PostMapping("")
     public ResponseEntity<TotalPriceDTO> postOrder(@RequestBody PurchaseOrderForm purchaseOrderForm){
 
-        PurchaseOrder order = PurchaseOrderForm.convertToEntity(purchaseOrderForm);
+        PurchaseOrder order = purchaseOrderForm.convertToEntity(tokenService);
         PurchaseOrder savedOrder = service.save(order);
 
         BigDecimal totalPrice = service.calculateTotalPrice(savedOrder);
@@ -45,11 +50,29 @@ public class PurchaseOrderController {
     }
 
     /**
+     * Atualiza compra e retorna o valor total do pedido.
+     *
+     * @return TotalPriceDTO
+     * @author Juliano Alcione de Souza
+     */
+
+    @PutMapping
+    public ResponseEntity<TotalPriceDTO> putOrder(@RequestBody PurchaseOrderForm form) {
+        PurchaseOrder order = form.convertToEntity(tokenService);
+        PurchaseOrder savedOrder = service.updateCartList(order);
+        BigDecimal totalPrice = service.calculateTotalPrice(savedOrder);
+
+        return new ResponseEntity(new TotalPriceDTO(totalPrice), HttpStatus.OK);
+    }
+
+
+    /**
      * Este endpoint retorna todos os produtos de um pedido.
      * @return  OrderProductDTO
      * @author Antonio Hugo
      * Refactor: Ana Preis
      */
+
     @GetMapping("")
     public ResponseEntity<OrderProductDTO> getProductsByUser() {
             User userLogged = tokenService.getUserLogged();
@@ -57,6 +80,7 @@ public class PurchaseOrderController {
             PurchaseOrder purchaseOrder = service.findPurchaseByUser(userLogged);
             List<Product> products = service.findProductsByOrderId(purchaseOrder.getId());
         return ResponseEntity.ok().body(new OrderProductDTO(purchaseOrder.getId(), products));
+
     }
 
     /**
