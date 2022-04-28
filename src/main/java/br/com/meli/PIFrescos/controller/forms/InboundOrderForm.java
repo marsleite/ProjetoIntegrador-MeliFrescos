@@ -21,7 +21,6 @@ import java.util.List;
 @AllArgsConstructor
 public class InboundOrderForm {
 
-    @NotEmpty(message = "orderDate field can't be empty")
     private LocalDate orderDate;
     private Section section;
     private List<BatchDTO> batchStock;
