@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f490359f-4a78-4725-8e65-3ec69df4f0c9",
+		"_postman_id": "0851f6bf-ca47-42e0-bf2e-e973d16660b7",
 		"name": "PraticaIntetgradora",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -191,7 +191,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/fresh-products/listById?id=1",
+							"raw": "http://localhost:8080/api/v1/fresh-products/batch/list?id=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -201,7 +201,8 @@
 								"api",
 								"v1",
 								"fresh-products",
-								"listById"
+								"batch",
+								"list"
 							],
 							"query": [
 								{
@@ -657,8 +658,7 @@
 	],
 	"variable": [
 		{
-			"key": "token",
-			"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNZWxpRnJlc2NvcyIsInN1YiI6IjQiLCJpYXQiOjE2NTExNzM2MDQsImV4cCI6MTY1MTI2MDAwNH0.5YIjWIq8P0t0xFh9rH07A6n7aqrj4TJCfN_0M_8EjgM",
+			"value": "",
 			"type": "default"
 		}
 	]
