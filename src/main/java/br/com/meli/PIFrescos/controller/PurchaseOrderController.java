@@ -1,13 +1,11 @@
 package br.com.meli.PIFrescos.controller;
 
+import br.com.meli.PIFrescos.config.security.TokenService;
 import br.com.meli.PIFrescos.controller.dtos.OrderProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.TotalPriceDTO;
 import br.com.meli.PIFrescos.controller.forms.ProductCartForm;
 import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
-import br.com.meli.PIFrescos.models.Batch;
-import br.com.meli.PIFrescos.models.Product;
-import br.com.meli.PIFrescos.models.ProductsCart;
-import br.com.meli.PIFrescos.models.PurchaseOrder;
+import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.service.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +22,9 @@ public class PurchaseOrderController {
 
     @Autowired
     PurchaseOrderService service;
+
+    @Autowired
+    TokenService tokenService;
 
     /**
      * Insere nova compra e retorna o valor total do pedido.
@@ -45,14 +46,17 @@ public class PurchaseOrderController {
 
     /**
      * Este endpoint retorna todos os produtos de um pedido.
-     * @param querytype
      * @return  OrderProductDTO
      * @author Antonio Hugo
+     * Refactor: Ana Preis
      */
     @GetMapping("")
-    public ResponseEntity<OrderProductDTO> getProductsByOrderId(@RequestParam Integer querytype) {
-           List<Product> products = service.findProductsByOrderId(querytype);
-        return ResponseEntity.ok().body(new OrderProductDTO(querytype, products));
+    public ResponseEntity<OrderProductDTO> getProductsByUser() {
+            User userLogged = tokenService.getUserLogged();
+            System.out.println(userLogged.getId());
+            PurchaseOrder purchaseOrder = service.findPurchaseByUser(userLogged);
+            List<Product> products = service.findProductsByOrderId(purchaseOrder.getId());
+        return ResponseEntity.ok().body(new OrderProductDTO(purchaseOrder.getId(), products));
     }
 
     /**

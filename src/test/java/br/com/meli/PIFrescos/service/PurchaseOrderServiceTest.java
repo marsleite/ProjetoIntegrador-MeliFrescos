@@ -225,4 +225,13 @@ public class PurchaseOrderServiceTest {
        List<Product> list = purchaseOrderService.findProductsByOrderId(1);
        assertThat(list.size()).isEqualTo(2);
     }
+
+    @Test
+    void shouldGetPurchaseByUser(){
+        Mockito.when(purchaseOrderRepository.findByUser(user1)).thenReturn(purchaseOrder);
+
+        PurchaseOrder response = purchaseOrderService.findPurchaseByUser(user1);
+
+        assertEquals(purchaseOrder, response);
+    }
 }
