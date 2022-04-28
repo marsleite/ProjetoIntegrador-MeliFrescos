@@ -5,15 +5,16 @@ import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class BatchServiceImpl implements IBatchService {
 
-    private final BatchRepository batchRepository;
+    @Autowired
+    private BatchRepository batchRepository;
 
     /**
      *
