@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0851f6bf-ca47-42e0-bf2e-e973d16660b7",
+		"_postman_id": "605054d3-626f-41b0-bf5c-7d83e08d87dd",
 		"name": "PraticaIntetgradora",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -109,7 +109,7 @@
 							"query": [
 								{
 									"key": "",
-									"value": null,
+									"value": "",
 									"disabled": true
 								}
 							]
@@ -420,7 +420,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/fresh-products/orders?querytype=1",
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -434,8 +434,45 @@
 							],
 							"query": [
 								{
-									"key": "querytype",
-									"value": "1"
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllPurchaseOrder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"orders",
+								"all"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
 								}
 							]
 						}
@@ -455,7 +492,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 5\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 3\n        }\n    ]\n}",
+							"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 2\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
