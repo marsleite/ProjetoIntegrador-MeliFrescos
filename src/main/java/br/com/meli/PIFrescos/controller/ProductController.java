@@ -65,6 +65,11 @@ public class ProductController {
         return new ResponseEntity(productService.listByType(querytype), HttpStatus.OK);
     }
 
+    /**
+     * endpoint para listar os batches de cada produto, recebendo a id do produto pela URI.
+     * @author Ana Preis
+     */
+
     @GetMapping("/batch/list")
     public ResponseEntity<List<ProductDTO>> getById(@RequestParam Integer id){
 

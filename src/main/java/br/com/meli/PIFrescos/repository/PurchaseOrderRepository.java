@@ -12,10 +12,7 @@ import java.util.Optional;
  */
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Integer> {
-
     PurchaseOrder findByUser(User user);
-
-
     Optional<PurchaseOrder> findByUserId(Integer id);
 
 }
