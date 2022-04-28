@@ -70,7 +70,7 @@ public class UserServiceTest {
   }
 
   @Test
-  @DisplayName("Test create user successful")
+  @DisplayName("Test create user successfully")
   void testCreteUser() {
     Mockito.when(userRepository.save(user1)).thenReturn(user1);
 
