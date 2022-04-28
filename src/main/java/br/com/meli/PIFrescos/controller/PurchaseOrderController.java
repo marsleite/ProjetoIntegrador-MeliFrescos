@@ -71,12 +71,11 @@ public class PurchaseOrderController {
      */
 
     @GetMapping("")
-    public ResponseEntity<OrderProductDTO> getProductsByUser() {
+    public ResponseEntity<PurchaseOrderDTO> getPurchaseOrder() {
             User userLogged = tokenService.getUserLogged();
             System.out.println(userLogged.getId());
-            PurchaseOrder purchaseOrder = service.findPurchaseByUser(userLogged);
-            List<Product> products = service.findProductsByOrderId(purchaseOrder.getId());
-        return ResponseEntity.ok().body(new OrderProductDTO(purchaseOrder.getId(), products));
+            PurchaseOrder purchaseOrder = service.getPurchaseOrderByUserIdAndStatusIsOpened(userLogged.getId());
+        return ResponseEntity.ok().body(PurchaseOrderDTO.convert(purchaseOrder));
 
     }
 
