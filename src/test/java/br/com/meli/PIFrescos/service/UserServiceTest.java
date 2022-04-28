@@ -71,7 +71,7 @@ public class UserServiceTest {
 
   @Test
   @DisplayName("Test create user successfully")
-  void testCreteUser() {
+  void testCreateUser() {
     Mockito.when(userRepository.save(user1)).thenReturn(user1);
 
     assertEquals(user1, userService.create(user1));
@@ -79,7 +79,7 @@ public class UserServiceTest {
 
   @Test
   @DisplayName("Test create user failed")
-  void testCreteUserFails() {
+  void testCreateUserFails() {
     Mockito.when(userRepository.findByEmail(user1.getEmail()))
             .thenReturn(user1);
 
