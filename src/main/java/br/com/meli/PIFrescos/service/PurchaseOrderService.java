@@ -50,7 +50,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) {
          // se o usuario já possui uma ordem de compra, ao fazer GET, os itens existentes serão substituidos
-        PurchaseOrder oldPurchaseOrder = getPurchaseOrderByUserId(purchaseOrder.getUser().getId());
+        PurchaseOrder oldPurchaseOrder = getPurchaseOrderByUserIdAndStatusIsOpened(purchaseOrder.getUser().getId());
         if (oldPurchaseOrder != null) {
             purchaseOrder.setId(oldPurchaseOrder.getId());
         }
@@ -210,7 +210,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @param userId
      * @return PurchaseOrder
      */
-    public PurchaseOrder getPurchaseOrderByUserId(Integer userId) {
-        return purchaseOrderRepository.getPurchaseOrderByUserId(userId);
+    public PurchaseOrder getPurchaseOrderByUserIdAndStatusIsOpened(Integer userId) {
+        return purchaseOrderRepository.getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(userId);
     }
 }
