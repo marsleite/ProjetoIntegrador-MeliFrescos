@@ -2,7 +2,9 @@ package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.controller.dtos.ProductDTO;
 import br.com.meli.PIFrescos.controller.forms.ProductForm;
+import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.Product;
+import br.com.meli.PIFrescos.service.BatchServiceImpl;
 import br.com.meli.PIFrescos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,9 @@ import java.util.List;
 public class ProductController {
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private BatchServiceImpl batchService;
 
     @PostMapping
     public ResponseEntity<ProductDTO> create(@RequestBody @Valid ProductForm form){
@@ -59,4 +64,11 @@ public class ProductController {
 
         return new ResponseEntity(productService.listByType(querytype), HttpStatus.OK);
     }
+
+    @GetMapping("/listById")
+    public ResponseEntity<List<ProductDTO>> getById(@RequestParam Integer id){
+
+        return new ResponseEntity(batchService.findBatchesByProduct(id), HttpStatus.OK);
+    }
+
 }

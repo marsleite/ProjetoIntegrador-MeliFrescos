@@ -43,7 +43,7 @@ public class PurchaseOrderController {
 
         BigDecimal totalPrice = service.calculateTotalPrice(savedOrder);
 
-        return new ResponseEntity<TotalPriceDTO>(new TotalPriceDTO(totalPrice), HttpStatus.CREATED);
+        return new ResponseEntity<>(new TotalPriceDTO(totalPrice), HttpStatus.CREATED);
     }
 
     /**
