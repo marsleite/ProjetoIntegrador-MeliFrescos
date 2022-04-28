@@ -28,9 +28,6 @@ public class PurchaseOrderController {
     @Autowired
     private TokenService tokenService;
 
-    @Autowired
-    TokenService tokenService;
-
     /**
      * Insere nova compra e retorna o valor total do pedido.
      *
