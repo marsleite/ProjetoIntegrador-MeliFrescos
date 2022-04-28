@@ -1,12 +1,10 @@
 package br.com.meli.PIFrescos.controller;
 
+import br.com.meli.PIFrescos.config.security.TokenService;
 import br.com.meli.PIFrescos.controller.dtos.OrderProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.TotalPriceDTO;
-import br.com.meli.PIFrescos.controller.forms.ProductCartForm;
 import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
-import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.Product;
-import br.com.meli.PIFrescos.models.ProductsCart;
 import br.com.meli.PIFrescos.models.PurchaseOrder;
 import br.com.meli.PIFrescos.service.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,10 @@ import java.util.List;
 public class PurchaseOrderController {
 
     @Autowired
-    PurchaseOrderService service;
+    private PurchaseOrderService service;
+
+    @Autowired
+    private TokenService tokenService;
 
     /**
      * Insere nova compra e retorna o valor total do pedido.
@@ -35,7 +36,7 @@ public class PurchaseOrderController {
     @PostMapping("")
     public ResponseEntity<TotalPriceDTO> postOrder(@RequestBody PurchaseOrderForm purchaseOrderForm){
 
-        PurchaseOrder order = PurchaseOrderForm.convertToEntity(purchaseOrderForm);
+        PurchaseOrder order = purchaseOrderForm.convertToEntity(tokenService);
         PurchaseOrder savedOrder = service.save(order);
 
         BigDecimal totalPrice = service.calculateTotalPrice(savedOrder);
@@ -44,12 +45,29 @@ public class PurchaseOrderController {
     }
 
     /**
+     * Atualiza compra e retorna o valor total do pedido.
+     *
+     * @return TotalPriceDTO
+     * @author Juliano Alcione de Souza
+     */
+
+    @PutMapping
+    public ResponseEntity<TotalPriceDTO> putOrder(@RequestBody PurchaseOrderForm form) {
+        PurchaseOrder order = form.convertToEntity(tokenService);
+        PurchaseOrder savedOrder = service.updateCartList(order);
+        BigDecimal totalPrice = service.calculateTotalPrice(savedOrder);
+
+        return new ResponseEntity(new TotalPriceDTO(totalPrice), HttpStatus.OK);
+    }
+
+
+    /**
      * Este endpoint retorna todos os produtos de um pedido.
      * @param querytype
      * @return  OrderProductDTO
      * @author Antonio Hugo
      */
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<OrderProductDTO> getProductsByOrderId(@RequestParam Integer querytype) {
            List<Product> products = service.findProductsByOrderId(querytype);
         return ResponseEntity.ok().body(new OrderProductDTO(querytype, products));
