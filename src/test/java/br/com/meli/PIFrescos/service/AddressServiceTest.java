@@ -77,7 +77,9 @@ public class AddressServiceTest {
   void  testUpdateAddress() {
     Mockito.when(addressRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(addresses.get(0)));
 
-    Assertions.assertEquals(addressRepository.save(address1), addressService.updateAddress(address1));
+    addressService.updateAddress(address1);
+
+    verify(addressRepository).save(address1);
   }
 
   @Test
