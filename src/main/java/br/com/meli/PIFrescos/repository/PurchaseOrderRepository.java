@@ -18,4 +18,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, In
 
     Optional<PurchaseOrder> findByUserId(Integer id);
 
+    PurchaseOrder getPurchaseOrderByUserId(Integer userId);
+
 }
+

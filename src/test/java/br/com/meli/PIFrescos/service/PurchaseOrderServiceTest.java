@@ -111,11 +111,21 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldSavePurchaseOrder(){
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
-        //Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
         Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
         Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
         Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
+        PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
+
+        assertEquals(purchaseOrder, savedPurchaseOrder);
+    }
+
+    @Test
+    void shouldSavePurchaseOrderWhenUserAlreadyHasAnOrder(){
+        Mockito.when(purchaseOrderRepository.getPurchaseOrderByUserId(any())).thenReturn(purchaseOrder);
+        Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
+        Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
@@ -127,7 +137,6 @@ public class PurchaseOrderServiceTest {
         Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
         Mockito.when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
         Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
 
         ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
 
