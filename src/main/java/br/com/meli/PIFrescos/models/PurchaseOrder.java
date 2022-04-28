@@ -25,6 +25,7 @@ public class PurchaseOrder {
     @ManyToOne
     private User user;
     private LocalDate date;
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @OneToMany(cascade = CascadeType.ALL)
     private List<ProductsCart> cartList;
