@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface IPurchaseOrderService {
     PurchaseOrder save(PurchaseOrder purchaseOrder);
-    List<PurchaseOrder> getAll();
+    List<PurchaseOrder> getAllByUserId(Integer id);
     PurchaseOrder getById(Integer id);
     void delete(Integer id);
     PurchaseOrder updateOrderStatus(Integer id);
