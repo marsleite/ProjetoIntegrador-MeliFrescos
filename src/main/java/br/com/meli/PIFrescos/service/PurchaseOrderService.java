@@ -49,10 +49,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      */
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-        purchaseOrder.setUser(userRepository.findById(purchaseOrder.getUser().getId()).get());
+         // se o usuario já possui uma ordem de compra, ao fazer GET, os itens existentes serão substituidos
+        PurchaseOrder oldPurchaseOrder = getPurchaseOrderByUserIdAndStatusIsOpened(purchaseOrder.getUser().getId());
+        if (oldPurchaseOrder != null) {
+            purchaseOrder.setId(oldPurchaseOrder.getId());
+        }
+
         //encontrar o batch
-        List<ProductsCart> cartList = purchaseOrder.getCartList();
-        cartList.forEach(productsCart -> {
+        purchaseOrder.getCartList().forEach(productsCart -> {
             Integer batchNumber = productsCart.getBatch().getBatchNumber();
             Batch batch = batchRepository.findByBatchNumber(batchNumber);
             productsCart.setBatch(batch);
@@ -72,6 +76,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             throw new ProductCartException(invalidProductList);
     }
 
+    /**
+     * Verifica se a quantidade atual de produtos no Lote é maior do que a quantidade do pedido.
+     * @return boolean
+     * @author Ana Preis
+     */
     public boolean isProducstCartListQuantityValid(ProductsCart productsCart){
         Integer productCartQuantity = productsCart.getQuantity();
         Batch batch = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber());
@@ -197,6 +206,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return save(newPurchaseOrder);
     }
 
+    public PurchaseOrder findPurchaseByUser(User user){
+      return purchaseOrderRepository.findByUser(user);
+    }
+  
     /**
      * Apaga todos os carrinhos abertos do cliente
      * @param id do usuario
@@ -208,5 +221,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         if(purchaseOpenedByUserId.size() > 0){
             purchaseOrderRepository.delete(purchaseOpenedByUserId.get(0));
         }
+    }
+
+    /**
+     * Verifica se um usuario ja possui uma order/carrinho de compra.
+     * @param userId
+     * @return PurchaseOrder
+     */
+    public PurchaseOrder getPurchaseOrderByUserIdAndStatusIsOpened(Integer userId) {
+        return purchaseOrderRepository.getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(userId);
     }
 }

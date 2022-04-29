@@ -30,9 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Ana Preis
- */
+
 @ExtendWith(MockitoExtension.class)
 public class PurchaseOrderServiceTest {
 
@@ -108,32 +106,51 @@ public class PurchaseOrderServiceTest {
         purchaseOrderList = Arrays.asList(purchaseOrder);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar salvar uma purchaseOrder corretamente.
+     */
     @Test
     void shouldSavePurchaseOrder(){
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
-        //Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.empty());
-        Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
         Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
         Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
     }
 
     @Test
+    void shouldSavePurchaseOrderWhenUserAlreadyHasAnOrder(){
+        Mockito.when(purchaseOrderRepository.getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(any())).thenReturn(purchaseOrder);
+        Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
+        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
+
+        assertEquals(purchaseOrder, savedPurchaseOrder);
+    }
+
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar uma exceção ao verificar no método save() que a quantidade do pedido é maior que
+     * a quantidade atual do lote.
+     */
+    @Test
     void shouldNotValidatePurchaseOrder(){
         productsCart1.setBatch(mockBatch3);
-        Mockito.when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
         Mockito.when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
         Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
 
         ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
 
         assertEquals(exception.getErrorFormsDtoList().size(),1);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar list de PurchaseOrder ao chamar o método findAll().
+     */
     @Test
     void shouldGetAll(){
         Mockito.when(purchaseOrderRepository.findAll()).thenReturn(purchaseOrderList);
@@ -143,6 +160,10 @@ public class PurchaseOrderServiceTest {
         assertEquals(purchaseOrderList, newPurchaseOrderList);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar uma exceção e não retornar todos os purchases ao passar uma Id de purchaseOrder inexistnte.
+     */
     @Test
     void shouldNotGetAll(){
         String message = "PurchaseOrder list is empty";
@@ -153,6 +174,10 @@ public class PurchaseOrderServiceTest {
         assertThat(exception.getMessage()).isEqualTo(message);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar uam purchase order ao passar o Id por parametro.
+     */
     @Test
     void shouldGetById(){
         Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.ofNullable(purchaseOrder));
@@ -162,6 +187,10 @@ public class PurchaseOrderServiceTest {
         assertEquals(purchaseOrder, newPurchaseOrder);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar uma exceção ao passar uma Id de purchaseOrder inexistnte.
+     */
     @Test
     void shouldNotGetById(){
         String message = "PurchaseOrder not found";
@@ -172,6 +201,10 @@ public class PurchaseOrderServiceTest {
         assertThat(exception.getMessage()).isEqualTo(message);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve verificar se o método delete é chamado corretamente.
+     */
     @Test
     void shouldDelete(){
         Mockito.when(purchaseOrderRepository.findById(purchaseOrder.getId())).thenReturn(Optional.ofNullable(purchaseOrder));
@@ -181,6 +214,10 @@ public class PurchaseOrderServiceTest {
         verify(purchaseOrderRepository).deleteById(any());
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar uma exceção e não deletar ao passar uma Id de purchaseOrder inexistnte.
+     */
     @Test
     void shouldNotDelete(){
         String message = "PurchaseOrder not found";
@@ -191,6 +228,10 @@ public class PurchaseOrderServiceTest {
         assertThat(exception.getMessage()).isEqualTo(message);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste espera receber uma purchase com o OrderStatus atuaizado.
+     */
     @Test
     void shouldUpdateOrder(){
         mockBatch3.setCurrentQuantity(5);
@@ -204,6 +245,10 @@ public class PurchaseOrderServiceTest {
         assertEquals(expectedPurchaseOrder, updatedPurchaseOrder);
     }
 
+    /**
+     * @author Ana Preis
+     * Este teste deve retornar uma exceção ao passar uma Id de purchaseOrder inexistnte.
+     */
     @Test
     void shouldNotFindPurchaseOrderAndUpdate(){
         String message = "PurchaseOrder not found";
@@ -224,5 +269,18 @@ public class PurchaseOrderServiceTest {
 
        List<Product> list = purchaseOrderService.findProductsByOrderId(1);
        assertThat(list.size()).isEqualTo(2);
+    }
+
+    /**
+     * @author Ana Preis
+     * Este teste espera receber uma purchase do usuário passado por parametro.
+     */
+    @Test
+    void shouldGetPurchaseByUser(){
+        Mockito.when(purchaseOrderRepository.findByUser(user1)).thenReturn(purchaseOrder);
+
+        PurchaseOrder response = purchaseOrderService.findPurchaseByUser(user1);
+
+        assertEquals(purchaseOrder, response);
     }
 }

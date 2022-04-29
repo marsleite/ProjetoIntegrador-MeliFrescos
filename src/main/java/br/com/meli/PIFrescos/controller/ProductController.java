@@ -1,8 +1,11 @@
 package br.com.meli.PIFrescos.controller;
 
+import br.com.meli.PIFrescos.controller.dtos.OrderedProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.ProductDTO;
 import br.com.meli.PIFrescos.controller.forms.ProductForm;
+import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.Product;
+import br.com.meli.PIFrescos.service.BatchServiceImpl;
 import br.com.meli.PIFrescos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ import java.util.List;
 public class ProductController {
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private BatchServiceImpl batchService;
 
     @PostMapping
     public ResponseEntity<ProductDTO> create(@RequestBody @Valid ProductForm form){
@@ -58,5 +64,20 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getByType(@RequestParam String querytype){
 
         return new ResponseEntity(productService.listByType(querytype), HttpStatus.OK);
+    }
+
+    /**
+     * endpoint para listar os batches de cada produto, recebendo a id do produto pela URI e ordenando por
+     * Lote (L), CurrentQuantity(C) ou DueDate(F). Se não receber o segundo parametro, lista todas.
+     * @author Ana Preis
+     */
+    @GetMapping("/batch/list")
+    public ResponseEntity<List<OrderedProductDTO>> getByIdAndOrderBy(@RequestParam(required = false) Integer id,
+                                                              @RequestParam(required = false) String orderBy){
+        if(orderBy == null){ orderBy = ""; }
+        List<Batch> batchList = batchService.findBatchesByProductOrderBy(id, orderBy);
+        List<OrderedProductDTO> dtoList = OrderedProductDTO.convertList(batchList);
+
+        return new ResponseEntity(dtoList, HttpStatus.OK);
     }
 }
