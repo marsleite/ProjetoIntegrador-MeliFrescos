@@ -48,6 +48,15 @@ public class SectionService implements ISectionService {
         }
         throw new RuntimeException("Section max capacity does not support order");
     }
+
+
+    /**
+     * @author Julio César Gama
+     *  Encontra uma seção pelo ID
+     */
+    @Override
+    public Optional<Section> findById(Integer sectionCode) { return sectionRepository.findById(sectionCode); }
+
     public Boolean sectionAlreadyExists(Integer code){
         return sectionRepository.existsSectionBySectionCode(code);
     }

@@ -21,9 +21,6 @@ public class InboundOrderService implements IInboundOrderService {
     ProductRepository productRepository;
 
     @Autowired
-    SectionRepository sectionRepository;
-
-    @Autowired
     InboundOrderRepository inboundOrderRepository;
 
     @Autowired
@@ -168,7 +165,7 @@ public class InboundOrderService implements IInboundOrderService {
             batch.setProduct(product);
         });
 
-        Section section = sectionRepository.findById(inboundOrder.getSection().getSectionCode()).orElse(null);
+        Section section = sectionService.findById(inboundOrder.getSection().getSectionCode()).orElse(null);
         if(section == null){
             throw new RuntimeException("Seção não existente.");
         }
