@@ -66,6 +66,11 @@ public class BatchServiceImpl implements IBatchService {
         return newBatch;
     }
 
+    /**
+     * Procura a lista de batches ordenada por Lote (L), CurrentQuantity(C) ou DueDate(F).
+     * Se não for passado na query nenhum destes 3, retorna uma exceção.
+     * @author Ana Preis
+     */
     public List<Batch> findBatchesByProductOrderBy(Integer id, String orderBy){
         if(orderBy.equals("L")){
             return batchRepository.findBatchesByProduct_ProductIdAndOrderByBatchNumber(id);

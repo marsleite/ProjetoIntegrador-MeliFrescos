@@ -167,6 +167,10 @@ public class BatchServiceTests {
         assertThat(exception.getMessage()).isEqualTo(message);
     }
 
+    /**
+     * Deve retornar uma lsita de lotes ordenados por Lote (L), CurrentQuantity(C) ou DueDate(F)
+     * @author Ana Preis
+     */
     @Test
     void shouldfindBatchesByProductIdAndOrderBy(){
         Batch mockBatch = Batch.builder()

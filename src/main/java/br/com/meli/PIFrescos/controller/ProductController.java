@@ -75,6 +75,11 @@ public class ProductController {
         return new ResponseEntity(batchService.findBatchesByProduct(id), HttpStatus.OK);
     }
 
+    /**
+     * endpoint para listar os batches de cada produto, recebendo a id do produto pela URI e ordenando por
+     * Lote (L), CurrentQuantity(C) ou DueDate(F).
+     * @author Ana Preis
+     */
     @GetMapping("/batch/list/")
     public ResponseEntity<List<ProductDTO>> getByIdAndOrderBy(@RequestParam Integer id,
                                                               @RequestParam String orderBy){
