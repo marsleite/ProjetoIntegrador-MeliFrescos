@@ -62,7 +62,7 @@ public class PurchaseOrderController {
 
 
     /**
-     * Este endpoint retorna todos os produtos de um pedido.
+     * Este endpoint retorna todos os produtos de um pedido em aberto.
      * @return  OrderProductDTO
      * @author Antonio Hugo
      * Refactor: Ana Preis
@@ -70,11 +70,10 @@ public class PurchaseOrderController {
 
     @GetMapping("")
     public ResponseEntity<PurchaseOrderDTO> getPurchaseOrder() {
-            User userLogged = tokenService.getUserLogged();
-            System.out.println(userLogged.getId());
-            PurchaseOrder purchaseOrder = service.getPurchaseOrderByUserIdAndStatusIsOpened(userLogged.getId());
+        User userLogged = tokenService.getUserLogged();
+        System.out.println(userLogged.getId());
+        PurchaseOrder purchaseOrder = service.getPurchaseOrderByUserIdAndStatusIsOpened(userLogged.getId());
         return ResponseEntity.ok().body(PurchaseOrderDTO.convert(purchaseOrder));
-
     }
 
     /**
