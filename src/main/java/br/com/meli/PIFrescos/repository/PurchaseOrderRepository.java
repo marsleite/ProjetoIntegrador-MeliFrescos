@@ -26,9 +26,5 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, In
      */
     @Query("select po from PurchaseOrder as po where po.user.id = :userId and po.orderStatus = 'OPENED'")
     List<PurchaseOrder> getPurchaseOpenedByUserId(@Param("userId") Integer userId);
-
-    @Query(value = "select p from PurchaseOrder p where p.orderStatus = 'OPENED' and p.user.id = :userId")
-    PurchaseOrder getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(@Param("userId") Integer userId);
-
 }
 
