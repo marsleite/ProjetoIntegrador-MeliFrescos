@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InboundOrderService implements IInboundOrderService {
@@ -158,19 +159,19 @@ public class InboundOrderService implements IInboundOrderService {
             return inboundOrder;
         }
         inboundOrder.getBatchStock().forEach(batch -> {
-            Product product = productRepository.findById(batch.getProduct().getProductId()).orElse(null);
-            if (product == null) {
+            Optional<Product> product = productRepository.findById(batch.getProduct().getProductId());
+            if (product.isEmpty() ) {
                 throw new RuntimeException("Produto não existe.");
             }
-            batch.setProduct(product);
+            batch.setProduct(product.get());
         });
 
-        Section section = sectionService.findById(inboundOrder.getSection().getSectionCode()).orElse(null);
-        if(section == null){
+        Optional<Section> section = sectionService.findById(inboundOrder.getSection().getSectionCode());
+        if(section.isEmpty()){
             throw new RuntimeException("Seção não existente.");
         }
 
-        inboundOrder.setSection(section);
+        inboundOrder.setSection(section.get());
 
         return inboundOrder;
     }
