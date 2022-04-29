@@ -1,12 +1,10 @@
 package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.config.security.TokenService;
-import br.com.meli.PIFrescos.controller.dtos.OrderProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.PurchaseOrderDTO;
 import br.com.meli.PIFrescos.controller.dtos.TotalPriceDTO;
 import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
 
-import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.PurchaseOrder;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.service.PurchaseOrderService;
@@ -64,7 +62,7 @@ public class PurchaseOrderController {
 
 
     /**
-     * Este endpoint retorna todos os produtos de um pedido.
+     * Este endpoint retorna todos os produtos de um pedido em aberto.
      * @return  OrderProductDTO
      * @author Antonio Hugo
      * Refactor: Ana Preis
@@ -72,10 +70,9 @@ public class PurchaseOrderController {
 
     @GetMapping("")
     public ResponseEntity<PurchaseOrderDTO> getPurchaseOrder() {
-            User userLogged = tokenService.getUserLogged();
-            PurchaseOrder purchaseOrder = service.getPurchaseOrderByUserIdAndStatusIsOpened(userLogged.getId());
+        User userLogged = tokenService.getUserLogged();
+        PurchaseOrder purchaseOrder = service.getPurchaseOrderByUserIdAndStatusIsOpened(userLogged.getId());
         return ResponseEntity.ok().body(PurchaseOrderDTO.convert(purchaseOrder));
-
     }
 
     /**

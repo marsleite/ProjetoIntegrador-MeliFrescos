@@ -1,9 +1,7 @@
 package br.com.meli.PIFrescos.controller.dtos;
 
 import br.com.meli.PIFrescos.models.Batch;
-import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
-import br.com.meli.PIFrescos.models.StorageType;
 import lombok.*;
 
 import java.util.List;

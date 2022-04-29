@@ -50,9 +50,12 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) {
          // se o usuario já possui uma ordem de compra, ao fazer GET, os itens existentes serão substituidos
-        PurchaseOrder oldPurchaseOrder = getPurchaseOrderByUserIdAndStatusIsOpened(purchaseOrder.getUser().getId());
-        if (oldPurchaseOrder != null) {
+        PurchaseOrder oldPurchaseOrder = null;
+        try {
+            oldPurchaseOrder = getPurchaseOrderByUserIdAndStatusIsOpened(purchaseOrder.getUser().getId());
             purchaseOrder.setId(oldPurchaseOrder.getId());
+        } catch (EntityNotFoundException e) {
+            System.out.println("Creating new purchaseorder");
         }
 
         //encontrar o batch
@@ -217,9 +220,9 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @author Juliano Alcione de Souza
      */
     public void clearCartByPurchase(Integer usuarioId){
-        List<PurchaseOrder> purchaseOpenedByUserId = purchaseOrderRepository.getPurchaseOpenedByUserId(usuarioId);
-        if(purchaseOpenedByUserId.size() > 0){
-            purchaseOrderRepository.delete(purchaseOpenedByUserId.get(0));
+        PurchaseOrder purchaseOpenedByUserId = getPurchaseOrderByUserIdAndStatusIsOpened(usuarioId);
+        if(purchaseOpenedByUserId != null){
+            purchaseOrderRepository.delete(purchaseOpenedByUserId);
         }
     }
 
@@ -229,8 +232,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @return PurchaseOrder
      */
     public PurchaseOrder getPurchaseOrderByUserIdAndStatusIsOpened(Integer userId) {
-
-
-        return purchaseOrderRepository.getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(userId);
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.getPurchaseOpenedByUserId(userId);
+        if (purchaseOrders.size() > 0) {
+            return purchaseOrders.get(0);
+        }
+        throw new EntityNotFoundException("No OPENED purchase cart");
     }
 }
