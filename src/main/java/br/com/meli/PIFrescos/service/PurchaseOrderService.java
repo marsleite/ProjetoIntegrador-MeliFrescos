@@ -194,20 +194,33 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
     }
 
-
-    public PurchaseOrder findPurchaseByUser(User user){
-        return purchaseOrderRepository.findByUser(user);
-   }
-  
+    /**
+     * Atualiza todos os itens do carrinho
+     * @param PurchaseOrder atualizado
+     * @return  PurchaseOrder
+     * @author Juliano Alcione de Souza
+     */
     public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
-        PurchaseOrder purchaseSaved = getByUserId(newPurchaseOrder.getUser().getId());
         validProductList(newPurchaseOrder);
-        clearCartByPurchase(purchaseSaved);
+        clearCartByPurchase(newPurchaseOrder.getUser().getId());
         return save(newPurchaseOrder);
     }
 
-    public void clearCartByPurchase(PurchaseOrder purchaseOrder){
-        purchaseOrderRepository.delete(purchaseOrder);
+    public PurchaseOrder findPurchaseByUser(User user){
+      return purchaseOrderRepository.findByUser(user);
+    }
+  
+    /**
+     * Apaga todos os carrinhos abertos do cliente
+     * @param id do usuario
+     * @return  void
+     * @author Juliano Alcione de Souza
+     */
+    public void clearCartByPurchase(Integer usuarioId){
+        List<PurchaseOrder> purchaseOpenedByUserId = purchaseOrderRepository.getPurchaseOpenedByUserId(usuarioId);
+        if(purchaseOpenedByUserId.size() > 0){
+            purchaseOrderRepository.delete(purchaseOpenedByUserId.get(0));
+        }
     }
 
     /**

@@ -18,6 +18,15 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, In
     PurchaseOrder findByUser(User user);
     Optional<PurchaseOrder> findByUserId(Integer id);
 
+    /**
+     * Retorna todos os carrinhos abertos
+     * @param id do usuario
+     * @return  List<PurchaseOrder>
+     * @author Juliano Alcione de Souza
+     */
+    @Query("select po from PurchaseOrder as po where po.user.id = :userId and po.orderStatus = 'OPENED'")
+    List<PurchaseOrder> getPurchaseOpenedByUserId(@Param("userId") Integer userId);
+
     @Query(value = "select p from PurchaseOrder p where p.orderStatus = 'OPENED' and p.user.id = :userId")
     PurchaseOrder getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(@Param("userId") Integer userId);
 
