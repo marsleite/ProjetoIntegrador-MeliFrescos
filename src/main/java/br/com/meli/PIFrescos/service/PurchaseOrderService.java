@@ -100,8 +100,8 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @author Ana Preis
      */
     @Override
-    public List<PurchaseOrder> getAll(){
-        List<PurchaseOrder> purchaseList = purchaseOrderRepository.findAll();
+    public List<PurchaseOrder> getAllByUserId(Integer id){
+        List<PurchaseOrder> purchaseList = purchaseOrderRepository.findAllByUserId(id);
         if(purchaseList.isEmpty()){
             throw new EntityNotFoundException("PurchaseOrder list is empty");
         }
@@ -229,6 +229,8 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @return PurchaseOrder
      */
     public PurchaseOrder getPurchaseOrderByUserIdAndStatusIsOpened(Integer userId) {
+
+
         return purchaseOrderRepository.getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(userId);
     }
 }

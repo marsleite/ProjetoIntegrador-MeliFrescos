@@ -153,9 +153,9 @@ public class PurchaseOrderServiceTest {
      */
     @Test
     void shouldGetAll(){
-        Mockito.when(purchaseOrderRepository.findAll()).thenReturn(purchaseOrderList);
+        Mockito.when(purchaseOrderRepository.findAllByUserId(1)).thenReturn(purchaseOrderList);
 
-        List<PurchaseOrder> newPurchaseOrderList = purchaseOrderService.getAll();
+        List<PurchaseOrder> newPurchaseOrderList = purchaseOrderService.getAllByUserId(1);
 
         assertEquals(purchaseOrderList, newPurchaseOrderList);
     }
@@ -167,9 +167,8 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldNotGetAll(){
         String message = "PurchaseOrder list is empty";
-        Mockito.when(purchaseOrderRepository.findAll()).thenReturn(new ArrayList<>());
 
-        EntityNotFoundException exception = Assertions.assertThrows(EntityNotFoundException.class, () -> purchaseOrderService.getAll());
+        EntityNotFoundException exception = Assertions.assertThrows(EntityNotFoundException.class, () -> purchaseOrderService.getAllByUserId(2));
 
         assertThat(exception.getMessage()).isEqualTo(message);
     }

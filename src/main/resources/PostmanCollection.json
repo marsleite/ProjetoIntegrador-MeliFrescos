@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "605054d3-626f-41b0-bf5c-7d83e08d87dd",
+		"_postman_id": "0851f6bf-ca47-42e0-bf2e-e973d16660b7",
 		"name": "PraticaIntetgradora",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -83,6 +83,34 @@
 					"response": []
 				},
 				{
+					"name": "delete product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "get all product",
 					"request": {
 						"method": "GET",
@@ -109,37 +137,9 @@
 							"query": [
 								{
 									"key": "",
-									"value": "",
+									"value": null,
 									"disabled": true
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete product",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/fresh-products/10",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"fresh-products",
-								"10"
 							]
 						}
 					},
@@ -413,77 +413,6 @@
 			"name": "purchase",
 			"item": [
 				{
-					"name": "getPurchaseOrder",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/fresh-products/orders",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"fresh-products",
-								"orders"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAllPurchaseOrder",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/fresh-products/orders/all",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"fresh-products",
-								"orders",
-								"all"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "postPurchaseOrder",
 					"request": {
 						"method": "POST",
@@ -496,7 +425,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 2\n        }\n    ]\n}",
+							"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 3,\n            \"quantity\": 1\n        },\n        {\n            \"batchId\": 3,\n            \"quantity\": 1\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -515,6 +444,69 @@
 								"v1",
 								"fresh-products",
 								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPurchaseOrder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders?querytype=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "querytype",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllPurchases",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"orders",
+								"all"
 							]
 						}
 					},
@@ -541,7 +533,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/fresh-products/orders/finish?idOrder=1",
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders/finish",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -553,12 +545,6 @@
 								"fresh-products",
 								"orders",
 								"finish"
-							],
-							"query": [
-								{
-									"key": "idOrder",
-									"value": "1"
-								}
 							]
 						}
 					},
@@ -699,7 +685,8 @@
 	],
 	"variable": [
 		{
-			"value": "",
+			"key": "token",
+			"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNZWxpRnJlc2NvcyIsInN1YiI6IjQiLCJpYXQiOjE2NTEyNDIwMTcsImV4cCI6MTY1MTMyODQxN30.eQc7KsPPkysa6ZwO51oQvxnco5JXAt1aL1nSVJjPnUA",
 			"type": "default"
 		}
 	]

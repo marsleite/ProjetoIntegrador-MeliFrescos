@@ -73,7 +73,6 @@ public class PurchaseOrderController {
     @GetMapping("")
     public ResponseEntity<PurchaseOrderDTO> getPurchaseOrder() {
             User userLogged = tokenService.getUserLogged();
-            System.out.println(userLogged.getId());
             PurchaseOrder purchaseOrder = service.getPurchaseOrderByUserIdAndStatusIsOpened(userLogged.getId());
         return ResponseEntity.ok().body(PurchaseOrderDTO.convert(purchaseOrder));
 
@@ -83,22 +82,25 @@ public class PurchaseOrderController {
      * retorna a lista de todos os purchaseOrder do cliente, tanto OPENNED quanto FINISHED.
      * @return List<PurchaseOrderDTO>
      * @author Felipe Myose
+     * Refactor Ana Preis
      */
     @GetMapping("/all")
     public ResponseEntity<List<PurchaseOrderDTO>> getAllPurchasesOrder() {
-        List<PurchaseOrder> purchaseOrders = service.getAll();
+        User userLogged = tokenService.getUserLogged();
+        List<PurchaseOrder> purchaseOrders = service.getAllByUserId(userLogged.getId());
         return ResponseEntity.ok().body(PurchaseOrderDTO.convert(purchaseOrders));
     }
 
     /**
      * Este endpoint atualiza o OrderStatus do pedido de compra para FINISHED.
-     * @param idOrder
      * @return  TotalPriceDTO
      * @author Ana Preis
      */
     @PutMapping("/finish")
-    public ResponseEntity<TotalPriceDTO> updateOrderStatus(@RequestParam Integer idOrder) {
-        PurchaseOrder purchaseOrder = service.updateOrderStatus(idOrder);
+    public ResponseEntity<TotalPriceDTO> updateOrderStatus() {
+        User userLogged = tokenService.getUserLogged();
+        PurchaseOrder purchaseOrder = service.getPurchaseOrderByUserIdAndStatusIsOpened(userLogged.getId());
+        purchaseOrder = service.updateOrderStatus(purchaseOrder.getId());
         BigDecimal totalPrice = service.calculateTotalPrice(purchaseOrder);
         return ResponseEntity.ok().body(new TotalPriceDTO(totalPrice));
     }
