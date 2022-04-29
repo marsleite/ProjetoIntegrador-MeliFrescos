@@ -185,13 +185,28 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
     }
 
+    /**
+     * Atualiza todos os itens do carrinho
+     * @param PurchaseOrder atualizado
+     * @return  PurchaseOrder
+     * @author Juliano Alcione de Souza
+     */
     public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
-        PurchaseOrder purchaseSaved = getByUserId(newPurchaseOrder.getUser().getId());
-        clearCartByPurchase(purchaseSaved);
+        validProductList(newPurchaseOrder);
+        clearCartByPurchase(newPurchaseOrder.getUser().getId());
         return save(newPurchaseOrder);
     }
 
-    public void clearCartByPurchase(PurchaseOrder purchaseOrder){
-        purchaseOrderRepository.delete(purchaseOrder);
+    /**
+     * Apaga todos os carrinhos abertos do cliente
+     * @param id do usuario
+     * @return  void
+     * @author Juliano Alcione de Souza
+     */
+    public void clearCartByPurchase(Integer usuarioId){
+        List<PurchaseOrder> purchaseOpenedByUserId = purchaseOrderRepository.getPurchaseOpenedByUserId(usuarioId);
+        if(purchaseOpenedByUserId.size() > 0){
+            purchaseOrderRepository.delete(purchaseOpenedByUserId.get(0));
+        }
     }
 }
