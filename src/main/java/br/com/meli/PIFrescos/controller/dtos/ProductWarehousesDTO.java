@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * @author Marcelo Leite
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author Marcelo Leite
+ */
 @Service
 public class WarehouseService {
 
