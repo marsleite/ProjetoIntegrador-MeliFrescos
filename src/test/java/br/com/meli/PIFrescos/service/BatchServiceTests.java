@@ -203,14 +203,17 @@ public class BatchServiceTests {
         Mockito.when(batchRepository.findBatchesByProduct_ProductIdAndOrderByBatchNumber(1)).thenReturn(list1);
         Mockito.when(batchRepository.findBatchesByProduct_ProductIdAndOrderByCurrentQuantity(1)).thenReturn(list1);
         Mockito.when(batchRepository.findBatchesByProduct_ProductIdAndOrderBOrderByDueDate(1)).thenReturn(list2);
+        Mockito.when(batchRepository.findBatchesByProduct_ProductId(1)).thenReturn(list1);
 
         List<Batch> listByBatch = batchService.findBatchesByProductOrderBy(1, "L");
         List<Batch> listByQuantity = batchService.findBatchesByProductOrderBy(1, "C");
         List<Batch> listByDueDate = batchService.findBatchesByProductOrderBy(1, "F");
+        List<Batch> listById = batchService.findBatchesByProductOrderBy(1, "");
 
         Assertions.assertEquals(list1, listByBatch);
         Assertions.assertEquals(list1, listByQuantity);
         Assertions.assertEquals(list2, listByDueDate);
+        Assertions.assertEquals(list1, listById);
     }
 
 }

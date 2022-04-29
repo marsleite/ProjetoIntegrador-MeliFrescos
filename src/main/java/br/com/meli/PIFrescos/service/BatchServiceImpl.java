@@ -72,13 +72,16 @@ public class BatchServiceImpl implements IBatchService {
      * @author Ana Preis
      */
     public List<Batch> findBatchesByProductOrderBy(Integer id, String orderBy){
-        if(orderBy.equals("L")){
+        if(orderBy.equals("")){
+            return batchRepository.findBatchesByProduct_ProductId(id);
+        }
+        if(orderBy.equalsIgnoreCase("L")){
             return batchRepository.findBatchesByProduct_ProductIdAndOrderByBatchNumber(id);
         }
-        if(orderBy.equals("C")){
+        if(orderBy.equalsIgnoreCase("C")){
             return batchRepository.findBatchesByProduct_ProductIdAndOrderByCurrentQuantity(id);
         }
-        if(orderBy.equals("F")){
+        if(orderBy.equalsIgnoreCase("F")){
             return batchRepository.findBatchesByProduct_ProductIdAndOrderBOrderByDueDate(id);
         }
         else {
