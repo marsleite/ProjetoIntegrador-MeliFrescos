@@ -72,8 +72,12 @@ public class ProductController {
 
     @GetMapping("/batch/list")
     public ResponseEntity<List<ProductDTO>> getById(@RequestParam Integer id){
-
         return new ResponseEntity(batchService.findBatchesByProduct(id), HttpStatus.OK);
     }
 
+    @GetMapping("/batch/list/")
+    public ResponseEntity<List<ProductDTO>> getByIdAndOrderBy(@RequestParam Integer id,
+                                                              @RequestParam String orderBy){
+        return new ResponseEntity(batchService.findBatchesByProductOrderBy(id, orderBy), HttpStatus.OK);
+    }
 }

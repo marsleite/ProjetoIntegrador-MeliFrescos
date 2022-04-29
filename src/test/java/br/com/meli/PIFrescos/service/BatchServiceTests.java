@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.Optional;
@@ -164,6 +165,48 @@ public class BatchServiceTests {
         EntityNotFoundException exception = Assertions.assertThrows(EntityNotFoundException.class, () -> batchService.updateCurrentQuantity(4, mockBatch));
 
         assertThat(exception.getMessage()).isEqualTo(message);
+    }
+
+    @Test
+    void shouldfindBatchesByProductIdAndOrderBy(){
+        Batch mockBatch = Batch.builder()
+                .batchNumber(1)
+                .currentTemperature(7.0f)
+                .minimumTemperature(6.0f)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .dueDate(LocalDate.of(2022, 8, 10))
+                .inboundOrder(mockInboundOrder)
+                .product(mockProduct)
+                .build();
+
+        Batch mockBatch2 = Batch.builder()
+                .batchNumber(2)
+                .currentTemperature(7.0f)
+                .minimumTemperature(6.0f)
+                .initialQuantity(5)
+                .currentQuantity(10)
+                .manufacturingDate(LocalDate.now())
+                .dueDate(LocalDate.of(2022, 8, 01))
+                .inboundOrder(mockInboundOrder)
+                .product(mockProduct)
+                .build();
+
+        List<Batch> list1 = Arrays.asList(mockBatch, mockBatch2);
+        List<Batch> list2 = Arrays.asList(mockBatch2, mockBatch);
+
+        Mockito.when(batchRepository.findBatchesByProduct_ProductIdAndOrderByBatchNumber(1)).thenReturn(list1);
+        Mockito.when(batchRepository.findBatchesByProduct_ProductIdAndOrderByCurrentQuantity(1)).thenReturn(list1);
+        Mockito.when(batchRepository.findBatchesByProduct_ProductIdAndOrderBOrderByDueDate(1)).thenReturn(list2);
+
+        List<Batch> listByBatch = batchService.findBatchesByProductOrderBy(1, "L");
+        List<Batch> listByQuantity = batchService.findBatchesByProductOrderBy(1, "C");
+        List<Batch> listByDueDate = batchService.findBatchesByProductOrderBy(1, "F");
+
+        Assertions.assertEquals(list1, listByBatch);
+        Assertions.assertEquals(list1, listByQuantity);
+        Assertions.assertEquals(list2, listByDueDate);
     }
 
 }

@@ -66,4 +66,19 @@ public class BatchServiceImpl implements IBatchService {
         return newBatch;
     }
 
+    public List<Batch> findBatchesByProductOrderBy(Integer id, String orderBy){
+        if(orderBy.equals("L")){
+            return batchRepository.findBatchesByProduct_ProductIdAndOrderByBatchNumber(id);
+        }
+        if(orderBy.equals("C")){
+            return batchRepository.findBatchesByProduct_ProductIdAndOrderByCurrentQuantity(id);
+        }
+        if(orderBy.equals("F")){
+            return batchRepository.findBatchesByProduct_ProductIdAndOrderBOrderByDueDate(id);
+        }
+        else {
+            throw new RuntimeException("Invalid query for OrderBy");
+        }
+    }
+
 }

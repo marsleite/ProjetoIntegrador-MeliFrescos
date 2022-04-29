@@ -180,7 +180,7 @@
 					"response": []
 				},
 				{
-					"name": "get batches by product",
+					"name": "get batches by productid",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -208,6 +208,46 @@
 								{
 									"key": "id",
 									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get batches by id and order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/batch/list/?id=1&orderBy=L",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"batch",
+								"list",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "orderBy",
+									"value": "L"
 								}
 							]
 						}
