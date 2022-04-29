@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.controller;
 
+import br.com.meli.PIFrescos.controller.dtos.OrderedProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.ProductDTO;
 import br.com.meli.PIFrescos.controller.forms.ProductForm;
 import br.com.meli.PIFrescos.models.Batch;
@@ -66,14 +67,17 @@ public class ProductController {
     }
 
     /**
-     * endpoint para listar os batches de cada produto, recebendo a id do produto pela URI.
+     * endpoint para listar os batches de cada produto, recebendo a id do produto pela URI e ordenando por
+     * Lote (L), CurrentQuantity(C) ou DueDate(F). Se não receber o segundo parametro, lista todas.
      * @author Ana Preis
      */
-
     @GetMapping("/batch/list")
-    public ResponseEntity<List<ProductDTO>> getById(@RequestParam Integer id){
+    public ResponseEntity<List<OrderedProductDTO>> getByIdAndOrderBy(@RequestParam(required = false) Integer id,
+                                                              @RequestParam(required = false) String orderBy){
+        if(orderBy == null){ orderBy = ""; }
+        List<Batch> batchList = batchService.findBatchesByProductOrderBy(id, orderBy);
+        List<OrderedProductDTO> dtoList = OrderedProductDTO.convertList(batchList);
 
-        return new ResponseEntity(batchService.findBatchesByProduct(id), HttpStatus.OK);
+        return new ResponseEntity(dtoList, HttpStatus.OK);
     }
-
 }
