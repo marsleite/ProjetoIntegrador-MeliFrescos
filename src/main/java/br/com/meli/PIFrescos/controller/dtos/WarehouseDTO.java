@@ -3,16 +3,15 @@ package br.com.meli.PIFrescos.controller.dtos;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.Warehouse;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class WarehouseDTO {
   private Integer warehouseCode;
   private Integer totalQuantity;
@@ -24,5 +23,9 @@ public class WarehouseDTO {
 
   public static Integer sumQuantity(List<Batch> batches) {
     return batches.stream().mapToInt(Batch::getCurrentQuantity).sum();
+  }
+
+  public static List<WarehouseDTO> warehouseDTOList(List<Warehouse> warehouses, List<Batch> batches) {
+    return warehouses.stream().map(warehouse -> new WarehouseDTO(warehouse, batches)).collect(Collectors.toList());
   }
 }

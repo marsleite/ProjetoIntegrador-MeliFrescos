@@ -16,7 +16,8 @@ public class ProductWarehousesDTO {
   private Integer productId;
   private List<WarehouseDTO> warehouses;
 
-  public ProductWarehousesDTO(Product product) {
+  public ProductWarehousesDTO(Product product, List<Warehouse> warehouses, List<Batch> batches) {
     this.productId = product.getProductId();
+    this.warehouses = WarehouseDTO.warehouseDTOList(warehouses, batches);
   }
 }
