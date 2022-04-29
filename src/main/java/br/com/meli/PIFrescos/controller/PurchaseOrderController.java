@@ -1,12 +1,10 @@
 package br.com.meli.PIFrescos.controller;
 
 import br.com.meli.PIFrescos.config.security.TokenService;
-import br.com.meli.PIFrescos.controller.dtos.OrderProductDTO;
 import br.com.meli.PIFrescos.controller.dtos.PurchaseOrderDTO;
 import br.com.meli.PIFrescos.controller.dtos.TotalPriceDTO;
 import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
 
-import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.PurchaseOrder;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.service.PurchaseOrderService;
