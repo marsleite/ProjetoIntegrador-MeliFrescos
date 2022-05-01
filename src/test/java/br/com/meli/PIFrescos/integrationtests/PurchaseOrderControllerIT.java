@@ -74,9 +74,9 @@ public class PurchaseOrderControllerIT {
 
     private String accessToken;
 
-    PurchaseOrder purchaseOrderMock = new PurchaseOrder();
     User userMock = new User();
     Profile profile= new Profile();
+    PurchaseOrder purchaseOrderMock = new PurchaseOrder();
     ProductsCart productsCartMock = new ProductsCart();
     ProductsCart productsCartMock2 = new ProductsCart();
     ProductsCart productsCartMock3 = new ProductsCart();
@@ -227,11 +227,14 @@ public class PurchaseOrderControllerIT {
         Mockito.when(purchaseOrderRepository.findByUser(any())).thenReturn(purchaseOrderMock);
         Mockito.when(purchaseOrderRepository.getById(any())).thenReturn(purchaseOrderMock);
         Mockito.when(purchaseOrderRepository.findById(any())).thenReturn(Optional.ofNullable(purchaseOrderMock));
+
+        Mockito.when(purchaseOrderRepository.getPurchaseOpenedByUserId(any())).thenReturn(List.of(purchaseOrderMock));
+
         mockMvc.perform(get("/fresh-products/orders")
                 .header("Authorization", accessToken)
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderNumber").value(1))
+                .andExpect(jsonPath("$.purchaseOrderId").value(1))
                 .andReturn();
     }
 
@@ -250,7 +253,7 @@ public class PurchaseOrderControllerIT {
                 .header("Authorization", accessToken)
                 .contentType("application/json"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("PurchaseOrder not found"))
+                .andExpect(jsonPath("$.message").value("No OPENED purchase cart"))
                 .andReturn();
     }
 
@@ -296,10 +299,10 @@ public class PurchaseOrderControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Este teste espera receber 404 quando não exister produtos para atualizar.
+     * Este teste espera receber 404 quando a quantidade de produto solicitado for menor que a quantidade em estoque.
      */
     @Test
-    public void shouldReturn404WhenNotExistProductsOnPurchaseOrderUpdate() throws Exception {
+    public void shouldReturn404WhenInsufficientQuantityProductsOnPurchaseOrder() throws Exception {
 
         String payloadUpdate = "{ \n"
                 + " \"cartList\": ["
@@ -316,13 +319,15 @@ public class PurchaseOrderControllerIT {
 
         this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+        productsCartMock2.getBatch().setCurrentQuantity(0);
+        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(productsCartMock.getBatch());
+        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(productsCartMock2.getBatch());
 
-        Mockito.when(purchaseOrderRepository.findByUserId(any())).thenReturn(Optional.empty());
         mockMvc.perform(put("/fresh-products/orders")
                 .header("Authorization",  accessToken)
                 .contentType("application/json").content(payloadUpdate))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("PurchaseOrder not found"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[*].error").value("Insufficient quantity of product on batch"))
                 .andReturn();
     }
 
@@ -335,7 +340,10 @@ public class PurchaseOrderControllerIT {
 
         this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+        Mockito.when(purchaseOrderRepository.getPurchaseOpenedByUserId(any())).thenReturn(List.of(purchaseOrderMock));
+
         purchaseOrderMock.setOrderStatus(OrderStatus.FINISHED);
+
         Mockito.when(purchaseOrderRepository.findById(any())).thenReturn(Optional.ofNullable(purchaseOrderMock));
 
         mockMvc.perform(put("/fresh-products/orders/finish?idOrder=1")
@@ -360,7 +368,7 @@ public class PurchaseOrderControllerIT {
         mockMvc.perform(put("/fresh-products/orders/finish?idOrder=1")
                 .header("Authorization",  accessToken))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("PurchaseOrder not found"))
+                .andExpect(jsonPath("$.message").value("No OPENED purchase cart"))
                 .andReturn();
     }
 
