@@ -2,8 +2,10 @@ package br.com.meli.PIFrescos.service;
 
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Product;
+import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
+import br.com.meli.PIFrescos.repository.SectionRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import br.com.meli.PIFrescos.service.interfaces.IInboundOrderService;
 import br.com.meli.PIFrescos.service.interfaces.ISectionService;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InboundOrderService implements IInboundOrderService {
@@ -48,7 +51,13 @@ public class InboundOrderService implements IInboundOrderService {
      */
     @Override
     public InboundOrder save(InboundOrder inboundOrder) {
-        inboundOrder = checkProductsFromBatchListAndUpdateValues(inboundOrder);
+
+
+        // Busca os valores dos produtos nos batches e os atualiza
+        inboundOrder = checkProductsAndSectionFromBatchListAndUpdateValues(inboundOrder);
+
+        // Verificar se os produtos correspondem à seção correta de armazenamento
+        checkIfSectionsMatches(inboundOrder);
 
         // verificar se o setor comporta a quantidade
         Integer inboundOrderSectionCode = inboundOrder.getSection().getSectionCode();
@@ -81,7 +90,7 @@ public class InboundOrderService implements IInboundOrderService {
         // verificar se os batch existem - se não existir, mandar uma mensagem avisando a criaçao de um novo batch
         checkIfBatchesExist(newInboundOrderValues);
         // verificar se os produtos existem
-        newInboundOrderValues = checkProductsFromBatchListAndUpdateValues(newInboundOrderValues);
+        newInboundOrderValues = checkProductsAndSectionFromBatchListAndUpdateValues(newInboundOrderValues);
         // verificar se o setor comporta a quantidade
         // se o batch existe, devemos atualizar o valor de acordo com a diferença que acontecer
         Integer inboundOrderSectionCode = newInboundOrderValues.getSection().getSectionCode();
@@ -137,20 +146,51 @@ public class InboundOrderService implements IInboundOrderService {
      * @param inboundOrder
      * @return inboundOrder
      * @author Felipe Myose
+     *
+     *  Verifica se a seção existe. Se sim, preenche os atributos de seção
+     *  Caso o sectionCode não seja encontrado, retornar uma mensagem de erro.
+     *  @param inboundOrder
+     *  @return inboundOrder
+     *  @author Julio César Gama
      */
-    private InboundOrder checkProductsFromBatchListAndUpdateValues(InboundOrder inboundOrder) {
+    private InboundOrder checkProductsAndSectionFromBatchListAndUpdateValues(InboundOrder inboundOrder) {
         // se o inboundOrder estiver vazio
         if (inboundOrder.getBatchStock().size() == 0) {
             return inboundOrder;
         }
         inboundOrder.getBatchStock().forEach(batch -> {
-            Product product = productRepository.findById(batch.getProduct().getProductId()).orElse(null);
-            if (product == null) {
+            Optional<Product> product = productRepository.findById(batch.getProduct().getProductId());
+            if (product.isEmpty() ) {
                 throw new RuntimeException("Produto não existe.");
             }
-            batch.setProduct(product);
+            batch.setProduct(product.get());
         });
+
+        Optional<Section> section = sectionService.findById(inboundOrder.getSection().getSectionCode());
+        if(section.isEmpty()){
+            throw new RuntimeException("Seção não existente.");
+        }
+
+        inboundOrder.setSection(section.get());
+
         return inboundOrder;
+    }
+
+    /**
+     * Verifica se a seção dos produtos é compatível com o local de armazenamento
+     * @param inboundOrder
+     * @return void
+     * @author Julio César Gama
+     */
+
+    private void checkIfSectionsMatches(InboundOrder inboundOrder){
+
+        inboundOrder.getBatchStock().forEach(batch ->{
+            if(!batch.getProduct().getProductType().equals(inboundOrder.getSection().getStorageType())){
+                throw new RuntimeException("Tipo de produto e local de armazenamento incompatíveis.");
+            }
+        });
+
     }
 
     /**

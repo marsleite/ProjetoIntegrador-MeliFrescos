@@ -54,6 +54,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 			//Product
 			.antMatchers( "/fresh-products/").hasAnyAuthority("SUPERVISOR", "ADMIN")
 			.antMatchers( "/fresh-products/*").hasAnyAuthority("SUPERVISOR", "ADMIN")
+			.antMatchers( "/fresh-products/batch/list*").hasAnyAuthority("SUPERVISOR", "ADMIN")
 			//User
 			.antMatchers(HttpMethod.GET, "/fresh-products/users").hasAnyAuthority("SUPERVISOR", "ADMIN")
 			.antMatchers( "/fresh-products/users/*").hasAnyAuthority("SUPERVISOR", "ADMIN")

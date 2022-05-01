@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +48,8 @@ public class InboundOrderServiceTest {
     private InboundOrderService inboundOrderService;
 
     private Warehouse warehouse = new Warehouse();
-    private Section section = new Section(); InboundOrder inboundOrder = new InboundOrder();
+    private Section section = new Section();
+    private InboundOrder inboundOrder = new InboundOrder();
     private Batch batch1 = new Batch();
     private Batch batch2 = new Batch();
     private Product product1 = new Product();
@@ -57,10 +59,13 @@ public class InboundOrderServiceTest {
     public void setup() {
         warehouse = new Warehouse(1, new ArrayList<>());
         section = new Section(1, StorageType.FRESH, 10, 0, warehouse);
+        product1 = new Product(1,"product 1",StorageType.FRESH,"brief description");
+        product2 = new Product(2,"product 2",StorageType.REFRIGERATED,"brief description");
         batch1.setCurrentQuantity(2);
         batch2.setCurrentQuantity(3);
-        batch1.setProduct(new Product());
-        batch2.setProduct(new Product());
+        batch1.setProduct(product1);
+        batch2.setProduct(product2);
+
         inboundOrder = new InboundOrder(1, LocalDate.now(), section, Arrays.asList(batch1, batch2));
     }
 
@@ -131,4 +136,20 @@ public class InboundOrderServiceTest {
         assertEquals(errorMessage, exception.getMessage());
     }
 
+    @Test
+    public void postFailsWhenSectionAndProductTypeMismatches(){
+
+        String errorMessage = "Tipo de produto e local de armazenamento incompatíveis.";
+
+
+        Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
+        Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
+
+        Mockito.when(sectionService.findById(1)).thenReturn(java.util.Optional.ofNullable(section));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.save(inboundOrder));
+
+        assertEquals(errorMessage, exception.getMessage());
+
+    }
 }

@@ -50,9 +50,12 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Override
     public PurchaseOrder save(PurchaseOrder purchaseOrder) {
          // se o usuario já possui uma ordem de compra, ao fazer GET, os itens existentes serão substituidos
-        PurchaseOrder oldPurchaseOrder = getPurchaseOrderByUserIdAndStatusIsOpened(purchaseOrder.getUser().getId());
-        if (oldPurchaseOrder != null) {
+        PurchaseOrder oldPurchaseOrder = null;
+        try {
+            oldPurchaseOrder = getPurchaseOrderByUserIdAndStatusIsOpened(purchaseOrder.getUser().getId());
             purchaseOrder.setId(oldPurchaseOrder.getId());
+        } catch (EntityNotFoundException e) {
+            System.out.println("Creating new purchaseorder");
         }
 
         //encontrar o batch
@@ -100,8 +103,8 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @author Ana Preis
      */
     @Override
-    public List<PurchaseOrder> getAll(){
-        List<PurchaseOrder> purchaseList = purchaseOrderRepository.findAll();
+    public List<PurchaseOrder> getAllByUserId(Integer id){
+        List<PurchaseOrder> purchaseList = purchaseOrderRepository.findAllByUserId(id);
         if(purchaseList.isEmpty()){
             throw new EntityNotFoundException("PurchaseOrder list is empty");
         }
@@ -194,20 +197,19 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
     }
 
-
-    public PurchaseOrder findPurchaseByUser(User user){
-        return purchaseOrderRepository.findByUser(user);
-   }
-  
+    /**
+     * Atualiza todos os itens do carrinho
+     * @param newPurchaseOrder
+     * @return  PurchaseOrder
+     * @author Juliano Alcione de Souza
+     */
     public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
-        PurchaseOrder purchaseSaved = getByUserId(newPurchaseOrder.getUser().getId());
         validProductList(newPurchaseOrder);
-        clearCartByPurchase(purchaseSaved);
         return save(newPurchaseOrder);
     }
 
-    public void clearCartByPurchase(PurchaseOrder purchaseOrder){
-        purchaseOrderRepository.delete(purchaseOrder);
+    public PurchaseOrder findPurchaseByUser(User user){
+      return purchaseOrderRepository.findByUser(user);
     }
 
     /**
@@ -216,6 +218,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @return PurchaseOrder
      */
     public PurchaseOrder getPurchaseOrderByUserIdAndStatusIsOpened(Integer userId) {
-        return purchaseOrderRepository.getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(userId);
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.getPurchaseOpenedByUserId(userId);
+        if (purchaseOrders.size() > 0) {
+            return purchaseOrders.get(0);
+        }
+        throw new EntityNotFoundException("No OPENED purchase cart");
     }
 }
