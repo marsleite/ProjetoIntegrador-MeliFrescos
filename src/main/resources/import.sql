@@ -1,4 +1,3 @@
-
 INSERT INTO warehouse(warehouse_code) VALUES(1);
 
 INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'FRESH', 1);
@@ -49,7 +48,7 @@ INSERT INTO profile(name) VALUES('ADMIN');
 
 -- USERS_PROFILE
 INSERT INTO users_profiles(user_id, profiles_id) VALUES(1, 1);
-INSERT INTO users_profiles(user_id, profiles_id) VALUES(2, 2);
 INSERT INTO users_profiles(user_id, profiles_id) VALUES(3, 3);
+INSERT INTO users_profiles(user_id, profiles_id) VALUES(2, 2);
 INSERT INTO users_profiles(user_id, profiles_id) VALUES(4, 4);
 
