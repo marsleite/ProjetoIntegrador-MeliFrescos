@@ -1,8 +1,11 @@
 INSERT INTO warehouse(warehouse_code) VALUES(1);
+INSERT INTO warehouse(warehouse_code) VALUES(2);
 
 INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'FRESH', 1);
 INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'REFRIGERATED', 1);
 INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'FROZEN', 1);
+INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'FRESH', 2);
+INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'REFRIGERATED', 2);
 
 -- products
 -- FRESH
@@ -25,6 +28,9 @@ INSERT INTO inbound_order(order_date, section_section_code) VALUES ('2022-04-25'
 INSERT INTO inbound_order(order_date, section_section_code) VALUES ('2022-04-25', 2);
 -- FROZEN
 INSERT INTO inbound_order(order_date, section_section_code) VALUES ('2022-04-25', 3);
+-- INBOUD ORDER OF WAREHOUSE 2
+INSERT INTO inbound_order(order_date, section_section_code) VALUES ('2022-04-25', 4);
+INSERT INTO inbound_order(order_date, section_section_code) VALUES ('2022-04-25', 5);
 
 -- batch
 -- FRESH
@@ -33,6 +39,9 @@ INSERT INTO batch(current_temperature, minimum_temperature, unit_price, initial_
 INSERT INTO batch(current_temperature, minimum_temperature, unit_price, initial_quantity, current_quantity, manufacturing_date, due_date, inbound_order_order_number, product_product_id) VALUES (10, 8, 2, 5, 5, '2022-03-25', '2022-04-25', 2, 4);
 -- FROZEN
 INSERT INTO batch(current_temperature, minimum_temperature, unit_price, initial_quantity, current_quantity, manufacturing_date, due_date, inbound_order_order_number, product_product_id) VALUES (-15, -20, 2, 5, 5, '2022-03-25', '2022-04-25', 3, 7);
+-- BATCHS OF WAREHOUSE 2
+INSERT INTO batch(current_temperature, minimum_temperature, unit_price, initial_quantity, current_quantity, manufacturing_date, due_date, inbound_order_order_number, product_product_id) VALUES (15, 10, 2, 3, 3, '2022-03-25', '2022-04-25', 4, 1);
+INSERT INTO batch(current_temperature, minimum_temperature, unit_price, initial_quantity, current_quantity, manufacturing_date, due_date, inbound_order_order_number, product_product_id) VALUES (15, 10, 2, 4, 4, '2022-03-25', '2022-04-25', 5, 1);
 
 -- USERS
 INSERT INTO users(fullname, email, password) VALUES('Jose Alfredo', 'jose@gmail.com', '$2a$10$GtzVniP9dVMmVW2YxytuvOG9kHu9nrwAxe8/UXSFkaECmIJ4UJcHy');
