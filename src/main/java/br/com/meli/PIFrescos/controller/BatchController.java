@@ -3,6 +3,7 @@ package br.com.meli.PIFrescos.controller;
 import br.com.meli.PIFrescos.controller.dtos.BatchStockDTO;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.service.BatchServiceImpl;
+import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import java.util.List;
 public class BatchController {
 
     @Autowired
-    BatchServiceImpl batchService;
+    IBatchService batchService;
 
     /**
      * Endpoint para listar os batches de acordo com a categoria (FRESH, REFRIGERATED, FROZEN), com a quantidade de dias
