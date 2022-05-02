@@ -91,6 +91,8 @@ public class InboundOrderService implements IInboundOrderService {
         checkIfBatchesExist(newInboundOrderValues);
         // verificar se os produtos existem
         newInboundOrderValues = checkProductsAndSectionFromBatchListAndUpdateValues(newInboundOrderValues);
+        // Verificar se os produtos correspondem à seção correta de armazenamento
+        checkIfSectionsMatches(inboundOrder);
         // verificar se o setor comporta a quantidade
         // se o batch existe, devemos atualizar o valor de acordo com a diferença que acontecer
         Integer inboundOrderSectionCode = newInboundOrderValues.getSection().getSectionCode();
