@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -27,6 +28,10 @@ public interface BatchRepository extends JpaRepository<Batch, Integer> {
 
     @Query(value = "select b from Batch b inner join Product p on p = b.product where p.productId = :productId order by b.dueDate")
     List<Batch> findBatchesByProduct_ProductIdAndOrderBOrderByDueDate(@Param("productId") Integer productId);
+
+    @Query(value = "select b from Product p inner join Section s on p.productType = s.storageType " +
+            "inner join Batch b on b.product = p where b.dueDate <= :maxDueDate and s.sectionCode = :sectionId")
+    List<Batch> findBatchesByDueDateGreaterThanEqualAndSectorEquals(@Param("maxDueDate")LocalDate dueDate, @Param("sectionId") Integer sectionId);
 
     @Query(nativeQuery = true, value = "select w.warehouse_code as warehousecode, sum(b.current_quantity) as totalquantity " +
             "from batch as b join inbound_order as io on io.order_number = b.inbound_order_order_number " +

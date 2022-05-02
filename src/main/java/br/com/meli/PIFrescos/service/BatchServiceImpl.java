@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -56,6 +57,13 @@ public class BatchServiceImpl implements IBatchService {
     @Override
     public boolean checkIfBatchExists(Batch batch) {
         return batchRepository.existsBatchByBatchNumber(batch.getBatchNumber());
+    }
+
+    public List<Batch> findBatchesByDueDateGreaterThanEqualAndSectorEquals(Integer expiringLimit, Integer sectionId) {
+        LocalDate maxDueDate = LocalDate.now().plusDays(expiringLimit);
+        List<Batch> batches = batchRepository.findBatchesByDueDateGreaterThanEqualAndSectorEquals(maxDueDate, sectionId);
+
+        return batches;
     }
 
     /**

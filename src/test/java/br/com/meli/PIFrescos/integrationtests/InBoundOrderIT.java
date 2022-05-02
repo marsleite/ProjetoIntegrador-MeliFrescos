@@ -1,18 +1,11 @@
 package br.com.meli.PIFrescos.integrationtests;
 
 import br.com.meli.PIFrescos.controller.dtos.BatchDTO;
+import br.com.meli.PIFrescos.controller.dtos.TokenDto;
 import br.com.meli.PIFrescos.controller.forms.InboundOrderForm;
 import br.com.meli.PIFrescos.controller.dtos.InboundOrderUpdateDTO;
-import br.com.meli.PIFrescos.models.Batch;
-import br.com.meli.PIFrescos.models.InboundOrder;
-import br.com.meli.PIFrescos.models.Product;
-import br.com.meli.PIFrescos.models.Section;
-import br.com.meli.PIFrescos.models.StorageType;
-import br.com.meli.PIFrescos.models.Warehouse;
-import br.com.meli.PIFrescos.repository.BatchRepository;
-import br.com.meli.PIFrescos.repository.InboundOrderRepository;
-import br.com.meli.PIFrescos.repository.ProductRepository;
-import br.com.meli.PIFrescos.repository.SectionRepository;
+import br.com.meli.PIFrescos.models.*;
+import br.com.meli.PIFrescos.repository.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +43,7 @@ public class InBoundOrderIT {
     @MockBean
     private ProductRepository productRepository;
     @MockBean
-    private BatchRepository batchRepository;
+    private UserRepository userRepository;
     @MockBean
     SectionRepository sectionRepository;
 
@@ -67,8 +61,18 @@ public class InBoundOrderIT {
     private Product product1 = new Product(1, "product1", StorageType.FRESH, "desc1");
     private Product product2 = new Product(2, "product2", StorageType.FRESH, "desc2");
 
+
+    String loginPayload = "{"
+            + "\"email\": \"meli@gmail.com\", "
+            + "\"password\": \"123456\""
+            + "}";
+
+    private String accessToken;
+    User userMock = new User();
+    Profile profile= new Profile();
+
     @BeforeEach
-    public void setup() {
+    public void setup() throws Exception {
         batch1.setBatchNumber(1);
         batch1.setCurrentQuantity(1);
         batch1.setProduct(product1);
@@ -81,16 +85,50 @@ public class InBoundOrderIT {
         inboundOrder2.setOrderNumber(2);
         inboundOrder2.setSection(section2);
         inboundOrder2.setBatchStock(Arrays.asList(batch2));
+
+        profile.setId(1L);
+        profile.setName("ADMIN");
+        userMock.setId(1);
+        userMock.setFullname("John Doe");
+        userMock.setEmail("john@mercadolivre.com.br");
+        userMock.setPassword("$2a$10$GtzVniP9dVMmVW2YxytuvOG9kHu9nrwAxe8/UXSFkaECmIJ4UJcHy");
+        userMock.setProfiles(List.of(profile));
+        userMock.setRole(UserRole.ADMIN);
+
+        this.accessToken = this.userLogin();
+    }
+
+    /**
+     * This method returned the mock user token.
+     * @return String
+     * @author Antonio Hugo
+     *
+     */
+    private String userLogin() throws Exception {
+        Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(userMock));
+        MvcResult result = mockMvc.perform(post("/auth")
+                .contentType("application/json").content(loginPayload))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TypeReference<TokenDto> typeReference = new TypeReference<TokenDto>() {};
+        TokenDto token = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+
+        return "Bearer " + token.getToken();
     }
 
     @Test
     public void getAllInboundOrders() throws Exception {
+
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
         inboundOrders.add(inboundOrder1);
         inboundOrders.add(inboundOrder2);
 
         Mockito.when(inboundOrderRepository.findAll()).thenReturn(inboundOrders);
 
-        MvcResult result = mockMvc.perform(get("/fresh-products/inboundorder"))
+        MvcResult result = mockMvc.perform(get("/fresh-products/inboundorder")
+                .header("Authorization", accessToken))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -102,6 +140,8 @@ public class InBoundOrderIT {
 
     @Test
     public void postInboundOrder() throws Exception {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
         section1.setMaxCapacity(100);
         section1.setCurrentCapacity(0);
 
@@ -118,6 +158,7 @@ public class InBoundOrderIT {
         Mockito.when(inboundOrderRepository.save(any())).thenAnswer(invocation -> inboundOrder1);
 
         MvcResult result = mockMvc.perform(post("/fresh-products/inboundorder")
+                .header("Authorization", accessToken)
                 .contentType("application/json").content(inboundOrderString))
                 .andExpect(status().isCreated())
                 .andReturn();
@@ -131,6 +172,8 @@ public class InBoundOrderIT {
 
     @Test
     public void putBatchStockInInboundOrder() throws Exception {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
         // dtos
         InboundOrderUpdateDTO newValues = new InboundOrderUpdateDTO();
         BatchDTO batchDTO1 = new BatchDTO();
@@ -163,6 +206,7 @@ public class InBoundOrderIT {
         Mockito.when(sectionRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(section1));
 
         MvcResult result = mockMvc.perform(put("/fresh-products/inboundorder/1")
+                .header("Authorization", accessToken)
                 .contentType("application/json").content(inboundOrderString))
                 .andExpect(status().isCreated())
                 .andReturn();
