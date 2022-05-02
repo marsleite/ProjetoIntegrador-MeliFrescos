@@ -425,7 +425,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 3,\n            \"quantity\": 1\n        },\n        {\n            \"batchId\": 3,\n            \"quantity\": 1\n        }\n    ]\n}",
+							"raw": "{\n    \"userId\": 1,\n    \"orderStatus\": \"OPENED\",\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 1\n        },\n        {\n            \"batchId\": 1,\n            \"quantity\": 1\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -461,7 +461,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/fresh-products/orders?querytype=1",
+							"raw": "http://localhost:8080/api/v1/fresh-products/orders",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -472,12 +472,6 @@
 								"v1",
 								"fresh-products",
 								"orders"
-							],
-							"query": [
-								{
-									"key": "querytype",
-									"value": "1"
-								}
 							]
 						}
 					},
@@ -563,7 +557,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cartList\": [\n        {\n            \"batchId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"batchId\": 2,\n            \"quantity\": 2\n        }\n    ]\n}",
+							"raw": "{\n    \"cartList\": [\n        {\n            \"batchId\": 3,\n            \"quantity\": 1\n        },\n        {\n            \"batchId\": 3,\n            \"quantity\": 2\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -686,7 +680,7 @@
 	"variable": [
 		{
 			"key": "token",
-			"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNZWxpRnJlc2NvcyIsInN1YiI6IjQiLCJpYXQiOjE2NTEyNDIwMTcsImV4cCI6MTY1MTMyODQxN30.eQc7KsPPkysa6ZwO51oQvxnco5JXAt1aL1nSVJjPnUA",
+			"value": "",
 			"type": "default"
 		}
 	]
