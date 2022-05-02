@@ -1,5 +1,6 @@
 package br.com.meli.PIFrescos.integrationtests;
 
+import br.com.meli.PIFrescos.controller.dtos.BatchStockDTO;
 import br.com.meli.PIFrescos.controller.dtos.TokenDto;
 import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.repository.BatchCustomRepository;
@@ -8,6 +9,7 @@ import br.com.meli.PIFrescos.repository.ProductRepository;
 import br.com.meli.PIFrescos.repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -69,9 +73,13 @@ public class BatchControllerIT {
     Product mockProduct2 = new Product();
     ProductsCart productsCartMock = new ProductsCart();
     ProductsCart productsCartMock2 = new ProductsCart();
-
+    InboundOrder inboundOrderMock = new InboundOrder();
+    Section sectionMock = new Section();
     @BeforeEach
     public void setUp() throws Exception {
+        sectionMock.setCurrentCapacity(100);
+        sectionMock.setStorageType(StorageType.FRESH);
+        inboundOrderMock.setSection(sectionMock);
 
         profile.setId(1L);
         profile.setName("ADMIN");
@@ -106,6 +114,7 @@ public class BatchControllerIT {
                 .dueDate(LocalDate.parse("2022-05-30"))
                 .product(mockProduct)
                 .unitPrice(BigDecimal.valueOf(20.0))
+                .inboundOrder(inboundOrderMock)
                 .build());
 
         productsCartMock2.setId(2);
@@ -114,12 +123,13 @@ public class BatchControllerIT {
                 .batchNumber(2)
                 .currentTemperature(7.0f)
                 .minimumTemperature(6.0f)
-                .initialQuantity(10)
-                .currentQuantity(50)
+                .initialQuantity(5)
+                .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
                 .dueDate(LocalDate.parse("2022-05-30"))
                 .product(mockProduct2)
                 .unitPrice(BigDecimal.valueOf(10.0))
+                .inboundOrder(inboundOrderMock)
                 .build());
 
     }
@@ -147,33 +157,8 @@ public class BatchControllerIT {
      * @author Antonio Hugo
      * Este teste espera ser retornado todos os produtos.
      */
-//    @Test
-//    public void shouldGetBatchesByCategoryFilteredDay() throws Exception {
-//
-//        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
-//
-//        List<Batch> batches = new ArrayList<>();
-//
-//        batches.add(productsCartMock.getBatch());
-//        batches.add(productsCartMock2.getBatch());
-////        System.out.println(batches);
-//        Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
-//        Mockito.when(batchRepository.findAll()).thenReturn(batches);
-////        Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
-//
-//        mockMvc.perform(get("/fresh-products/due-date/list")
-//                .header("Authorization", accessToken))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[*]").value("ss"))
-//                .andReturn();
-//    }
-
-    /**
-     * @author Antonio Hugo
-     * Este teste espera ser retornado todos os produtos.
-     */
     @Test
-    public void shouldgetBatchesBySectionAndDueDateLessThan() throws Exception {
+    public void shouldGetBatchesByCategoryWithoutFilter() throws Exception {
 
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
@@ -182,14 +167,108 @@ public class BatchControllerIT {
         batches.add(productsCartMock.getBatch());
         batches.add(productsCartMock2.getBatch());
 //        System.out.println(batches);
-//        Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
-        Mockito.when(batchRepository.findBatchesByDueDateGreaterThanEqualAndSectorEquals(any(), any())).thenReturn(batches);
+        Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
+        Mockito.when(batchRepository.findAll()).thenReturn(batches);
 //        Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
 
-        mockMvc.perform(get("/fresh-products/due-date/duedate?sectionId=1&expiringLimit=10")
+        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list")
                 .header("Authorization", accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]").value("ss"))
                 .andReturn();
+
+        TypeReference<List<BatchStockDTO>> typeReference = new TypeReference<List<BatchStockDTO>>() {};
+        objectMapper.registerModule(new JavaTimeModule());
+        List<BatchStockDTO> batchs = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+
+        assertThat(batchs).isNotNull();
+        assertThat(batchs).hasSize(2);
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado todos os produtos.
+     */
+    @Test
+    public void shouldGetBatchesBySectionAndDueDateLessThan() throws Exception {
+
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
+        List<Batch> batches = new ArrayList<>();
+
+        batches.add(productsCartMock.getBatch());
+        batches.add(productsCartMock2.getBatch());
+        Mockito.when(batchRepository.findBatchesByDueDateGreaterThanEqualAndSectorEquals(any(), any())).thenReturn(batches);
+
+        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/duedate?sectionId=1&expiringLimit=10")
+                .header("Authorization", accessToken))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TypeReference<List<BatchStockDTO>> typeReference = new TypeReference<List<BatchStockDTO>>() {};
+        objectMapper.registerModule(new JavaTimeModule());
+        List<BatchStockDTO> batchs = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+
+        assertThat(batchs).isNotNull();
+        assertThat(batchs).hasSize(2);
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado todos os produtos.
+     */
+    @Test
+    public void shouldGetBatchesByCategoryFilterDay() throws Exception {
+
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
+        List<Batch> batches = new ArrayList<>();
+
+        batches.add(productsCartMock.getBatch());
+        batches.add(productsCartMock2.getBatch());
+        Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
+        Mockito.when(batchRepository.findAll()).thenReturn(batches);
+        Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
+
+        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list?days=10")
+                .header("Authorization", accessToken))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TypeReference<List<BatchStockDTO>> typeReference = new TypeReference<List<BatchStockDTO>>() {};
+        objectMapper.registerModule(new JavaTimeModule());
+        List<BatchStockDTO> batchs = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+
+        assertThat(batchs).isNotNull();
+        assertThat(batchs).hasSize(2);
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado todos os produtos.
+     */
+    @Test
+    public void shouldGetBatchesByCategoryFilterCategory() throws Exception {
+
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
+        List<Batch> batches = new ArrayList<>();
+
+        batches.add(productsCartMock.getBatch());
+        batches.add(productsCartMock2.getBatch());
+        Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
+        Mockito.when(batchRepository.findAll()).thenReturn(batches);
+        Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
+
+        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list?category=FRESH")
+                .header("Authorization", accessToken))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TypeReference<List<BatchStockDTO>> typeReference = new TypeReference<List<BatchStockDTO>>() {};
+        objectMapper.registerModule(new JavaTimeModule());
+        List<BatchStockDTO> batchs = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+
+        assertThat(batchs).isNotNull();
+        assertThat(batchs).hasSize(2);
     }
 }
