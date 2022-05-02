@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "42ac9723-6f38-4d1e-9fd8-614f3ce9e31b",
+		"_postman_id": "40fb8705-1410-4a46-87ca-f0b081a006df",
 		"name": "PraticaIntetgradora",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -663,6 +663,45 @@
 								"fresh-products",
 								"inboundorder",
 								"section"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "warehouse",
+			"item": [
+				{
+					"name": "get quantity product and warehouse by productId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/warehouse?productId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"warehouse"
+							],
+							"query": [
+								{
+									"key": "productId",
+									"value": "1"
+								}
 							]
 						}
 					},
