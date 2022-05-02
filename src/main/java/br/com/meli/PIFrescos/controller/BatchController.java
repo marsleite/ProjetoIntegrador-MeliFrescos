@@ -5,6 +5,7 @@ import br.com.meli.PIFrescos.controller.dtos.BatchDTO;
 import br.com.meli.PIFrescos.controller.dtos.BatchStockDTO;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.service.BatchServiceImpl;
+import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ import java.util.List;
 public class BatchController {
 
     @Autowired
-    BatchServiceImpl batchService;
+    IBatchService batchService;
 
     @GetMapping("/list")
     public ResponseEntity<List<BatchStockDTO>> getBatchesByCategory(@RequestParam(required = false) Integer days,
