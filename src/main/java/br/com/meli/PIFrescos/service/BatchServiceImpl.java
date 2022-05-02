@@ -27,7 +27,7 @@ public class BatchServiceImpl implements IBatchService {
     private BatchRepository batchRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     /**
      * @param id batch id
@@ -100,6 +100,8 @@ public class BatchServiceImpl implements IBatchService {
     }
 
     public ProductWarehousesDTO getQuantityProductByWarehouse(Integer productId){
+        Product product = productService.findProductById(productId);
+
         List<WarehouseQuantityDTO> quantityProductByWarehouse = batchRepository.getQuantityProductByWarehouse(productId);
         AtomicReference<Boolean> hasQuantity = new AtomicReference<>(false);
 
@@ -115,8 +117,6 @@ public class BatchServiceImpl implements IBatchService {
 
         if(!hasQuantity.get())
             throw new EntityNotFoundException("Product not have quantity");
-
-        Product product = productRepository.getById(productId);
 
         return new ProductWarehousesDTO(
                 product.getProductId(),

@@ -31,7 +31,11 @@ public class ProductService {
 
   // metodo para buscar produto pelo id no banco de dados
   public Product findProductById(Integer id) {
-    return productRepository.findById(id).get();
+    Optional<Product> product = productRepository.findById(id);
+    if(product.isEmpty())
+      throw new EntityNotFoundException("product not found");
+
+    return product.get();
   }
 
   public List<Product> listByType(String type){
