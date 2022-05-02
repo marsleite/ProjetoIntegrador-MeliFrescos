@@ -6,6 +6,7 @@ import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import br.com.meli.PIFrescos.repository.UserRepository;
+import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -308,5 +309,23 @@ public class PurchaseOrderServiceTest {
         BigDecimal totalPrice = purchaseOrderService.calculateTotalPrice(purchaseOrder);
 
         assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(275.0));
+    }
+
+    /**
+     * @author Ana Preis
+     * Este teste espera receber o preço total de um pedido;
+     */
+    @Test
+    void shouldUpdateCartList() {
+        productsCart1.setQuantity(3);
+        productsCart2.setQuantity(3);
+
+        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
+
+        PurchaseOrder result = purchaseOrderService.updateCartList(purchaseOrder);
+
+        assertEquals(purchaseOrder, result);
     }
 }
