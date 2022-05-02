@@ -74,6 +74,7 @@ public class BatchServiceImpl implements IBatchService {
         return batchRepository.existsBatchByBatchNumber(batch.getBatchNumber());
     }
 
+    @Override
     public List<Batch> findBatchesByDueDateGreaterThanEqualAndSectorEquals(Integer expiringLimit, Integer sectionId) {
         LocalDate maxDueDate = LocalDate.now().plusDays(expiringLimit);
         List<Batch> batches = batchRepository.findBatchesByDueDateGreaterThanEqualAndSectorEquals(maxDueDate, sectionId);
@@ -130,6 +131,7 @@ public class BatchServiceImpl implements IBatchService {
      * Se não for passado na query nenhum destes 3, retorna a lista toda.
      * @author Ana Preis
      */
+    @Override
     public List<Batch> findBatchesOrderBy(Integer days, String category, String order){
 
         StorageType storageType;
