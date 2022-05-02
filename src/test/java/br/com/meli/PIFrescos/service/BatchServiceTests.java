@@ -1,5 +1,8 @@
 package br.com.meli.PIFrescos.service;
 
+import br.com.meli.PIFrescos.controller.dtos.ProductWarehousesDTO;
+import br.com.meli.PIFrescos.controller.dtos.WarehouseDTO;
+import br.com.meli.PIFrescos.controller.dtos.WarehouseQuantityDTO;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Product;
@@ -40,6 +43,9 @@ public class BatchServiceTests {
 
     @Mock
     private BatchCustomRepository batchCustomRepository;
+
+    @Mock
+    private ProductService productService;
 
     Product mockProduct = new Product();
     Product mockProduct2 = new Product();
@@ -327,5 +333,51 @@ public class BatchServiceTests {
 
         assertThat(exceptionCategory.getMessage()).isEqualTo(messageQuery);
         assertThat(exceptionOrder.getMessage()).isEqualTo(messageOrder);
+    }
+
+    /**
+     * Deve retornar a quantidade total de produtos por Warehouse.
+     * @author Ana Preis
+     */
+    @Test
+    void shouldGetQuantityProductByWarehouse(){
+        WarehouseDTO warehouseDTO = new WarehouseDTO();
+        warehouseDTO.setWarehouseCode(1);
+        warehouseDTO.setTotalQuantity(5);
+        List<WarehouseDTO> warehouseDTOList = Arrays.asList(warehouseDTO);
+        ProductWarehousesDTO productWarehousesDTO = new ProductWarehousesDTO(1,
+                "Test", warehouseDTOList);
+
+        Mockito.when(productService.findProductById(1)).thenReturn(mockProduct);
+        Mockito.when(batchRepository.getQuantityProductByWarehouse(1)).thenReturn(new ArrayList<>(warehouseDTOList));
+
+        ProductWarehousesDTO product = batchService.getQuantityProductByWarehouse(1);
+
+        Assertions.assertEquals(productWarehousesDTO, product);
+    }
+
+    /**
+     * Deve retornar um erro caso seja passado um StorageType diferente de nulo ou dos já existentes ou se for passado
+     * algo diferente de "asc" ou "desc" no parametro order.
+     * @author Ana Preis
+     */
+    @Test
+    void shouldNotHaveAnyQuantityAndNotGetQuantityProductByWarehouse(){
+        String message = "Product do not have quantity";
+        WarehouseDTO warehouseDTO = new WarehouseDTO();
+        warehouseDTO.setWarehouseCode(1);
+        warehouseDTO.setTotalQuantity(0);
+        List<WarehouseDTO> warehouseDTOList = Arrays.asList(warehouseDTO);
+        ProductWarehousesDTO productWarehousesDTO = new ProductWarehousesDTO(1,
+                "Test", warehouseDTOList);
+
+        Mockito.when(productService.findProductById(1)).thenReturn(mockProduct);
+        Mockito.when(batchRepository.getQuantityProductByWarehouse(1)).thenReturn(new ArrayList<>(warehouseDTOList));
+
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () ->
+                batchService.getQuantityProductByWarehouse(1));
+
+        assertThat(exception.getMessage()).isEqualTo(message);
+
     }
 }
