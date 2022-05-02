@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0851f6bf-ca47-42e0-bf2e-e973d16660b7",
+		"_postman_id": "42ac9723-6f38-4d1e-9fd8-614f3ce9e31b",
 		"name": "PraticaIntetgradora",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -137,7 +137,7 @@
 							"query": [
 								{
 									"key": "",
-									"value": null,
+									"value": "",
 									"disabled": true
 								}
 							]
@@ -212,6 +212,44 @@
 								{
 									"key": "orderBy",
 									"value": "L"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Batch from Section With expiring date limit",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/fresh-products/duedate?sectionId=1&expiringLimit=30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"fresh-products",
+								"duedate"
+							],
+							"query": [
+								{
+									"key": "sectionId",
+									"value": "1"
+								},
+								{
+									"key": "expiringLimit",
+									"value": "30"
 								}
 							]
 						}
@@ -686,8 +724,9 @@
 	"variable": [
 		{
 			"key": "token",
-			"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNZWxpRnJlc2NvcyIsInN1YiI6IjQiLCJpYXQiOjE2NTEyNDIwMTcsImV4cCI6MTY1MTMyODQxN30.eQc7KsPPkysa6ZwO51oQvxnco5JXAt1aL1nSVJjPnUA",
-			"type": "default"
+			"value": "",
+			"type": "default",
+			"disabled": true
 		}
 	]
 }
