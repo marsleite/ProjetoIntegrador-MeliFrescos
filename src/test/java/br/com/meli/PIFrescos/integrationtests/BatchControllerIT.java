@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.ListAssert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -71,6 +72,7 @@ public class BatchControllerIT {
     Profile profile= new Profile();
     Product mockProduct = new Product();
     Product mockProduct2 = new Product();
+    Product mockProduct3 = new Product();
     ProductsCart productsCartMock = new ProductsCart();
     ProductsCart productsCartMock2 = new ProductsCart();
     InboundOrder inboundOrderMock = new InboundOrder();
@@ -98,9 +100,14 @@ public class BatchControllerIT {
         mockProduct.setProductDescription("Mock description");
 
         mockProduct2.setProductId(2);
-        mockProduct2.setProductType(StorageType.FRESH);
-        mockProduct2.setProductName("Maça");
+        mockProduct2.setProductType(StorageType.FROZEN);
+        mockProduct2.setProductName("Peixe");
         mockProduct2.setProductDescription("Mock description");
+
+        mockProduct3.setProductId(3);
+        mockProduct3.setProductType(StorageType.FRESH);
+        mockProduct3.setProductName("Uva");
+        mockProduct3.setProductDescription("Mock description");
 
         productsCartMock.setId(1);
         productsCartMock.setQuantity(1);
@@ -155,7 +162,7 @@ public class BatchControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Este teste espera ser retornado todos os produtos.
+     * Este teste espera ser retornado todos os lotes cadatrados.
      */
     @Test
     public void shouldGetBatchesByCategoryWithoutFilter() throws Exception {
@@ -166,10 +173,8 @@ public class BatchControllerIT {
 
         batches.add(productsCartMock.getBatch());
         batches.add(productsCartMock2.getBatch());
-//        System.out.println(batches);
         Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
         Mockito.when(batchRepository.findAll()).thenReturn(batches);
-//        Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
 
         MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list")
                 .header("Authorization", accessToken))
@@ -186,7 +191,7 @@ public class BatchControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Este teste espera ser retornado todos os produtos.
+     * Este teste espera ser retornado todos os lotes de uma determinada seção
      */
     @Test
     public void shouldGetBatchesBySectionAndDueDateLessThan() throws Exception {
@@ -199,7 +204,7 @@ public class BatchControllerIT {
         batches.add(productsCartMock2.getBatch());
         Mockito.when(batchRepository.findBatchesByDueDateGreaterThanEqualAndSectorEquals(any(), any())).thenReturn(batches);
 
-        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/duedate?sectionId=1&expiringLimit=10")
+        MvcResult result = mockMvc.perform(get("/fresh-products/due-date?sectionId=1&expiringLimit=10")
                 .header("Authorization", accessToken))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -222,11 +227,8 @@ public class BatchControllerIT {
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         List<Batch> batches = new ArrayList<>();
-
         batches.add(productsCartMock.getBatch());
         batches.add(productsCartMock2.getBatch());
-        Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
-        Mockito.when(batchRepository.findAll()).thenReturn(batches);
         Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
 
         MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list?days=10")
@@ -244,10 +246,38 @@ public class BatchControllerIT {
 
     /**
      * @author Antonio Hugo
-     * Este teste espera ser retornado todos os produtos.
+     * Este teste espera ser retornado todos de um determinado typo.
      */
     @Test
     public void shouldGetBatchesByCategoryFilterCategory() throws Exception {
+
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
+        List<Batch> batches = new ArrayList<>();
+        sectionMock.setStorageType(StorageType.FROZEN);
+        batches.add(productsCartMock2.getBatch());
+        Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
+
+        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list?category=FROZEN")
+                .header("Authorization", accessToken))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(result);
+        TypeReference<List<BatchStockDTO>> typeReference = new TypeReference<List<BatchStockDTO>>() {};
+        objectMapper.registerModule(new JavaTimeModule());
+        List<BatchStockDTO> batchs = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+
+        assertThat(batchs).isNotNull();
+        assertThat(batchs).extracting("productType").contains(StorageType.FROZEN);
+        assertThat(batchs).hasSize(1);
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser retornado os lotes de produtos filtrado para vencer, categoria e ordenado de forma ascendente.
+     */
+    @Test
+    public void shouldGetBatchesByCategoryFilterDaysCategoryOrder() throws Exception {
 
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
@@ -256,19 +286,67 @@ public class BatchControllerIT {
         batches.add(productsCartMock.getBatch());
         batches.add(productsCartMock2.getBatch());
         Mockito.when(productRepository.findAll()).thenReturn(List.of(mockProduct, mockProduct2));
-        Mockito.when(batchRepository.findAll()).thenReturn(batches);
         Mockito.when(batchCustomRepository.find(any(), any(), any())).thenReturn(batches);
 
-        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list?category=FRESH")
+        MvcResult result = mockMvc.perform(get("/fresh-products/due-date/list?days=15&category=FRESH&order=asc")
                 .header("Authorization", accessToken))
                 .andExpect(status().isOk())
                 .andReturn();
 
         TypeReference<List<BatchStockDTO>> typeReference = new TypeReference<List<BatchStockDTO>>() {};
         objectMapper.registerModule(new JavaTimeModule());
+
         List<BatchStockDTO> batchs = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         assertThat(batchs).isNotNull();
+        assertThat(batchs).extracting("productType").contains(StorageType.FRESH, StorageType.FRESH);
         assertThat(batchs).hasSize(2);
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser receber 400 quando o tipo da ordenação for inválida.
+     */
+    @Test
+    public void shouldGetBatchesByCategoryFilterDaysCategoryInvalidOrder() throws Exception {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
+         mockMvc.perform(get("/fresh-products/due-date/list?days=15&category=FRESH&order=any")
+                .header("Authorization", accessToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid query for order"))
+                .andReturn();
+
+    }
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser receber 400 quando parametros estiverem vazios.
+     */
+    @Test
+    public void shouldGetBatchesBySectionAndDueDateLessThanWithInvalidParam() throws Exception {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
+        mockMvc.perform(get("/fresh-products/due-date")
+                .header("Authorization", accessToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Required request parameter 'sectionId' for method parameter type Integer is not present"))
+                .andReturn();
+
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera ser receber 400 quando o parametro de experingLimit estiver vazio.
+     */
+    @Test
+    public void shouldGetBatchesBySectionAndDueDateLessThanWithInvalidExpiringLimit() throws Exception {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
+
+        mockMvc.perform(get("/fresh-products/due-date?sectionId=1")
+                .header("Authorization", accessToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Required request parameter 'expiringLimit' for method parameter type Integer is not present"))
+                .andReturn();
+
     }
 }
