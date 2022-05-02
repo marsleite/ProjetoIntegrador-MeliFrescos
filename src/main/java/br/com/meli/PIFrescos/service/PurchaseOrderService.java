@@ -57,22 +57,20 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         } catch (EntityNotFoundException e) {
             System.out.println("Creating new purchaseorder");
         }
-
         //encontrar o batch
         purchaseOrder.getCartList().forEach(productsCart -> {
             Integer batchNumber = productsCart.getBatch().getBatchNumber();
             Batch batch = batchRepository.findByBatchNumber(batchNumber);
             productsCart.setBatch(batch);
         });
-
         validProductList(purchaseOrder);
 
         return purchaseOrderRepository.save(purchaseOrder);
     }
 
-    private void validProductList(PurchaseOrder purchaseOrder) {
+    public void validProductList(PurchaseOrder purchaseOrder) {
         List<ProductsCart> invalidProductList = purchaseOrder.getCartList().stream()
-                .filter(productsCart -> !isProducstCartListQuantityValid(productsCart))
+                .filter(productsCart -> !isProductsCartListQuantityValid(productsCart))
                 .collect(Collectors.toList());
 
         if (!invalidProductList.isEmpty())
@@ -84,13 +82,13 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @return boolean
      * @author Ana Preis
      */
-    public boolean isProducstCartListQuantityValid(ProductsCart productsCart){
+    @Override
+    public boolean isProductsCartListQuantityValid(ProductsCart productsCart){
         Integer productCartQuantity = productsCart.getQuantity();
         Batch batch = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber());
         Integer batchCurrentQuantity = batch.getCurrentQuantity();
 
         boolean isValid = batchCurrentQuantity.compareTo(productCartQuantity) > 0;
-
         if(!isValid)
             productsCart.setBatch(batch);
 
@@ -119,14 +117,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Override
     public PurchaseOrder getById(Integer id){
         Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findById(id);
-        if(purchaseOptional.isEmpty()){
-            throw new EntityNotFoundException("PurchaseOrder not found");
-        }
-        return purchaseOptional.get();
-    }
-
-    private PurchaseOrder getByUserId(Integer id) {
-        Optional<PurchaseOrder> purchaseOptional = purchaseOrderRepository.findByUserId(id);
         if(purchaseOptional.isEmpty()){
             throw new EntityNotFoundException("PurchaseOrder not found");
         }
@@ -178,6 +168,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @author Felipe Myose
      * @author Antonio Hugo
      */
+    @Override
     public BigDecimal calculateTotalPrice(PurchaseOrder order){
         double totalPrice = order.getCartList()
                 .stream().mapToDouble(productsCart ->  productsCart.getBatch().getUnitPrice().doubleValue() * productsCart.getQuantity()
@@ -189,9 +180,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     /**
      * Busca todos os produtos do pedido.
      * @param orderId id do pedido
-     * @return  List<Product>  lista de produtos do pedido
+     * @return  lista de produtos do pedido
      * @author Antonio Hugo
      */
+    @Override
     public List<Product> findProductsByOrderId(Integer orderId) {
 
         return this.getById(orderId).getCartList().stream().map(pCart -> pCart.getBatch().getProduct()).collect(Collectors.toList());
@@ -203,11 +195,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @return  PurchaseOrder
      * @author Juliano Alcione de Souza
      */
+    @Transactional
+    @Override
     public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
         validProductList(newPurchaseOrder);
-        return save(newPurchaseOrder);
+        return purchaseOrderRepository.save(newPurchaseOrder);
     }
 
+    @Override
     public PurchaseOrder findPurchaseByUser(User user){
       return purchaseOrderRepository.findByUser(user);
     }
@@ -217,6 +212,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @param userId
      * @return PurchaseOrder
      */
+    @Override
     public PurchaseOrder getPurchaseOrderByUserIdAndStatusIsOpened(Integer userId) {
         List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.getPurchaseOpenedByUserId(userId);
         if (purchaseOrders.size() > 0) {

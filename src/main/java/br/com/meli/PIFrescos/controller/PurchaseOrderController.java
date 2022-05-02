@@ -7,7 +7,7 @@ import br.com.meli.PIFrescos.controller.forms.PurchaseOrderForm;
 
 import br.com.meli.PIFrescos.models.PurchaseOrder;
 import br.com.meli.PIFrescos.models.User;
-import br.com.meli.PIFrescos.service.PurchaseOrderService;
+import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import java.util.List;
 public class PurchaseOrderController {
 
     @Autowired
-    private PurchaseOrderService service;
+    private IPurchaseOrderService service;
 
     @Autowired
     private TokenService tokenService;
