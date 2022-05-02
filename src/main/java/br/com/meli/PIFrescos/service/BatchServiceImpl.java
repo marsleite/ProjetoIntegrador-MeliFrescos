@@ -179,7 +179,7 @@ public class BatchServiceImpl implements IBatchService {
                 .collect(Collectors.toList());
 
         if(!hasQuantity.get())
-            throw new EntityNotFoundException("Product not have quantity");
+            throw new EntityNotFoundException("Product do not have quantity");
 
         return new ProductWarehousesDTO(
                 product.getProductId(),

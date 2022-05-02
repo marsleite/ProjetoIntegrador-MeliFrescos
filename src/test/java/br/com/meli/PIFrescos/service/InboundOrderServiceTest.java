@@ -6,7 +6,6 @@ import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.models.Warehouse;
-import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,9 +32,6 @@ public class InboundOrderServiceTest {
 
     @Mock
     private InboundOrderRepository inboundOrderRepository;
-
-    @Mock
-    private BatchRepository batchRepository;
 
     @Mock
     private BatchServiceImpl batchService;
@@ -54,13 +49,15 @@ public class InboundOrderServiceTest {
     private Batch batch2 = new Batch();
     private Product product1 = new Product();
     private Product product2 = new Product();
+    private Product product3 = new Product();
 
     @BeforeEach
     public void setup() {
         warehouse = new Warehouse(1, new ArrayList<>());
         section = new Section(1, StorageType.FRESH, 10, 0, warehouse);
         product1 = new Product(1,"product 1",StorageType.FRESH,"brief description");
-        product2 = new Product(2,"product 2",StorageType.REFRIGERATED,"brief description");
+        product2 = new Product(2,"product 2",StorageType.FRESH,"brief description");
+        product3 = new Product(2,"product 3",StorageType.REFRIGERATED,"brief description");
         batch1.setCurrentQuantity(2);
         batch2.setCurrentQuantity(3);
         batch1.setProduct(product1);
@@ -74,7 +71,9 @@ public class InboundOrderServiceTest {
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
 
-        Mockito.when(productRepository.findById(null)).thenReturn(java.util.Optional.ofNullable(product1));
+        Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
+        Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(sectionService.findById(any())).thenReturn(java.util.Optional.ofNullable(section));
         Mockito.when(sectionService.updateCapacity(sectionCode, quantity)).thenReturn(5);
         Mockito.when(inboundOrderRepository.save(inboundOrder)).thenReturn(inboundOrder);
 
@@ -85,14 +84,15 @@ public class InboundOrderServiceTest {
 
     @Test
     public void updateExistingInboundOrder() {
+        product3.setProductType(StorageType.FRESH);
         Batch batch3 = new Batch();
         batch3.setCurrentQuantity(3);
-        batch3.setProduct(new Product());
+        batch3.setProduct(product3);
         batch3.setBatchNumber(3);
         Integer id = inboundOrder.getOrderNumber();
 
         InboundOrder newInboundOrderValues = new InboundOrder();
-        Section newSection = new Section(1, StorageType.FRESH, 10, 0, warehouse);
+        Section newSection = new Section(2, StorageType.FRESH, 10, 0, warehouse);
         newInboundOrderValues.setSection(newSection);
         newInboundOrderValues.setBatchStock(Arrays.asList(batch1,batch2,batch3));
 
@@ -101,9 +101,11 @@ public class InboundOrderServiceTest {
 
         Mockito.when(productRepository.findById(product1.getProductId())).thenReturn(java.util.Optional.ofNullable(product1));
         Mockito.when(productRepository.findById(product2.getProductId())).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(productRepository.findById(product3.getProductId())).thenReturn(java.util.Optional.ofNullable(product3));
+        Mockito.when(sectionService.findById(any())).thenReturn(java.util.Optional.ofNullable(section));
+        Mockito.when(batchService.checkIfBatchExists(any())).thenReturn(true);
         Mockito.when(inboundOrderRepository.getByOrderNumber(id)).thenReturn(inboundOrder);
         Mockito.when(inboundOrderRepository.save(any())).thenReturn(inboundOrder);
-        //Mockito.when(batchRepository.existsBatchByBatchNumber(batch1.getBatchNumber())).thenReturn(true);
 
         InboundOrder updatedInboundOrder = inboundOrderService.update(id, newInboundOrderValues);
 
@@ -138,9 +140,8 @@ public class InboundOrderServiceTest {
 
     @Test
     public void postFailsWhenSectionAndProductTypeMismatches(){
-
+        product2.setProductType(StorageType.FROZEN);
         String errorMessage = "Tipo de produto e local de armazenamento incompatíveis.";
-
 
         Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
         Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
