@@ -5,8 +5,8 @@ import br.com.meli.PIFrescos.controller.forms.InboundOrderForm;
 import br.com.meli.PIFrescos.models.Batch;
 import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Section;
-import br.com.meli.PIFrescos.service.InboundOrderService;
-import br.com.meli.PIFrescos.service.SectionService;
+import br.com.meli.PIFrescos.service.interfaces.IInboundOrderService;
+import br.com.meli.PIFrescos.service.interfaces.ISectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,10 @@ import java.util.List;
 public class InBoundOrderController {
 
     @Autowired
-    InboundOrderService service;
+    IInboundOrderService inboundOrderService;
 
     @Autowired
-    SectionService sectionService;
+    ISectionService sectionService;
 
     /**
      * Busca todos os InboundOrders existentes a serem armazenados.
@@ -32,7 +32,7 @@ public class InBoundOrderController {
      */
     @GetMapping("")
     public ResponseEntity<List<InboundOrder>> getInboundOrders(){
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(inboundOrderService.getAll());
     }
 
 
@@ -43,7 +43,7 @@ public class InBoundOrderController {
     @PostMapping("")
     public ResponseEntity<List<Batch>> postInboundOrders(@RequestBody InboundOrderForm orderDTO){
         InboundOrder order = InboundOrderForm.convert(orderDTO);
-        InboundOrder savedOrder = service.save(order);
+        InboundOrder savedOrder = inboundOrderService.save(order);
 
         return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);
     }
@@ -56,7 +56,7 @@ public class InBoundOrderController {
     public ResponseEntity<List<Batch>> putInboundOrders(@RequestBody InboundOrderUpdateDTO orderDTO, @PathVariable Integer orderNumber){
         InboundOrder order = InboundOrderUpdateDTO.convert(orderDTO);
 
-        InboundOrder savedOrder = service.update(orderNumber, order);
+        InboundOrder savedOrder = inboundOrderService.update(orderNumber, order);
 
         return new ResponseEntity(savedOrder.getBatchStock(), HttpStatus.CREATED);
     }

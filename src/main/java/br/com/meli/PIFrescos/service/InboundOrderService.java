@@ -5,7 +5,6 @@ import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
-import br.com.meli.PIFrescos.repository.SectionRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import br.com.meli.PIFrescos.service.interfaces.IInboundOrderService;
 import br.com.meli.PIFrescos.service.interfaces.ISectionService;
@@ -19,7 +18,7 @@ import java.util.Optional;
 public class InboundOrderService implements IInboundOrderService {
 
     @Autowired
-    ProductRepository productRepository;
+    ProductService productService;
 
     @Autowired
     InboundOrderRepository inboundOrderRepository;
@@ -161,11 +160,8 @@ public class InboundOrderService implements IInboundOrderService {
             return inboundOrder;
         }
         inboundOrder.getBatchStock().forEach(batch -> {
-            Optional<Product> product = productRepository.findById(batch.getProduct().getProductId());
-            if (product.isEmpty() ) {
-                throw new RuntimeException("Produto não existe.");
-            }
-            batch.setProduct(product.get());
+            Product product = productService.findProductById(batch.getProduct().getProductId());
+            batch.setProduct(product);
         });
 
         Optional<Section> section = sectionService.findById(inboundOrder.getSection().getSectionCode());

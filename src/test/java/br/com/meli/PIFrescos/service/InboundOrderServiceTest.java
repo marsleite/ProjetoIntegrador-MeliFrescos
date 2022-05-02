@@ -7,7 +7,6 @@ import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.models.Warehouse;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
-import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.verify;
 public class InboundOrderServiceTest {
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @Mock
     private InboundOrderRepository inboundOrderRepository;
@@ -71,8 +70,8 @@ public class InboundOrderServiceTest {
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
 
-        Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
-        Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(productService.findProductById(1)).thenReturn(product1);
+        Mockito.when(productService.findProductById(2)).thenReturn(product2);
         Mockito.when(sectionService.findById(any())).thenReturn(java.util.Optional.ofNullable(section));
         Mockito.when(sectionService.updateCapacity(sectionCode, quantity)).thenReturn(5);
         Mockito.when(inboundOrderRepository.save(inboundOrder)).thenReturn(inboundOrder);
@@ -99,9 +98,9 @@ public class InboundOrderServiceTest {
         InboundOrder expectedInboundOrder = inboundOrder;
         expectedInboundOrder.setSection(newSection);
 
-        Mockito.when(productRepository.findById(product1.getProductId())).thenReturn(java.util.Optional.ofNullable(product1));
-        Mockito.when(productRepository.findById(product2.getProductId())).thenReturn(java.util.Optional.ofNullable(product2));
-        Mockito.when(productRepository.findById(product3.getProductId())).thenReturn(java.util.Optional.ofNullable(product3));
+        Mockito.when(productService.findProductById(product1.getProductId())).thenReturn(product1);
+        Mockito.when(productService.findProductById(product2.getProductId())).thenReturn(product2);
+        Mockito.when(productService.findProductById(product3.getProductId())).thenReturn(product3);
         Mockito.when(sectionService.findById(any())).thenReturn(java.util.Optional.ofNullable(section));
         Mockito.when(batchService.checkIfBatchExists(any())).thenReturn(true);
         Mockito.when(inboundOrderRepository.getByOrderNumber(id)).thenReturn(inboundOrder);
@@ -143,14 +142,13 @@ public class InboundOrderServiceTest {
         product2.setProductType(StorageType.FROZEN);
         String errorMessage = "Tipo de produto e local de armazenamento incompatíveis.";
 
-        Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
-        Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(productService.findProductById(1)).thenReturn(product1);
+        Mockito.when(productService.findProductById(2)).thenReturn(product2);
 
         Mockito.when(sectionService.findById(1)).thenReturn(java.util.Optional.ofNullable(section));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.save(inboundOrder));
 
         assertEquals(errorMessage, exception.getMessage());
-
     }
 }
