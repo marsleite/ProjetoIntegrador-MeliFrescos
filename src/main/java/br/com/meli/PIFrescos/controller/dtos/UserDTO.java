@@ -16,15 +16,14 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-  private Integer userId;
+  private Integer id;
   private String fullname;
   private String email;
   private String password;
-  private String address;
   private UserRole role;
 
   public UserDTO(User user) {
-    this.userId = user.getId();
+    this.id = user.getId();
     this.fullname = user.getFullname();
     this.password = user.getPassword();
     this.email = user.getEmail();
@@ -34,4 +33,5 @@ public class UserDTO {
   public static List<UserDTO> convertList(List<User> users){
     return users.stream().map(UserDTO::new).collect(Collectors.toList());
   }
+
 }

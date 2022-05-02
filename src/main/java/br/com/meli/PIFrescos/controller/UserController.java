@@ -6,6 +6,7 @@ import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.repository.ProfileRepository;
 import br.com.meli.PIFrescos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +31,14 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserForm userForm){
         User user = this.userService.create(userForm.convertToEntity(profileRepository));
-        return ResponseEntity.ok(new UserDTO(user));
+        return new ResponseEntity(new UserDTO(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@RequestBody @Valid UserForm userForm,
                                           @PathVariable(name = "id") Integer id) {
         User user = this.userService.update(id, userForm.convertToEntity(profileRepository));
-        return ResponseEntity.ok(new UserDTO(user));
+        return new ResponseEntity(new UserDTO(user), HttpStatus.CREATED);
     }
 
     @GetMapping

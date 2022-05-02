@@ -1,9 +1,6 @@
 package br.com.meli.PIFrescos.controller.forms;
 
-import br.com.meli.PIFrescos.models.Profile;
-import br.com.meli.PIFrescos.models.Address;
-import br.com.meli.PIFrescos.models.User;
-import br.com.meli.PIFrescos.models.UserRole;
+import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.repository.ProfileRepository;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +18,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserForm {
   @NotNull(message = "O fullname não pode ser nulo.")
   @Size(min = 5, max =  30, message = "O fullname deve conter entre 5 a 30 caracteres.")
@@ -41,7 +39,6 @@ public class UserForm {
   private UserRole role;
 
   private List<Profile> perfis = new ArrayList<>();
-
 
   public UserForm(String fullname, String email, String password, UserRole role) {
     this.fullname = fullname;
