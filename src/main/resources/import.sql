@@ -1,11 +1,11 @@
 INSERT INTO warehouse(warehouse_code) VALUES(1);
 INSERT INTO warehouse(warehouse_code) VALUES(2);
 
-INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'FRESH', 1);
-INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'REFRIGERATED', 1);
-INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'FROZEN', 1);
-INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'FRESH', 2);
-INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(0, 100, 'REFRIGERATED', 2);
+INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(5, 100, 'FRESH', 1);
+INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(5, 100, 'REFRIGERATED', 1);
+INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(5, 100, 'FROZEN', 1);
+INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(3, 100, 'FRESH', 2);
+INSERT INTO section(current_capacity, max_capacity, storage_type, warehouse_warehouse_code) VALUES(4, 100, 'REFRIGERATED', 2);
 
 -- products
 -- FRESH
