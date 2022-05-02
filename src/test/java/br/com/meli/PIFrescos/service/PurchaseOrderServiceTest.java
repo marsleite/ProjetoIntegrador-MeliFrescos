@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,7 @@ public class PurchaseOrderServiceTest {
     PurchaseOrderService purchaseOrderService;
 
     private Product product1 = new Product();
+    private Product product2 = new Product();
     private PurchaseOrder purchaseOrder = new PurchaseOrder();
     private Batch mockBatch1 = new Batch();
     private Batch mockBatch2 = new Batch();
@@ -70,22 +72,30 @@ public class PurchaseOrderServiceTest {
         product1.setProductType(FRESH);
         product1.setProductDescription("descriptionBanana");
 
+        product1.setProductId(2);
+        product2.setProductName("Maça");
+        product2.setProductType(FRESH);
+        product1.setProductDescription("description Maça");
+
         mockBatch1 = Batch.builder()
                 .batchNumber(1)
                 .product(product1)
                 .currentQuantity(10)
+                .unitPrice(BigDecimal.valueOf(10.0))
                 .build();
 
         mockBatch2 = Batch.builder()
                 .batchNumber(2)
                 .product(product1)
                 .currentQuantity(10)
+                .unitPrice(BigDecimal.valueOf(25.0))
                 .build();
 
         mockBatch3 = Batch.builder()
                 .batchNumber(3)
                 .product(product1)
                 .currentQuantity(0)
+                .unitPrice(BigDecimal.valueOf(20.0))
                 .build();
 
         productsCart1.setId(1);
@@ -114,8 +124,10 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldSavePurchaseOrder(){
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
-        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
-        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.lenient().when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.lenient().when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
@@ -140,8 +152,10 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldNotValidatePurchaseOrder(){
         productsCart1.setBatch(mockBatch3);
-        Mockito.when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
-        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.lenient().when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
+        Mockito.lenient().when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.lenient().when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
 
         ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
 
@@ -282,5 +296,17 @@ public class PurchaseOrderServiceTest {
         PurchaseOrder response = purchaseOrderService.findPurchaseByUser(user1);
 
         assertEquals(purchaseOrder, response);
+
+    }
+
+    /**
+     * @author Antonio Hugo
+     * Este teste espera receber o preço total de um pedido;
+     */
+    @Test
+    void shouldReturnTotalPriceOfAnOrder() {
+        BigDecimal totalPrice = purchaseOrderService.calculateTotalPrice(purchaseOrder);
+
+        assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(275.0));
     }
 }
