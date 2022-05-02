@@ -18,11 +18,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
+
+/**
+ * @author Felipe Myose
+ */
 @ExtendWith(MockitoExtension.class)
 public class InboundOrderServiceTest {
 
@@ -31,9 +36,6 @@ public class InboundOrderServiceTest {
 
     @Mock
     private InboundOrderRepository inboundOrderRepository;
-
-    @Mock
-    private BatchServiceImpl batchService;
 
     @Mock
     private SectionService sectionService;
@@ -102,7 +104,6 @@ public class InboundOrderServiceTest {
         Mockito.when(productService.findProductById(product2.getProductId())).thenReturn(product2);
         Mockito.when(productService.findProductById(product3.getProductId())).thenReturn(product3);
         Mockito.when(sectionService.findById(any())).thenReturn(java.util.Optional.ofNullable(section));
-        Mockito.when(batchService.checkIfBatchExists(any())).thenReturn(true);
         Mockito.when(inboundOrderRepository.getByOrderNumber(id)).thenReturn(inboundOrder);
         Mockito.when(inboundOrderRepository.save(any())).thenReturn(inboundOrder);
 
@@ -137,6 +138,9 @@ public class InboundOrderServiceTest {
         assertEquals(errorMessage, exception.getMessage());
     }
 
+    /**
+     * @author Julio Gama
+     */
     @Test
     public void postFailsWhenSectionAndProductTypeMismatches(){
         product2.setProductType(StorageType.FROZEN);
@@ -150,5 +154,51 @@ public class InboundOrderServiceTest {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.save(inboundOrder));
 
         assertEquals(errorMessage, exception.getMessage());
+    }
+
+    @Test
+    public void saveInboundOrderWhenBatchListIsEmpty() {
+        inboundOrder.setBatchStock(new ArrayList<>());
+        Mockito.when(inboundOrderRepository.save(inboundOrder)).thenReturn(inboundOrder);
+        InboundOrder savedInboundOrder = inboundOrderService.save(inboundOrder);
+
+        assertEquals(inboundOrder, savedInboundOrder);
+    }
+
+    @Test
+    public void tryToSaveInboundOrderWithUnknownSection() {
+        String exceptionMessage = "Seção não existente.";
+        inboundOrder.getSection().setSectionCode(111);
+        Mockito.when(productService.findProductById(1)).thenReturn(product1);
+        Mockito.when(productService.findProductById(2)).thenReturn(product2);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.save(inboundOrder));
+
+        assertEquals(exceptionMessage, exception.getMessage());
+    }
+
+    @Test
+    public void tryToUpdateInboundOrderWithUnknownBatch() {
+        String exceptionMessage = "Batch não existe. Lista de Batch vazia.";
+        inboundOrder.setBatchStock(new ArrayList<>());
+        Integer inboundOrderId = inboundOrder.getOrderNumber();
+        Mockito.when(inboundOrderRepository.getByOrderNumber(inboundOrderId)).thenReturn(inboundOrder);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.update(inboundOrderId, inboundOrder));
+        assertEquals(exceptionMessage, exception.getMessage());
+    }
+
+    @Test
+    public void testFindAll() {
+        List<InboundOrder> allInboundOrders = new ArrayList<>();
+        allInboundOrders.add(inboundOrder);
+        List<InboundOrder> expected = allInboundOrders;
+
+        Mockito.when(inboundOrderRepository.findAll()).thenReturn(allInboundOrders);
+
+        List<InboundOrder> inboundOrdersResult = inboundOrderService.getAll();
+
+        assertEquals(expected.size(), inboundOrdersResult.size());
+        assertEquals(expected.get(0), inboundOrdersResult.get(0));
     }
 }
