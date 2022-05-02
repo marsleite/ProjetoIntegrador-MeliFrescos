@@ -66,7 +66,7 @@ public class ProductControllerIT {
     Profile profile= new Profile();
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws Exception {
         mockProduct.setProductId(1);
         mockProduct.setProductType(StorageType.FRESH);
         mockProduct.setProductName("Uva");
@@ -90,6 +90,8 @@ public class ProductControllerIT {
         userMock.setPassword("$2a$10$GtzVniP9dVMmVW2YxytuvOG9kHu9nrwAxe8/UXSFkaECmIJ4UJcHy");
         userMock.setProfiles(List.of(profile));
         userMock.setRole(UserRole.ADMIN);
+
+        this.accessToken = this.userLogin();
     }
 
     /**
@@ -117,7 +119,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnAllProducts() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         List<Product> products = new ArrayList<>();
@@ -140,7 +142,7 @@ public class ProductControllerIT {
 
     @Test
     public void shouldCreateProduct() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         ProductForm result = objectMapper.readValue(payload, ProductForm.class);
@@ -162,7 +164,7 @@ public class ProductControllerIT {
 
     @Test
     public void shouldUpdateProduct() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         ProductForm result = objectMapper.readValue(payload, ProductForm.class);
@@ -191,7 +193,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldDeleteProductById() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         ProductForm result = objectMapper.readValue(payload, ProductForm.class);
@@ -212,7 +214,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldStatusCode404NotFoundWhenPathNotExits() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         mockMvc.perform(get("/not_exists")
@@ -227,7 +229,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnStatusCode404NotFoundWhenProductListIsEmpty() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         List<Product> products = new ArrayList<>();
@@ -247,7 +249,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnStatusCode404NotFoundWhenProductDoesNotExist() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         mockMvc.perform(delete("/fresh-products/100")
@@ -262,7 +264,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnStatusCode400BadRequestWhenProductNameIsEmpty() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         String payloadInvalid = "{ \n"
@@ -284,7 +286,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnStatusCode400BadRequestWhenProductTypeIsInvalid() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         String payloadInvalid = "{ \n"
@@ -306,7 +308,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnFilteredProductsByTypeFS() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         List<Product> products = new ArrayList<>();
@@ -328,7 +330,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnFilteredProductsByTypeFF() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         List<Product> products = new ArrayList<>();
@@ -350,7 +352,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturnFilteredProductsByTypeRF() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         List<Product> products = new ArrayList<>();
@@ -373,7 +375,7 @@ public class ProductControllerIT {
      */
     @Test
     public void shouldReturn404whenProductsByTypeIsInvalid() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         List<Product> products = new ArrayList<>();

@@ -153,6 +153,8 @@ public class PurchaseOrderControllerIT {
         purchaseOrderMock.setUser(userMock);
         purchaseOrderMock.setCartList(List.of(productsCartMock, productsCartMock2));
 
+        this.accessToken = this.userLogin();
+
     }
 
     /**
@@ -180,7 +182,6 @@ public class PurchaseOrderControllerIT {
      */
     @Test
     public void shouldCreatePurchaseOrder() throws Exception {
-        this.accessToken = this.userLogin();
 
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
         Mockito.when(purchaseOrderRepository.getPurchaseOrdersByUserIdAndOrderStatusIsOPENED(any())).thenReturn(null);
@@ -203,7 +204,7 @@ public class PurchaseOrderControllerIT {
      */
     @Test
     public void shouldCreatePurchaseOrderInvalidPayload() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         Mockito.when(purchaseOrderRepository.save(any())).thenReturn(purchaseOrderMock);
@@ -221,7 +222,6 @@ public class PurchaseOrderControllerIT {
      */
     @Test
     public void shouldGetProductsOnPurchaseOrder() throws Exception {
-        this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         Mockito.when(purchaseOrderRepository.findByUser(any())).thenReturn(purchaseOrderMock);
@@ -244,7 +244,7 @@ public class PurchaseOrderControllerIT {
      */
     @Test
     public void shouldReturn404WhenNotExistProductsOnPurchaseOrder() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         Mockito.when(purchaseOrderRepository.findByUser(any())).thenReturn(purchaseOrderMock);
@@ -277,7 +277,6 @@ public class PurchaseOrderControllerIT {
                 + " ]"
                 + " }";
 
-        this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         Mockito.when(purchaseOrderRepository.findByUserId(any())).thenReturn(Optional.ofNullable(purchaseOrderMock));
@@ -317,7 +316,6 @@ public class PurchaseOrderControllerIT {
                 + " ]"
                 + " }";
 
-        this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
         productsCartMock2.getBatch().setCurrentQuantity(0);
         Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(productsCartMock.getBatch());
@@ -338,7 +336,6 @@ public class PurchaseOrderControllerIT {
     @Test
     public void shouldUpdateOrderToFinish() throws Exception {
 
-        this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
         Mockito.when(purchaseOrderRepository.getPurchaseOpenedByUserId(any())).thenReturn(List.of(purchaseOrderMock));
 
@@ -360,7 +357,6 @@ public class PurchaseOrderControllerIT {
     @Test
     public void shouldReturn404FinishOrderNotExist() throws Exception {
 
-        this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         Mockito.when(purchaseOrderRepository.findById(any())).thenReturn(Optional.empty());
