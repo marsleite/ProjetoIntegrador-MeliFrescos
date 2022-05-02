@@ -6,20 +6,31 @@ import br.com.meli.PIFrescos.controller.dtos.WarehouseQuantityDTO;
 import br.com.meli.PIFrescos.models.Batch;
 
 import br.com.meli.PIFrescos.models.Product;
+import br.com.meli.PIFrescos.models.StorageType;
+import br.com.meli.PIFrescos.repository.BatchCustomRepository;
+
 import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.ProductRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
 
 @Service
 public class BatchServiceImpl implements IBatchService {
@@ -28,7 +39,11 @@ public class BatchServiceImpl implements IBatchService {
     private BatchRepository batchRepository;
 
     @Autowired
+    private BatchCustomRepository batchCustomRepository;
+
+    @Autowired
     private ProductService productService;
+
 
     /**
      * @param id batch id
@@ -107,6 +122,44 @@ public class BatchServiceImpl implements IBatchService {
         }
     }
 
+
+    /**
+     * Procura a lista de batches ordenada de acordo com o número de dias passados, com a categoria do produto,
+     * podendo ordenar de forma crescente ou decrescente.
+     * Se alguma query de categoria ou ordenação for inválida, retorna uma exceção.
+     * Se não for passado na query nenhum destes 3, retorna a lista toda.
+     * @author Ana Preis
+     */
+    public List<Batch> findBatchesOrderBy(Integer days, String category, String order){
+
+        StorageType storageType;
+
+        if(days == null && category == null && order == null ){
+            return batchRepository.findAll();
+        }
+
+        // Verifica se category é nula ou se é inválida.
+        if (category == null) {
+            storageType = null;
+        } else if (category.equalsIgnoreCase("FRESH") || category.equalsIgnoreCase("FROZEN")
+                || category.equalsIgnoreCase("REFRIGERATED")) {
+            storageType = StorageType.valueOf(category.toUpperCase(Locale.ROOT));
+        } else {
+            throw new RuntimeException("Invalid query for category");
+        }
+
+        // Verifica se order é nula ou se é inválida. Se for inválida não faz a busca e retorna exceção.
+        if((order == null || order.equalsIgnoreCase("asc") || order.equalsIgnoreCase("desc"))  && days != null){
+            LocalDate maxDueDate = LocalDate.now().plusDays(days);
+            return batchCustomRepository.find(maxDueDate, storageType, order);
+        } else if (days == null){
+            return batchCustomRepository.find(null, storageType, order);
+        } else {
+            throw new RuntimeException("Invalid query for order");
+        }
+    }
+
+  
     public ProductWarehousesDTO getQuantityProductByWarehouse(Integer productId){
         Product product = productService.findProductById(productId);
 
@@ -131,5 +184,6 @@ public class BatchServiceImpl implements IBatchService {
                 product.getProductName(),
                 collect);
     }
+
 
 }
