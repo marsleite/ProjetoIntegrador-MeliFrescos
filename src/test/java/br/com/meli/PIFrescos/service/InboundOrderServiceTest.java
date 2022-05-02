@@ -7,7 +7,6 @@ import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.models.Warehouse;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
-import br.com.meli.PIFrescos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,22 +18,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
+
+/**
+ * @author Felipe Myose
+ */
 @ExtendWith(MockitoExtension.class)
 public class InboundOrderServiceTest {
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @Mock
     private InboundOrderRepository inboundOrderRepository;
-
-    @Mock
-    private BatchServiceImpl batchService;
 
     @Mock
     private SectionService sectionService;
@@ -71,8 +72,8 @@ public class InboundOrderServiceTest {
         Integer sectionCode = section.getSectionCode();
         Integer quantity = inboundOrder.getBatchStock().stream().mapToInt(batch -> batch.getCurrentQuantity()).sum();
 
-        Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
-        Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(productService.findProductById(1)).thenReturn(product1);
+        Mockito.when(productService.findProductById(2)).thenReturn(product2);
         Mockito.when(sectionService.findById(any())).thenReturn(java.util.Optional.ofNullable(section));
         Mockito.when(sectionService.updateCapacity(sectionCode, quantity)).thenReturn(5);
         Mockito.when(inboundOrderRepository.save(inboundOrder)).thenReturn(inboundOrder);
@@ -99,11 +100,10 @@ public class InboundOrderServiceTest {
         InboundOrder expectedInboundOrder = inboundOrder;
         expectedInboundOrder.setSection(newSection);
 
-        Mockito.when(productRepository.findById(product1.getProductId())).thenReturn(java.util.Optional.ofNullable(product1));
-        Mockito.when(productRepository.findById(product2.getProductId())).thenReturn(java.util.Optional.ofNullable(product2));
-        Mockito.when(productRepository.findById(product3.getProductId())).thenReturn(java.util.Optional.ofNullable(product3));
+        Mockito.when(productService.findProductById(product1.getProductId())).thenReturn(product1);
+        Mockito.when(productService.findProductById(product2.getProductId())).thenReturn(product2);
+        Mockito.when(productService.findProductById(product3.getProductId())).thenReturn(product3);
         Mockito.when(sectionService.findById(any())).thenReturn(java.util.Optional.ofNullable(section));
-        Mockito.when(batchService.checkIfBatchExists(any())).thenReturn(true);
         Mockito.when(inboundOrderRepository.getByOrderNumber(id)).thenReturn(inboundOrder);
         Mockito.when(inboundOrderRepository.save(any())).thenReturn(inboundOrder);
 
@@ -138,19 +138,67 @@ public class InboundOrderServiceTest {
         assertEquals(errorMessage, exception.getMessage());
     }
 
+    /**
+     * @author Julio Gama
+     */
     @Test
     public void postFailsWhenSectionAndProductTypeMismatches(){
         product2.setProductType(StorageType.FROZEN);
         String errorMessage = "Tipo de produto e local de armazenamento incompatíveis.";
 
-        Mockito.when(productRepository.findById(1)).thenReturn(java.util.Optional.ofNullable(product1));
-        Mockito.when(productRepository.findById(2)).thenReturn(java.util.Optional.ofNullable(product2));
+        Mockito.when(productService.findProductById(1)).thenReturn(product1);
+        Mockito.when(productService.findProductById(2)).thenReturn(product2);
 
         Mockito.when(sectionService.findById(1)).thenReturn(java.util.Optional.ofNullable(section));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.save(inboundOrder));
 
         assertEquals(errorMessage, exception.getMessage());
+    }
 
+    @Test
+    public void saveInboundOrderWhenBatchListIsEmpty() {
+        inboundOrder.setBatchStock(new ArrayList<>());
+        Mockito.when(inboundOrderRepository.save(inboundOrder)).thenReturn(inboundOrder);
+        InboundOrder savedInboundOrder = inboundOrderService.save(inboundOrder);
+
+        assertEquals(inboundOrder, savedInboundOrder);
+    }
+
+    @Test
+    public void tryToSaveInboundOrderWithUnknownSection() {
+        String exceptionMessage = "Seção não existente.";
+        inboundOrder.getSection().setSectionCode(111);
+        Mockito.when(productService.findProductById(1)).thenReturn(product1);
+        Mockito.when(productService.findProductById(2)).thenReturn(product2);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.save(inboundOrder));
+
+        assertEquals(exceptionMessage, exception.getMessage());
+    }
+
+    @Test
+    public void tryToUpdateInboundOrderWithUnknownBatch() {
+        String exceptionMessage = "Batch não existe. Lista de Batch vazia.";
+        inboundOrder.setBatchStock(new ArrayList<>());
+        Integer inboundOrderId = inboundOrder.getOrderNumber();
+        Mockito.when(inboundOrderRepository.getByOrderNumber(inboundOrderId)).thenReturn(inboundOrder);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> inboundOrderService.update(inboundOrderId, inboundOrder));
+        assertEquals(exceptionMessage, exception.getMessage());
+    }
+
+    @Test
+    public void testFindAll() {
+        List<InboundOrder> allInboundOrders = new ArrayList<>();
+        allInboundOrders.add(inboundOrder);
+        List<InboundOrder> expected = allInboundOrders;
+
+        Mockito.when(inboundOrderRepository.findAll()).thenReturn(allInboundOrders);
+
+        List<InboundOrder> inboundOrdersResult = inboundOrderService.getAll();
+
+        assertEquals(expected.size(), inboundOrdersResult.size());
+        assertEquals(expected.get(0), inboundOrdersResult.get(0));
     }
 }
