@@ -4,7 +4,6 @@ import br.com.meli.PIFrescos.models.InboundOrder;
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.Section;
 import br.com.meli.PIFrescos.repository.InboundOrderRepository;
-import br.com.meli.PIFrescos.repository.ProductRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import br.com.meli.PIFrescos.service.interfaces.IInboundOrderService;
 import br.com.meli.PIFrescos.service.interfaces.ISectionService;
@@ -86,7 +85,7 @@ public class InboundOrderService implements IInboundOrderService {
         if(inboundOrder == null) {
             throw new RuntimeException("Ordem solicitada não existe.");
         }
-        // verificar se os batch existem - se não existir, mandar uma mensagem avisando a criaçao de um novo batch
+        // verificar se os batch existem - se não existir, ele é criado posteriormente
         checkIfBatchesExist(newInboundOrderValues);
         // verificar se os produtos existem
         newInboundOrderValues = checkProductsAndSectionFromBatchListAndUpdateValues(newInboundOrderValues);
@@ -199,13 +198,8 @@ public class InboundOrderService implements IInboundOrderService {
 
     private boolean checkIfBatchesExist(InboundOrder inboundOrder) {
         if (inboundOrder.getBatchStock().size() == 0) {
-            throw new RuntimeException("Batch não existe. Lista de Batch vazia");
+            throw new RuntimeException("Batch não existe. Lista de Batch vazia.");
         }
-        inboundOrder.getBatchStock().forEach(batch -> {
-            if(!batchService.checkIfBatchExists(batch)) {
-                System.out.println("Batch não existe. Criando novo batch");
-            }
-        });
         return true;
     }
 }
