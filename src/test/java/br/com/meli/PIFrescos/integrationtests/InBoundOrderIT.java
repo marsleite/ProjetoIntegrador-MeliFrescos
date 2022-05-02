@@ -148,13 +148,15 @@ public class InBoundOrderIT {
         InboundOrderForm inboundOrderForm = new InboundOrderForm();
         BatchDTO batchDTO1 = new BatchDTO();
         batchDTO1.setCurrentQuantity(1);
+        batchDTO1.setInitialQuantity(1);
         batchDTO1.setProductId(1);
-        inboundOrderForm.setBatchStock(Arrays.asList(batchDTO1));
         inboundOrderForm.setSection(section1);
+        inboundOrderForm.setBatchStock(Arrays.asList(batchDTO1));
+
         String inboundOrderString = objectMapper.writeValueAsString(inboundOrderForm);
 
         Mockito.when(sectionRepository.findById(any())).thenReturn(java.util.Optional.of(section1));
-        Mockito.when(productRepository.findById(any())).thenReturn(java.util.Optional.of(new Product()));
+        Mockito.when(productRepository.findById(any())).thenReturn(java.util.Optional.of(product1));
         Mockito.when(inboundOrderRepository.save(any())).thenAnswer(invocation -> inboundOrder1);
 
         MvcResult result = mockMvc.perform(post("/fresh-products/inboundorder")
