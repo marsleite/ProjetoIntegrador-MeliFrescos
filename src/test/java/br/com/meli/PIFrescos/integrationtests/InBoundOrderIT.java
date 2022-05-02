@@ -168,7 +168,7 @@ public class InBoundOrderIT {
         List<Batch> inboundOrderResponse = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
         // the response is a List<Batch>
 
-//        assertEquals(batch1.getProduct(), inboundOrderResponse.get(0).getProduct());
+        assertEquals(batch1.getProduct(), inboundOrderResponse.get(0).getProduct());
     }
 
     @Test
