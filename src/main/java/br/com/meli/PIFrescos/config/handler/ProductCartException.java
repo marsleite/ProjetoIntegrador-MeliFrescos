@@ -21,7 +21,7 @@ public class ProductCartException extends RuntimeException{
     public ProductCartException(List<ProductsCart> invalidProductList) {
         invalidProductList.forEach(item -> {
             if(item.getBatch().getProduct() != null){
-                errorFormsDtoList.add(new ErrorFormsDto(item.getBatch().getProduct().getProductName(), "Insuficient quantity of product on batch"));
+                errorFormsDtoList.add(new ErrorFormsDto(item.getBatch().getProduct().getProductName(), "Insufficient quantity of product on batch"));
             }
         });
     }

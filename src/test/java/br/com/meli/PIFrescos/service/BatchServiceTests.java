@@ -216,4 +216,31 @@ public class BatchServiceTests {
         Assertions.assertEquals(list1, listById);
     }
 
+    @Test
+    public void shouldReturnTrueWhenBatchExists() {
+        Batch batch1 = Batch.builder().batchNumber(1).build();
+        Mockito.when(batchRepository.existsBatchByBatchNumber(batch1.getBatchNumber())).thenReturn(true);
+        boolean returnValue = batchService.checkIfBatchExists(batch1);
+
+        Assertions.assertEquals(true, returnValue);
+    }
+
+    @Test
+    public void TestFindBatchesByDueDateGreaterThanEqualAndSectorEquals() {
+        LocalDate now = LocalDate.now();
+        Batch batch1 = Batch.builder().dueDate(now.plusDays(10)).build();
+        Batch batch2 = Batch.builder().dueDate(now.plusDays(20)).build();
+        List<Batch> expectedBatchList = new ArrayList<>(Arrays.asList(batch1, batch2));
+        Integer expiringLimitDays = 25;
+        LocalDate expiringLimitDate = now.plusDays(expiringLimitDays);
+        Integer sectionId = 1;
+
+        Mockito.when(batchRepository.findBatchesByDueDateGreaterThanEqualAndSectorEquals(expiringLimitDate, sectionId))
+                .thenReturn(expectedBatchList);
+
+        List<Batch> returnValue = batchService.findBatchesByDueDateGreaterThanEqualAndSectorEquals(expiringLimitDays, sectionId);
+
+        Assertions.assertEquals(expectedBatchList.size(), returnValue.size());
+        Assertions.assertEquals(expectedBatchList, returnValue);
+    }
 }

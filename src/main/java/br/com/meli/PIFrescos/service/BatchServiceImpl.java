@@ -7,7 +7,6 @@ import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.repository.BatchCustomRepository;
 import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -61,6 +60,13 @@ public class BatchServiceImpl implements IBatchService {
     @Override
     public boolean checkIfBatchExists(Batch batch) {
         return batchRepository.existsBatchByBatchNumber(batch.getBatchNumber());
+    }
+
+    public List<Batch> findBatchesByDueDateGreaterThanEqualAndSectorEquals(Integer expiringLimit, Integer sectionId) {
+        LocalDate maxDueDate = LocalDate.now().plusDays(expiringLimit);
+        List<Batch> batches = batchRepository.findBatchesByDueDateGreaterThanEqualAndSectorEquals(maxDueDate, sectionId);
+
+        return batches;
     }
 
     /**

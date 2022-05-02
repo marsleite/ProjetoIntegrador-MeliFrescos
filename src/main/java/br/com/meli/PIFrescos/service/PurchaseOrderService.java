@@ -199,31 +199,17 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
     /**
      * Atualiza todos os itens do carrinho
-     * @param PurchaseOrder atualizado
+     * @param newPurchaseOrder
      * @return  PurchaseOrder
      * @author Juliano Alcione de Souza
      */
     public PurchaseOrder updateCartList(PurchaseOrder newPurchaseOrder) {
         validProductList(newPurchaseOrder);
-        clearCartByPurchase(newPurchaseOrder.getUser().getId());
         return save(newPurchaseOrder);
     }
 
     public PurchaseOrder findPurchaseByUser(User user){
       return purchaseOrderRepository.findByUser(user);
-    }
-  
-    /**
-     * Apaga todos os carrinhos abertos do cliente
-     * @param id do usuario
-     * @return  void
-     * @author Juliano Alcione de Souza
-     */
-    public void clearCartByPurchase(Integer usuarioId){
-        PurchaseOrder purchaseOpenedByUserId = getPurchaseOrderByUserIdAndStatusIsOpened(usuarioId);
-        if(purchaseOpenedByUserId != null){
-            purchaseOrderRepository.delete(purchaseOpenedByUserId);
-        }
     }
 
     /**
