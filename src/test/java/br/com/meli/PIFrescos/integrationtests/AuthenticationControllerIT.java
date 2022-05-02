@@ -44,9 +44,8 @@ public class AuthenticationControllerIT {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-
     String userLoginPayload = "{"
-            + "\"email\": \"meli@gmail.com\", "
+            + "\"email\": \"meli@gmail.com\","
             + "\"password\": \"123456\""
             + "}";
 

@@ -72,7 +72,7 @@ public class InBoundOrderIT {
     Profile profile= new Profile();
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws Exception {
         batch1.setBatchNumber(1);
         batch1.setCurrentQuantity(1);
         batch1.setProduct(product1);
@@ -94,6 +94,8 @@ public class InBoundOrderIT {
         userMock.setPassword("$2a$10$GtzVniP9dVMmVW2YxytuvOG9kHu9nrwAxe8/UXSFkaECmIJ4UJcHy");
         userMock.setProfiles(List.of(profile));
         userMock.setRole(UserRole.ADMIN);
+
+        this.accessToken = this.userLogin();
     }
 
     /**
@@ -117,7 +119,7 @@ public class InBoundOrderIT {
 
     @Test
     public void getAllInboundOrders() throws Exception {
-        this.accessToken = this.userLogin();
+
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         inboundOrders.add(inboundOrder1);
@@ -138,7 +140,6 @@ public class InBoundOrderIT {
 
     @Test
     public void postInboundOrder() throws Exception {
-        this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         section1.setMaxCapacity(100);
@@ -171,7 +172,6 @@ public class InBoundOrderIT {
 
     @Test
     public void putBatchStockInInboundOrder() throws Exception {
-        this.accessToken = this.userLogin();
         Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(userMock));
 
         // dtos
