@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductWarehousesDTO {
   private Integer productId;
+  private String productName;
   private List<WarehouseDTO> warehouses;
 
   public ProductWarehousesDTO(Product product, List<Warehouse> warehouses, List<Batch> batches) {

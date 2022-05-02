@@ -1,11 +1,16 @@
 package br.com.meli.PIFrescos.service;
 
+import br.com.meli.PIFrescos.controller.dtos.ProductWarehousesDTO;
+import br.com.meli.PIFrescos.controller.dtos.WarehouseDTO;
+import br.com.meli.PIFrescos.controller.dtos.WarehouseQuantityDTO;
 import br.com.meli.PIFrescos.models.Batch;
 
 import br.com.meli.PIFrescos.models.Product;
 import br.com.meli.PIFrescos.models.StorageType;
 import br.com.meli.PIFrescos.repository.BatchCustomRepository;
+
 import br.com.meli.PIFrescos.repository.BatchRepository;
+import br.com.meli.PIFrescos.repository.ProductRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -17,10 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
 
@@ -32,6 +40,10 @@ public class BatchServiceImpl implements IBatchService {
 
     @Autowired
     private BatchCustomRepository batchCustomRepository;
+
+    @Autowired
+    private ProductService productService;
+
 
     /**
      * @param id batch id
@@ -110,6 +122,7 @@ public class BatchServiceImpl implements IBatchService {
         }
     }
 
+
     /**
      * Procura a lista de batches ordenada de acordo com o número de dias passados, com a categoria do produto,
      * podendo ordenar de forma crescente ou decrescente.
@@ -145,4 +158,32 @@ public class BatchServiceImpl implements IBatchService {
             throw new RuntimeException("Invalid query for order");
         }
     }
+
+  
+    public ProductWarehousesDTO getQuantityProductByWarehouse(Integer productId){
+        Product product = productService.findProductById(productId);
+
+        List<WarehouseQuantityDTO> quantityProductByWarehouse = batchRepository.getQuantityProductByWarehouse(productId);
+        AtomicReference<Boolean> hasQuantity = new AtomicReference<>(false);
+
+        List<WarehouseDTO> collect = quantityProductByWarehouse.stream()
+                .map(warehouseQuantity -> {
+                    hasQuantity.set(warehouseQuantity.getTotalquantity().compareTo(BigInteger.ZERO) > 0);
+
+                    return new WarehouseDTO(
+                            warehouseQuantity.getWarehousecode(),
+                            Integer.parseInt(warehouseQuantity.getTotalquantity().toString()));
+                })
+                .collect(Collectors.toList());
+
+        if(!hasQuantity.get())
+            throw new EntityNotFoundException("Product not have quantity");
+
+        return new ProductWarehousesDTO(
+                product.getProductId(),
+                product.getProductName(),
+                collect);
+    }
+
+
 }
