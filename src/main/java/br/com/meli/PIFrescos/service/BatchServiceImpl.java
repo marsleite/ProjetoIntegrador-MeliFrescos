@@ -55,6 +55,11 @@ public class BatchServiceImpl implements IBatchService {
         return batchRepository.findById(id).orElseThrow(() -> new RuntimeException("Not Found"));
     }
 
+    @Override
+    public Batch findByBatchNumber(Integer id) {
+        return batchRepository.findByBatchNumber(id);
+    }
+
     /**
      * @param productId  id do produto
      * @return List<Batch>

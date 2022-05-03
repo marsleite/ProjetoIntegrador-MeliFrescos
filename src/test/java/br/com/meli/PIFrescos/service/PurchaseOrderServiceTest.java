@@ -2,11 +2,8 @@ package br.com.meli.PIFrescos.service;
 
 import br.com.meli.PIFrescos.config.handler.ProductCartException;
 import br.com.meli.PIFrescos.models.*;
-import br.com.meli.PIFrescos.repository.BatchRepository;
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
-import br.com.meli.PIFrescos.repository.UserRepository;
-import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.meli.PIFrescos.models.OrderStatus.FINISHED;
 import static br.com.meli.PIFrescos.models.OrderStatus.OPENED;
 import static br.com.meli.PIFrescos.models.StorageType.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,13 +34,7 @@ import static org.mockito.Mockito.verify;
 public class PurchaseOrderServiceTest {
 
     @Mock
-    UserRepository userRepository;
-
-    @Mock
     PurchaseOrderRepository purchaseOrderRepository;
-
-    @Mock
-    BatchRepository batchRepository;
 
     @Mock
     IBatchService batchService;
@@ -125,10 +115,8 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldSavePurchaseOrder(){
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
-        Mockito.lenient().when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
-        Mockito.lenient().when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
-        Mockito.lenient().when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.lenient().when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
+        Mockito.lenient().when(batchService.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.lenient().when(batchService.findByBatchNumber(2)).thenReturn(mockBatch2);
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
@@ -138,8 +126,8 @@ public class PurchaseOrderServiceTest {
     void shouldSavePurchaseOrderWhenUserAlreadyHasAnOrder(){
         Mockito.when(purchaseOrderRepository.getPurchaseOpenedByUserId(any())).thenReturn(Collections.singletonList(purchaseOrder));
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
-        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
-        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.when(batchService.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.when(batchService.findByBatchNumber(2)).thenReturn(mockBatch2);
         PurchaseOrder savedPurchaseOrder = purchaseOrderService.save(purchaseOrder);
 
         assertEquals(purchaseOrder, savedPurchaseOrder);
@@ -153,10 +141,8 @@ public class PurchaseOrderServiceTest {
     @Test
     void shouldNotValidatePurchaseOrder(){
         productsCart1.setBatch(mockBatch3);
-        Mockito.lenient().when(batchRepository.existsBatchByBatchNumber(any())).thenReturn(true);
-        Mockito.lenient().when(batchRepository.findByBatchNumber(3)).thenReturn(mockBatch3);
-        Mockito.lenient().when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
-        Mockito.lenient().when(userRepository.findById(purchaseOrder.getUser().getId())).thenReturn(Optional.ofNullable(user1));
+        Mockito.lenient().when(batchService.findByBatchNumber(3)).thenReturn(mockBatch3);
+        Mockito.lenient().when(batchService.findByBatchNumber(2)).thenReturn(mockBatch2);
 
         ProductCartException exception = Assertions.assertThrows(ProductCartException.class, () -> purchaseOrderService.save(purchaseOrder));
 
@@ -320,8 +306,8 @@ public class PurchaseOrderServiceTest {
         productsCart1.setQuantity(3);
         productsCart2.setQuantity(3);
 
-        Mockito.when(batchRepository.findByBatchNumber(1)).thenReturn(mockBatch1);
-        Mockito.when(batchRepository.findByBatchNumber(2)).thenReturn(mockBatch2);
+        Mockito.when(batchService.findByBatchNumber(1)).thenReturn(mockBatch1);
+        Mockito.when(batchService.findByBatchNumber(2)).thenReturn(mockBatch2);
         Mockito.when(purchaseOrderRepository.save(purchaseOrder)).thenReturn(purchaseOrder);
 
         PurchaseOrder result = purchaseOrderService.updateCartList(purchaseOrder);
