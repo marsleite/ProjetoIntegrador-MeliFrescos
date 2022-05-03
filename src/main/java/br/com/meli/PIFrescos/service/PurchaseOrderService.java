@@ -2,12 +2,9 @@ package br.com.meli.PIFrescos.service;
 
 import br.com.meli.PIFrescos.models.*;
 import br.com.meli.PIFrescos.config.handler.ProductCartException;
-import br.com.meli.PIFrescos.repository.BatchRepository;
-import br.com.meli.PIFrescos.repository.ProductRepository;
 
 import br.com.meli.PIFrescos.repository.PurchaseOrderRepository;
 import br.com.meli.PIFrescos.service.interfaces.IBatchService;
-import br.com.meli.PIFrescos.repository.UserRepository;
 import br.com.meli.PIFrescos.service.interfaces.IPurchaseOrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +28,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     PurchaseOrderRepository purchaseOrderRepository;
 
     @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    BatchRepository batchRepository;
-
-    @Autowired
     IBatchService batchService;
-
-    @Autowired
-    UserRepository userRepository;
 
     /**
      * Salva uma PurchaseOrder. Antes de salvar, é necessário buscar informaçoes das entidades que o compõe.
@@ -60,7 +48,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         //encontrar o batch
         purchaseOrder.getCartList().forEach(productsCart -> {
             Integer batchNumber = productsCart.getBatch().getBatchNumber();
-            Batch batch = batchRepository.findByBatchNumber(batchNumber);
+            Batch batch = batchService.findByBatchNumber(batchNumber);
             productsCart.setBatch(batch);
         });
         validProductList(purchaseOrder);
@@ -85,7 +73,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Override
     public boolean isProductsCartListQuantityValid(ProductsCart productsCart){
         Integer productCartQuantity = productsCart.getQuantity();
-        Batch batch = batchRepository.findByBatchNumber(productsCart.getBatch().getBatchNumber());
+        Batch batch = batchService.findByBatchNumber(productsCart.getBatch().getBatchNumber());
         Integer batchCurrentQuantity = batch.getCurrentQuantity();
 
         boolean isValid = batchCurrentQuantity.compareTo(productCartQuantity) > 0;
