@@ -16,6 +16,7 @@ public class Email {
   private String ownerReference;
   private String emailFrom;
   private String emailTo;
+  private String Subject;
   @Column(columnDefinition = "TEXT")
   private String text;
   private LocalDateTime sendDateEmail;
