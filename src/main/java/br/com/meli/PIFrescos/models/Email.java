@@ -13,10 +13,10 @@ public class Email {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer emailId;
-  private String ownerReference;
+  private Integer ownerReference;
   private String emailFrom;
   private String emailTo;
-  private String Subject;
+  private String subject;
   @Column(columnDefinition = "TEXT")
   private String text;
   private LocalDateTime sendDateEmail;

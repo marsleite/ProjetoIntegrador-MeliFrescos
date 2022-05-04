@@ -1,7 +1,10 @@
 package br.com.meli.PIFrescos.service;
 
+import br.com.meli.PIFrescos.controller.dtos.EmailDTO;
+import br.com.meli.PIFrescos.models.Email;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,9 @@ public class UserService {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private EmailService emailService;
+
   public List<User> listAll() {
     return userRepository.findAll();
   }
@@ -32,7 +38,20 @@ public class UserService {
     if (userRepository.findByEmail(user.getEmail()).isPresent()) {
       throw new RuntimeException("User already exists");
     }
-    return userRepository.save(user);
+
+    User createdUser = userRepository.save(user);
+    EmailDTO emailDTO = new EmailDTO();
+    emailDTO.setOwnerReference(createdUser.getId());
+    emailDTO.setEmailFrom("no-replay@fresh.com");
+    emailDTO.setEmailTo(createdUser.getEmail());
+    emailDTO.setSubject("Bem-vindo(a) à sua conta PI group3 Fresh");
+    emailDTO.setText("Olá, " + createdUser.getFullname() + "!\n"
+            + "Seu cadastro foi concluído com sucesso e agora você pode aproveitar ao máximo as ofertas do nosso site!");
+
+    Email email = new Email();
+    BeanUtils.copyProperties(emailDTO, email);
+    emailService.sendEmail(email);
+    return createdUser;
   }
 
   // verifica se o usuario existe no banco de dados e faz a atualização

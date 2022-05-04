@@ -1,23 +1,26 @@
 package br.com.meli.PIFrescos.controller.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmailDTO {
 
-  @NotBlank
-  private String ownerReference;
-  @NotBlank
-  @Email
+
+  private Integer ownerReference;
+
   private String emailFrom;
-  @NotBlank
-  @Email
+
   private String emailTo;
-  @NotBlank
-  private String Subject;
-  @NotBlank
+
+  private String subject;
+
   private String text;
+
 }
