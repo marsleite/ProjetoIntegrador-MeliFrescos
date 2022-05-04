@@ -39,6 +39,10 @@ public class UserService {
       throw new RuntimeException("User already exists");
     }
 
+    /**
+     * @author Marcelo Leite
+     * Requisito 6
+     */
     User createdUser = userRepository.save(user);
     EmailDTO emailDTO = new EmailDTO();
     emailDTO.setOwnerReference(createdUser.getId());
@@ -59,7 +63,24 @@ public class UserService {
     if (!userRepository.findById(user.getId()).isPresent()) {
       throw new EntityNotFoundException("User not found");
     }
-    return userRepository.save(user);
+
+    /**
+     * @author Marcelo Leite
+     * Requisito 6
+     */
+    User updatedUser = userRepository.save(user);
+    EmailDTO emailDTO = new EmailDTO();
+    emailDTO.setOwnerReference(updatedUser.getId());
+    emailDTO.setEmailFrom("no-replay@fresh.com");
+    emailDTO.setEmailTo(updatedUser.getEmail());
+    emailDTO.setSubject("Alteração realizado com sucesso");
+    emailDTO.setText("Olá, " + updatedUser.getFullname() + "!\n"
+            + "Seu cadastro foi alterado com sucesso!");
+
+    Email email = new Email();
+    BeanUtils.copyProperties(emailDTO, email);
+    emailService.sendEmail(email);
+    return updatedUser;
   }
 
   public User update(Integer id, User user) {
@@ -74,5 +95,20 @@ public class UserService {
     }
 
     userRepository.delete(userOptional.get());
+    /**
+     * @author Marcelo Leite
+     * Requisito 6
+     */
+    EmailDTO emailDTO = new EmailDTO();
+    emailDTO.setOwnerReference(id);
+    emailDTO.setEmailFrom("no-replay@fresh.com");
+    emailDTO.setEmailTo(userOptional.get().getEmail());
+    emailDTO.setSubject("Sua conta foi excluída com sucesso");
+    emailDTO.setText("Olá, " + userOptional.get().getFullname() + "!\n"
+            + "Sua conta foi excluída com sucesso!");
+
+    Email email = new Email();
+    BeanUtils.copyProperties(emailDTO, email);
+    emailService.sendEmail(email);
   }
 }
