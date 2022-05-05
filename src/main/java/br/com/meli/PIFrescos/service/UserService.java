@@ -1,6 +1,8 @@
 package br.com.meli.PIFrescos.service;
 
 import br.com.meli.PIFrescos.email.EmailTemplate;
+import br.com.meli.PIFrescos.models.Email;
+import br.com.meli.PIFrescos.models.StatusEmail;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.repository.UserRepository;
 import br.com.meli.PIFrescos.service.interfaces.EmailSender;
@@ -46,8 +48,12 @@ public class UserService {
     String title = "Confirmação de registro";
     User createdUser = userRepository.save(user);
 
+    Email emailModel = new Email();
+    emailModel.setEmailTo(createdUser.getEmail());
+    emailModel.setReference(StatusEmail.REGISTERED);
+
     emailSender.sendEmail(createdUser.getEmail(),
-            EmailTemplate.confirmEmail(createdUser.getFullname(), link, title));
+            EmailTemplate.confirmEmail(createdUser.getFullname(), link, title), emailModel);
     return createdUser;
   }
 
@@ -64,8 +70,12 @@ public class UserService {
     String title = "Confirmação de alteração";
     User updatedUser = userRepository.save(user);
 
+    Email emailModel = new Email();
+    emailModel.setEmailTo(updatedUser.getEmail());
+    emailModel.setReference(StatusEmail.UPDATED);
+
     emailSender.sendEmail(updatedUser.getEmail(),
-            EmailTemplate.confirmUpdateEmail(updatedUser.getFullname(), link, title));
+            EmailTemplate.confirmUpdateEmail(updatedUser.getFullname(), link, title), emailModel);
 
     return updatedUser;
   }
@@ -89,8 +99,12 @@ public class UserService {
     String link = "http://localhost:8080/";
     String title = "Confirmação de exclusão de cadastro";
 
+    Email emailModel = new Email();
+    emailModel.setEmailTo(userOptional.get().getEmail());
+    emailModel.setReference(StatusEmail.DELETED);
+
     emailSender.sendEmail(userOptional.get().getEmail(),
-            EmailTemplate.confirmDeleteEmail(userOptional.get().getFullname(), link, title));
+            EmailTemplate.confirmDeleteEmail(userOptional.get().getFullname(), link, title), emailModel);
 
   }
 
