@@ -1,40 +1,34 @@
 package br.com.meli.PIFrescos.service;
 
-import br.com.meli.PIFrescos.models.Email;
-import br.com.meli.PIFrescos.models.StatusEmail;
-import br.com.meli.PIFrescos.repository.EmailRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
+import br.com.meli.PIFrescos.service.interfaces.EmailSender;
+import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @Service
-public class EmailService {
+@AllArgsConstructor
+public class EmailService implements EmailSender {
 
-  @Autowired
-  private EmailRepository emailRepository;
+  private final JavaMailSender mailSender;
 
-  @Autowired
-  private JavaMailSender emailSender;
-
-  public Email sendEmail(Email emailModel) {
-    emailModel.setSendDateEmail(LocalDateTime.now());
-    try{
-      SimpleMailMessage message = new SimpleMailMessage();
-      message.setFrom(emailModel.getEmailFrom());
-      message.setTo(emailModel.getEmailTo());
-      message.setSubject(emailModel.getSubject());
-      message.setText(emailModel.getText());
-      emailSender.send(message);
-
-      emailModel.setStatusEmail(StatusEmail.SENT);
-    } catch (MailException e){
-      emailModel.setStatusEmail(StatusEmail.ERROR);
-    } finally {
-      return emailRepository.save(emailModel);
+  @Override
+  @Async
+  public void sendEmail(String to, String email) {
+    try {
+      MimeMessage mimeMessage = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+      helper.setText(email, true);
+      helper.setTo(to);
+      helper.setSubject("Confirm your email");
+      helper.setFrom("marsleite@gmail.com");
+      mailSender.send(mimeMessage);
+    } catch(MessagingException e) {
+      throw new IllegalStateException("failed to send email");
     }
   }
 }

@@ -1,10 +1,8 @@
 package br.com.meli.PIFrescos.service;
 
-import br.com.meli.PIFrescos.controller.dtos.EmailDTO;
-import br.com.meli.PIFrescos.models.Email;
 import br.com.meli.PIFrescos.models.User;
 import br.com.meli.PIFrescos.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
+import br.com.meli.PIFrescos.service.interfaces.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,7 @@ public class UserService {
   private UserRepository userRepository;
 
   @Autowired
-  private EmailService emailService;
+  private EmailSender emailSender;
 
   public List<User> listAll() {
     return userRepository.findAll();
@@ -43,18 +41,10 @@ public class UserService {
      * @author Marcelo Leite
      * Requisito 6
      */
+    String link = "localhost:8080/";
     User createdUser = userRepository.save(user);
-    EmailDTO emailDTO = new EmailDTO();
-    emailDTO.setOwnerReference(createdUser.getId());
-    emailDTO.setEmailFrom("no-replay@fresh.com");
-    emailDTO.setEmailTo(createdUser.getEmail());
-    emailDTO.setSubject("Bem-vindo(a) à sua conta PI group3 Fresh");
-    emailDTO.setText("Olá, " + createdUser.getFullname() + "!\n"
-            + "Seu cadastro foi concluído com sucesso e agora você pode aproveitar ao máximo as ofertas do nosso site!");
 
-    Email email = new Email();
-    BeanUtils.copyProperties(emailDTO, email);
-    emailService.sendEmail(email);
+    emailSender.sendEmail(createdUser.getEmail(), buildEmail(createdUser.getFullname(), link));
     return createdUser;
   }
 
@@ -64,22 +54,8 @@ public class UserService {
       throw new EntityNotFoundException("User not found");
     }
 
-    /**
-     * @author Marcelo Leite
-     * Requisito 6
-     */
     User updatedUser = userRepository.save(user);
-    EmailDTO emailDTO = new EmailDTO();
-    emailDTO.setOwnerReference(updatedUser.getId());
-    emailDTO.setEmailFrom("no-replay@fresh.com");
-    emailDTO.setEmailTo(updatedUser.getEmail());
-    emailDTO.setSubject("Alteração realizado com sucesso");
-    emailDTO.setText("Olá, " + updatedUser.getFullname() + "!\n"
-            + "Seu cadastro foi alterado com sucesso!");
 
-    Email email = new Email();
-    BeanUtils.copyProperties(emailDTO, email);
-    emailService.sendEmail(email);
     return updatedUser;
   }
 
@@ -95,20 +71,75 @@ public class UserService {
     }
 
     userRepository.delete(userOptional.get());
-    /**
-     * @author Marcelo Leite
-     * Requisito 6
-     */
-    EmailDTO emailDTO = new EmailDTO();
-    emailDTO.setOwnerReference(id);
-    emailDTO.setEmailFrom("no-replay@fresh.com");
-    emailDTO.setEmailTo(userOptional.get().getEmail());
-    emailDTO.setSubject("Sua conta foi excluída com sucesso");
-    emailDTO.setText("Olá, " + userOptional.get().getFullname() + "!\n"
-            + "Sua conta foi excluída com sucesso!");
 
-    Email email = new Email();
-    BeanUtils.copyProperties(emailDTO, email);
-    emailService.sendEmail(email);
+  }
+
+  private String buildEmail(String name, String link) {
+    return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
+            "\n" +
+            "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
+            "\n" +
+            "  <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;min-width:100%;width:100%!important\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" +
+            "    <tbody><tr>\n" +
+            "      <td width=\"100%\" height=\"53\" bgcolor=\"#0b0c0c\">\n" +
+            "        \n" +
+            "        <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
+            "          <tbody><tr>\n" +
+            "            <td width=\"70\" bgcolor=\"#0b0c0c\" valign=\"middle\">\n" +
+            "                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
+            "                  <tbody><tr>\n" +
+            "                    <td style=\"padding-left:10px\">\n" +
+            "                  \n" +
+            "                    </td>\n" +
+            "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
+            "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Confirm your email</span>\n" +
+            "                    </td>\n" +
+            "                  </tr>\n" +
+            "                </tbody></table>\n" +
+            "              </a>\n" +
+            "            </td>\n" +
+            "          </tr>\n" +
+            "        </tbody></table>\n" +
+            "        \n" +
+            "      </td>\n" +
+            "    </tr>\n" +
+            "  </tbody></table>\n" +
+            "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
+            "    <tbody><tr>\n" +
+            "      <td width=\"10\" height=\"10\" valign=\"middle\"></td>\n" +
+            "      <td>\n" +
+            "        \n" +
+            "                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
+            "                  <tbody><tr>\n" +
+            "                    <td bgcolor=\"#1D70B8\" width=\"100%\" height=\"10\"></td>\n" +
+            "                  </tr>\n" +
+            "                </tbody></table>\n" +
+            "        \n" +
+            "      </td>\n" +
+            "      <td width=\"10\" valign=\"middle\" height=\"10\"></td>\n" +
+            "    </tr>\n" +
+            "  </tbody></table>\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
+            "    <tbody><tr>\n" +
+            "      <td height=\"30\"><br></td>\n" +
+            "    </tr>\n" +
+            "    <tr>\n" +
+            "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
+            "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
+            "        \n" +
+            "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering. Please click on the below link to activate your account: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n Link will expire in 15 minutes. <p>See you soon</p>" +
+            "        \n" +
+            "      </td>\n" +
+            "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
+            "    </tr>\n" +
+            "    <tr>\n" +
+            "      <td height=\"30\"><br></td>\n" +
+            "    </tr>\n" +
+            "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
+            "\n" +
+            "</div></div>";
   }
 }
