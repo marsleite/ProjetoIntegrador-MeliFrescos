@@ -7,18 +7,16 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "emails")
+@Table(name = "msg_emails")
 public class Email {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer emailId;
-  private Integer ownerReference;
-  private String emailFrom;
   private String emailTo;
-  private String subject;
-  @Column(columnDefinition = "TEXT")
-  private String text;
-  private LocalDateTime sendDateEmail;
+  @Enumerated(EnumType.STRING)
+  private StatusEmail reference;
+  @Enumerated(EnumType.STRING)
   private StatusEmail statusEmail;
+  private LocalDateTime sendDateEmail;
 }
