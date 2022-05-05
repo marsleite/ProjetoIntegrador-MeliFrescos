@@ -29,7 +29,7 @@ src/main/resources/PostmanCollection.json
 ```
 
 ### Diagrama de Classe (Requisito 06 em vermelho)
-![REQ06 drawio](https://github.com/marsleite/ProjetoIntegrador-MeliFrescos/blob/development/DRE.png)
+![REQ06 drawio](https://github.com/marsleite/ProjetoIntegrador-MeliFrescos/blob/development/src/main/resources/Captura%20de%20Tela%202022-05-05%20a%CC%80s%2020.03.15.png)
 
 
 ### Documentação, Referencial utilizados e Cronologia dos requisitos:
