@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * @author Marcelo Leite
+ * Requisito 6
+ */
 @Service
 @AllArgsConstructor
 public class EmailService implements EmailSender {
@@ -25,7 +29,7 @@ public class EmailService implements EmailSender {
       helper.setText(email, true);
       helper.setTo(to);
       helper.setSubject("Confirmação!");
-      helper.setFrom("marsleite@gmail.com");
+      helper.setFrom("no-reply@gmail.com");
       mailSender.send(mimeMessage);
     } catch(MessagingException e) {
       throw new IllegalStateException("failed to send email");
