@@ -1,40 +1,34 @@
 package br.com.meli.PIFrescos.service;
 
-import br.com.meli.PIFrescos.models.Email;
-import br.com.meli.PIFrescos.models.StatusEmail;
-import br.com.meli.PIFrescos.repository.EmailRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
+import br.com.meli.PIFrescos.service.interfaces.EmailSender;
+import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @Service
-public class EmailService {
+@AllArgsConstructor
+public class EmailService implements EmailSender {
 
-  @Autowired
-  private EmailRepository emailRepository;
+  private final JavaMailSender mailSender;
 
-  @Autowired
-  private JavaMailSender emailSender;
-
-  public Email sendEmail(Email email) {
-    email.setSendDateEmail(LocalDateTime.now());
+  @Override
+  @Async
+  public void sendEmail(String to, String email) {
     try {
-      SimpleMailMessage message = new SimpleMailMessage();
-      message.setFrom(email.getEmailFrom());
-      message.setTo(email.getEmailTo());
-      message.setSubject(email.getSubject());
-      message.setText(email.getText());
-      emailSender.send(message);
-
-      email.setStatusEmail(StatusEmail.SENT);
-    } catch (MailException e) {
-      email.setStatusEmail(StatusEmail.ERROR);
-    } finally {
-      return emailRepository.save(email);
+      MimeMessage mimeMessage = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+      helper.setText(email, true);
+      helper.setTo(to);
+      helper.setSubject("Confirm your email");
+      helper.setFrom("marsleite@gmail.com");
+      mailSender.send(mimeMessage);
+    } catch(MessagingException e) {
+      throw new IllegalStateException("failed to send email");
     }
   }
 }
