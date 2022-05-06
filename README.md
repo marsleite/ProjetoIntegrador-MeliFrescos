@@ -3,7 +3,7 @@
 
 Este módulo do [Projeto Integrador](https://github.com/juliocesargama/ProjetoIntegrador-MeliFrescos) ao que se destina a simular uma nova modalidade de armazenamento, transporte e comercialização de produtos frescos, congelados e refrigerados do Mercado Livre através de uma API REST em Java com Spring Boot e suas respectivas dependências, na qual foi adicionada uma nova funcionalidade(Requisito 06, no formato individual) a fim de disponibilizar cupons de desconto ao compradores do marketplace, dadas as condições de certos produtos comercializados na plataforma.
 
-Para mais detalhes, consulte a documentação detalhada do UserStory do requisito disponível neste [link](https://github.com/marsleite/ProjetoIntegrador-MeliFrescos/blob/development/Requisito%206%20-%20Marcelo.docx.pdf).
+Para mais detalhes, consulte a documentação detalhada do UserStory do requisito disponível neste [link](https://github.com/marsleite/ProjetoIntegrador-MeliFrescos/blob/development/src/main/resources/Requisito%206%20-%20Marcelo.docx%20(1).pdf).
 
 ### Características e Tecnologias:
 - Java 11;
